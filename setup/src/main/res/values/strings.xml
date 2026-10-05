@@ -10,7 +10,7 @@
    <string name="add_server_error_slow">Server is too slow to respond: %1$s</string>
    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
    <string name="edit_text_password_hint">Password</string>
-   <string name="edit_text_server_address_hint">Server address</string>
+   <string name="edit_text_server_address_hint">Server address (e.g. https://your.server.com)</string>
    <string name="edit_text_username_hint">Username</string>
    <string name="login">Login</string>
    <string name="login_btn_login">Login</string>
@@ -21,10 +21,10 @@
    <string name="servers_btn_add_server">Add server</string>
    <string name="remove_server_dialog">Remove server</string>
    <string name="remove_server_dialog_text">Are you sure you want to remove the server %s?</string>
-   <string name="welcome">Welcome to Findroid</string>
+   <string name="welcome">Welcome to CGFLIX Lite</string>
    <string name="welcome_btn_continue">Continue</string>
    <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
-   <string name="welcome_text">Findroid is a third-party client for Jellyfin. Findroid by itself does not contain any media.\n\nIn order to use this client, you need to host your own Jellyfin server.</string>
+   <string name="welcome_text">CGFLIX Lite is a light app to watch the CGFLIX library. Sign in with the username and password you were given.</string>
    <string name="confirm">Confirm</string>
    <string name="cancel">Cancel</string>
    <string name="or">OR</string>

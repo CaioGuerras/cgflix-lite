@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- CGFLIX: endereço SUGERIDO do servidor (pré-preenchido e editável na tela de adicionar servidor). Não é embutido. -->
-    <string name="cgflix_suggested_server" translatable="false">https://netflix.docaio.com.br</string>
-</resources>

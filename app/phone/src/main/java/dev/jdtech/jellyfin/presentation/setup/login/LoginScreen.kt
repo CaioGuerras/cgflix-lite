@@ -57,6 +57,9 @@ import dev.jdtech.jellyfin.setup.presentation.login.LoginState
 import dev.jdtech.jellyfin.setup.presentation.login.LoginViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 
+// CGFLIX: mude para true para mostrar de novo o botão de conexão rápida
+private const val CGFLIX_SHOW_QUICK_CONNECT = false
+
 @Composable
 fun LoginScreen(
     onSuccess: () -> Unit,
@@ -199,7 +202,8 @@ private fun LoginScreenLayout(
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             )
-            AnimatedVisibility(state.quickConnectEnabled) {
+            // CGFLIX: conexão rápida escondida na interface (continua ligada no servidor)
+            AnimatedVisibility(CGFLIX_SHOW_QUICK_CONNECT && state.quickConnectEnabled) {
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
