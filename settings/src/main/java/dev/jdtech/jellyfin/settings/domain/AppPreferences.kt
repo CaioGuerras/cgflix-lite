@@ -14,8 +14,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val preferredSubtitleLanguage = Preference<String?>("pref_subtitle_language", null)
 
     // Interface
-    val theme = Preference("pref_theme", "system")
-    val dynamicColors = Preference("pref_dynamic_colors", true)
+    val theme = Preference("pref_theme", "dark") // CGFLIX: preto OLED por padrão
+    val dynamicColors = Preference("pref_dynamic_colors", false) // CGFLIX: roxo da marca por padrão
     val homeSuggestions = Preference<Boolean>("home_suggestions", true)
     val homeContinueWatching = Preference<Boolean>("home_continue_watching", true)
     val homeNextUp = Preference<Boolean>("home_next_up", true)
