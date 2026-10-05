@@ -61,7 +61,9 @@ jobs:
           APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
           for f in app/phone/build/outputs/apk/libre/release/*.apk; do
             ls -l "$f" | awk '{print "Tamanho:", $5, "bytes -", $9}'
-            "$APKSIGNER" verify --print-certs "$f" | grep -E "Signer #1 certificate (DN|SHA-256)"
+            # verify falha o passo se a assinatura for inválida; o certificado impresso é público
+            "$APKSIGNER" verify --verbose --print-certs "$f" > "$RUNNER_TEMP/apksigner.txt"
+            grep -iE "certificate (DN|SHA-256)" "$RUNNER_TEMP/apksigner.txt" || cat "$RUNNER_TEMP/apksigner.txt"
           done
           if [ -z "$CGFLIX_KEYSTORE_BASE64" ]; then
             echo "::warning::Sem os secrets de assinatura (PR de fork?): APK assinado com a chave de debug, não instala por cima do anterior."
