@@ -88,7 +88,9 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
     val focusRequester = remember { FocusRequester() }
     val scrollState = rememberScrollState()
 
-    var serverAddress by rememberSaveable { mutableStateOf("") }
+    // CGFLIX: endereço sugerido, pré-preenchido e editável ("Outro servidor")
+    val suggestedServer = stringResource(CoreR.string.cgflix_suggested_server)
+    var serverAddress by rememberSaveable { mutableStateOf(suggestedServer) }
 
     val doConnect = { onAction(AddServerAction.OnConnectClick(serverAddress)) }
 

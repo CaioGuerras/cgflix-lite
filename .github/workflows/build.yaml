@@ -1,8 +1,8 @@
 name: Build
 
+# CGFLIX Lite: substituído por cgflix-android.yml (APK de release). Mantido só para disparo manual.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   assemble:

@@ -17,7 +17,8 @@ android {
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        applicationId = "dev.jdtech.jellyfin"
+        // CGFLIX Lite: id próprio, não conflita com o Findroid instalado
+        applicationId = "br.com.docaio.cgflix.lite"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
 
@@ -27,11 +28,27 @@ android {
         testInstrumentationRunner = "dev.jdtech.jellyfin.HiltTestRunner"
     }
 
+    // CGFLIX Lite: assinatura do release via variáveis de ambiente (secrets do CI).
+    // Sem elas, assina com a chave de debug (APK instalável, mas não é para loja).
+    val cgflixKeystore = System.getenv("CGFLIX_KEYSTORE")
+    signingConfigs {
+        if (!cgflixKeystore.isNullOrBlank()) {
+            register("cgflixRelease") {
+                storeFile = file(cgflixKeystore)
+                storePassword = System.getenv("CGFLIX_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("CGFLIX_KEY_ALIAS")
+                keyPassword = System.getenv("CGFLIX_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         named("debug") { applicationIdSuffix = ".debug" }
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig =
+                signingConfigs.findByName("cgflixRelease") ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

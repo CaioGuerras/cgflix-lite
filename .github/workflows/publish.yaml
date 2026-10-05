@@ -1,13 +1,14 @@
 name: Publish
 
+# CGFLIX Lite: neutralizado. Depende de segredos do Findroid (keystore e Google Play) que não temos.
+# A publicação do CGFLIX Lite é feita por cgflix-android.yml.
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
 
 jobs:
   publish:
     name: Publish
+    if: ${{ false }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository

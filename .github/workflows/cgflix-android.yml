@@ -1,0 +1,78 @@
+name: CGFLIX Android
+
+# APK de release do CGFLIX Lite: a cada push no main e em PRs (artifact);
+# em tags v* também cria uma Release com os APKs.
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cgflix-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: APK de release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # necessário só para criar a Release em tags v*
+    env:
+      # Assinatura opcional. Sem os secrets, o APK sai assinado com a chave de debug.
+      # Secrets esperados: CGFLIX_KEYSTORE_BASE64, CGFLIX_KEYSTORE_PASSWORD,
+      # CGFLIX_KEY_ALIAS e CGFLIX_KEY_PASSWORD.
+      CGFLIX_KEYSTORE_BASE64: ${{ secrets.CGFLIX_KEYSTORE_BASE64 }}
+      CGFLIX_KEYSTORE_PASSWORD: ${{ secrets.CGFLIX_KEYSTORE_PASSWORD }}
+      CGFLIX_KEY_ALIAS: ${{ secrets.CGFLIX_KEY_ALIAS }}
+      CGFLIX_KEY_PASSWORD: ${{ secrets.CGFLIX_KEY_PASSWORD }}
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Instalar o JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Configurar o Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Preparar a keystore (se houver secrets)
+        run: |
+          if [ -n "$CGFLIX_KEYSTORE_BASE64" ]; then
+            echo "$CGFLIX_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/cgflix.jks"
+            echo "CGFLIX_KEYSTORE=$RUNNER_TEMP/cgflix.jks" >> "$GITHUB_ENV"
+            echo "Assinando com a keystore do CGFLIX."
+          else
+            echo "Sem keystore: o APK será assinado com a chave de debug."
+          fi
+
+      - name: Compilar o APK de release
+        run: ./gradlew :app:phone:assembleLibreRelease
+
+      - name: Enviar os APKs (artifact)
+        uses: actions/upload-artifact@v7
+        with:
+          name: cgflix-lite-apk
+          path: app/phone/build/outputs/apk/libre/release/*.apk
+          if-no-files-found: error
+
+      - name: Renomear APKs para a Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: app/phone/build/outputs/apk/libre/release
+        run: |
+          for f in phone-libre-*-release.apk; do
+            mv "$f" "cgflix-lite-${GITHUB_REF_NAME}-${f#phone-libre-}"
+          done
+
+      - name: Criar a Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v3
+        with:
+          files: app/phone/build/outputs/apk/libre/release/cgflix-lite-*.apk
