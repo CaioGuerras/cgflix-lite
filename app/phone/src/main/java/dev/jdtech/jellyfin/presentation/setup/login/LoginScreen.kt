@@ -25,7 +25,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.LoadingButton
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
+import dev.jdtech.jellyfin.presentation.theme.CgflixOutlinedButton
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.login.LoginAction
@@ -230,7 +230,7 @@ private fun LoginScreenLayout(
                                         .offset(x = 8.dp),
                             )
                         }
-                        OutlinedButton(
+                        CgflixOutlinedButton(
                             onClick = { onAction(LoginAction.OnQuickConnectClick) },
                             modifier = Modifier.fillMaxWidth(),
                         ) {

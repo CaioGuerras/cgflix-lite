@@ -49,10 +49,10 @@ constructor(
     private var hasLoaded = false
 
     /**
-     * CGFLIX: [force] vem do "puxar para atualizar" e do botão de tentar de novo.
-     * Sem [force], não recarrega se a última carga tem menos de [REFRESH_MIN_INTERVAL_MS].
-     * O indicador de carregamento só aparece na 1ª carga ou ao forçar; nas demais, a tela
-     * mostra os dados que já tem e atualiza em segundo plano.
+     * CGFLIX: [force] vem do "puxar para atualizar" e do botão de tentar de novo. Sem [force], não
+     * recarrega se a última carga tem menos de [REFRESH_MIN_INTERVAL_MS]. O indicador de
+     * carregamento só aparece na 1ª carga ou ao forçar; nas demais, a tela mostra os dados que já
+     * tem e atualiza em segundo plano.
      */
     fun loadData(force: Boolean = false) {
         if (
@@ -167,7 +167,9 @@ constructor(
                         // CGFLIX: últimos itens de cada biblioteca pedidos em paralelo
                         coroutineScope {
                             views
-                                .map { view -> async { view to repository.getLatestMedia(view.id) } }
+                                .map { view ->
+                                    async { view to repository.getLatestMedia(view.id) }
+                                }
                                 .awaitAll()
                         }
                     }
