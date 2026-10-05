@@ -17,7 +17,8 @@ android {
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig {
-        applicationId = "br.com.docaio.cgflix.lite" // CGFLIX Lite: não conflita com o Findroid instalado
+        // CGFLIX Lite: id próprio, não conflita com o Findroid instalado
+        applicationId = "br.com.docaio.cgflix.lite"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
 
