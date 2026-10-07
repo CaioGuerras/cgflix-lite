@@ -76,6 +76,17 @@ jobs:
           path: app/phone/build/outputs/apk/libre/release/*.apk
           if-no-files-found: error
 
+      # Play Store (07/10): mesmo build e mesma assinatura do APK, no formato que a Play aceita
+      - name: Compilar o AAB (Play Store)
+        run: ./gradlew :app:phone:bundleLibreRelease
+
+      - name: Enviar o AAB (artifact)
+        uses: actions/upload-artifact@v7
+        with:
+          name: cgflix-lite-aab
+          path: app/phone/build/outputs/bundle/libreRelease/*.aab
+          if-no-files-found: error
+
       - name: Renomear APKs para a Release
         if: startsWith(github.ref, 'refs/tags/v')
         working-directory: app/phone/build/outputs/apk/libre/release
