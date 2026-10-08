@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
@@ -52,6 +53,18 @@ fun CgflixCategoryScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(category) { viewModel.load(category) }
     val items = (state.all ?: emptyFlow()).collectAsLazyPagingItems()
+    CgflixCategoryLayout(category, state, items, onItemClick, navigateBack)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CgflixCategoryLayout(
+    category: CgflixCategory,
+    state: CgflixCategoryState,
+    items: LazyPagingItems<FindroidItem>,
+    onItemClick: (FindroidItem) -> Unit,
+    navigateBack: () -> Unit,
+) {
     val gridState = rememberLazyGridState()
 
     Scaffold(

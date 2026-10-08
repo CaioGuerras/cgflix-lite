@@ -81,7 +81,29 @@ fun CgflixYouScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(true) { viewModel.load() }
-    val offline = LocalOfflineMode.current
+    CgflixYouLayout(
+        state = state,
+        offline = LocalOfflineMode.current,
+        onMyRequests = onMyRequests,
+        onLibraries = onLibraries,
+        onFavorites = onFavorites,
+        onSwitchUser = onSwitchUser,
+        onSettings = onSettings,
+        onAbout = onAbout,
+    )
+}
+
+@Composable
+fun CgflixYouLayout(
+    state: CgflixYouState,
+    offline: Boolean,
+    onMyRequests: () -> Unit,
+    onLibraries: () -> Unit,
+    onFavorites: () -> Unit,
+    onSwitchUser: () -> Unit,
+    onSettings: () -> Unit,
+    onAbout: () -> Unit,
+) {
     val safePadding = rememberSafePadding(handleStartInsets = false)
     val palette = MaterialTheme.cgflix
 
