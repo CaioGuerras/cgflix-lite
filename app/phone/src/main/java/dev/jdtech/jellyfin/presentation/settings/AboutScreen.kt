@@ -84,7 +84,7 @@ fun AboutScreen(navigateBack: () -> Unit) {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },

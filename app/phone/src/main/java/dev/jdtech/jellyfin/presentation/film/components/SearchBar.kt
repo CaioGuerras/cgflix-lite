@@ -124,7 +124,7 @@ fun FilmSearchBar(
                             IconButton(onClick = { onExpand(false) }) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_arrow_left),
-                                    contentDescription = null,
+                                    contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                                 )
                             }
                         } else {
@@ -142,7 +142,7 @@ fun FilmSearchBar(
                         IconButton(onClick = { query = "" }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_x),
-                                contentDescription = null,
+                                contentDescription = "Limpar busca", /* CGFLIX: acessibilidade */
                             )
                         }
                     }

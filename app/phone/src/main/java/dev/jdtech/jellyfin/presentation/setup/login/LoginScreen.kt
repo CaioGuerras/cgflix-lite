@@ -170,7 +170,8 @@ private fun LoginScreenLayout(
                             painter =
                                 if (passwordVisible) painterResource(CoreR.drawable.ic_eye_off)
                                 else painterResource(CoreR.drawable.ic_eye),
-                            contentDescription = null,
+                            contentDescription =
+                                "Mostrar ou esconder a senha", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
@@ -255,13 +256,19 @@ private fun LoginScreenLayout(
             onClick = { onAction(LoginAction.OnBackClick) },
             modifier = Modifier.padding(start = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_arrow_left),
+                contentDescription = "Voltar", /* CGFLIX: acessibilidade */
+            )
         }
         IconButton(
             onClick = { onAction(LoginAction.OnChangeServerClick) },
             modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_server),
+                contentDescription = "Trocar servidor", /* CGFLIX: acessibilidade */
+            )
         }
     }
 }

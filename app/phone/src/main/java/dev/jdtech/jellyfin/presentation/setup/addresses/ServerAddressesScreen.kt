@@ -99,7 +99,7 @@ fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddresse
                     IconButton(onClick = { onAction(ServerAddressesAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },

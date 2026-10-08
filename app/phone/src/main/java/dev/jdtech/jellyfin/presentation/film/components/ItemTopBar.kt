@@ -50,7 +50,7 @@ fun ItemTopBar(
             ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
+                    contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                 )
             }
         }
@@ -64,7 +64,10 @@ fun ItemTopBar(
                         contentColor = Color.White,
                     ),
             ) {
-                Icon(painter = painterResource(CoreR.drawable.ic_home), contentDescription = null)
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_home),
+                    contentDescription = "Ir para o Início", /* CGFLIX: acessibilidade */
+                )
             }
         }
         content()

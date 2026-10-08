@@ -121,7 +121,7 @@ private fun LibraryScreenLayout(
                     IconButton(onClick = { onAction(LibraryAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
@@ -129,7 +129,7 @@ private fun LibraryScreenLayout(
                     IconButton(onClick = { showSortByDialog = true }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_down_up),
-                            contentDescription = null,
+                            contentDescription = "Ordenar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
