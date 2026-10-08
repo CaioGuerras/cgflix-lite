@@ -30,6 +30,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowSizeClass
+import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryScreen
+import dev.jdtech.jellyfin.cgflix.home.CgflixHomeScreen
+import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
+import dev.jdtech.jellyfin.cgflix.search.CgflixSearchScreen
+import dev.jdtech.jellyfin.cgflix.you.CgflixMyRequestsScreen
+import dev.jdtech.jellyfin.cgflix.you.CgflixYouScreen
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidBoxSet
@@ -44,7 +50,6 @@ import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.DownloadsScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
 import dev.jdtech.jellyfin.presentation.film.FavoritesScreen
-import dev.jdtech.jellyfin.presentation.film.HomeScreen
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.MediaScreen
 import dev.jdtech.jellyfin.presentation.film.MovieScreen
@@ -60,6 +65,7 @@ import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.presentation.theme.rememberCgflixReduceMotion
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import java.util.UUID
 import kotlinx.serialization.Serializable
@@ -109,15 +115,46 @@ data class LibraryRoute(
 
 @Serializable data object AboutRoute
 
+// CGFLIX (Etapa 1B): Buscar (com pedidos), Você, categorias e Meus pedidos
+@Serializable data object CgflixSearchRoute
+
+@Serializable data object CgflixYouRoute
+
+@Serializable data class CgflixCategoryRoute(val category: String)
+
+@Serializable data object CgflixMyRequestsRoute
+
 data class TabBarItem(
     @param:StringRes val title: Int,
     @param:DrawableRes val icon: Int,
     val route: Any,
     val enabled: Boolean = true,
+    // CGFLIX: ícone preenchido no destino ativo (contorno nos demais)
+    @param:DrawableRes val selectedIcon: Int = icon,
 )
 
+// CGFLIX (Etapa 1B): barra Início · Buscar · Baixados · Você (Material Symbols Rounded)
 val homeTab =
-    TabBarItem(title = CoreR.string.title_home, icon = CoreR.drawable.ic_home, route = HomeRoute)
+    TabBarItem(
+        title = CoreR.string.cgflix_tab_home,
+        icon = CoreR.drawable.ic_cgflix_home,
+        selectedIcon = CoreR.drawable.ic_cgflix_home_filled,
+        route = HomeRoute,
+    )
+val cgflixSearchTab =
+    TabBarItem(
+        title = CoreR.string.cgflix_tab_search,
+        icon = CoreR.drawable.ic_cgflix_search,
+        selectedIcon = CoreR.drawable.ic_cgflix_search_filled,
+        route = CgflixSearchRoute,
+    )
+val cgflixYouTab =
+    TabBarItem(
+        title = CoreR.string.cgflix_tab_you,
+        icon = CoreR.drawable.ic_cgflix_person,
+        selectedIcon = CoreR.drawable.ic_cgflix_person_filled,
+        route = CgflixYouRoute,
+    )
 val mediaTab =
     TabBarItem(
         title = CoreR.string.title_media,
@@ -126,8 +163,9 @@ val mediaTab =
     )
 val downloadsTab =
     TabBarItem(
-        title = CoreR.string.title_download,
-        icon = CoreR.drawable.ic_download,
+        title = CoreR.string.cgflix_tab_downloads,
+        icon = CoreR.drawable.ic_cgflix_download,
+        selectedIcon = CoreR.drawable.ic_cgflix_download_filled,
         route = DownloadsRoute,
     )
 
@@ -150,8 +188,8 @@ fun NavigationRoot(
 
     val navigationItems =
         when (isOfflineMode) {
-            false -> listOf(homeTab, mediaTab, downloadsTab)
-            true -> listOf(homeTab, downloadsTab)
+            false -> listOf(homeTab, cgflixSearchTab, downloadsTab, cgflixYouTab)
+            true -> listOf(homeTab, downloadsTab, cgflixYouTab)
         }
     val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
 
@@ -186,11 +224,16 @@ fun NavigationRoot(
             }
         }
 
+    // CGFLIX: "remover animações" do sistema vira corte seco entre telas
+    val reduceMotion = rememberCgflixReduceMotion()
+    val fadeMs = if (reduceMotion) 0 else 300
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             navigationItems.forEach { item ->
+                val selected = currentRoute == item.route::class.qualifiedName
                 item(
-                    selected = currentRoute == item.route::class.qualifiedName,
+                    selected = selected,
                     onClick = {
                         if (
                             item.route is MediaRoute &&
@@ -207,8 +250,10 @@ fun NavigationRoot(
                     },
                     icon = {
                         Icon(
-                            painter = painterResource(item.icon),
-                            contentDescription = stringResource(item.title),
+                            painter =
+                                painterResource(if (selected) item.selectedIcon else item.icon),
+                            // o rótulo (sempre visível) já diz o nome
+                            contentDescription = null,
                         )
                     },
                     enabled = item.enabled,
@@ -222,10 +267,10 @@ fun NavigationRoot(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            enterTransition = { fadeIn(tween(300)) },
-            exitTransition = { fadeOut(tween(300)) },
-            predictivePopEnterTransition = { fadeIn(tween(300)) },
-            predictivePopExitTransition = { fadeOut(tween(300)) },
+            enterTransition = { fadeIn(tween(fadeMs)) },
+            exitTransition = { fadeOut(tween(fadeMs)) },
+            predictivePopEnterTransition = { fadeIn(tween(fadeMs)) },
+            predictivePopExitTransition = { fadeOut(tween(fadeMs)) },
         ) {
             composable<WelcomeRoute> {
                 WelcomeScreen(onContinueClick = { navController.safeNavigate(ServersRoute) })
@@ -291,34 +336,49 @@ fun NavigationRoot(
                 )
             }
             composable<HomeRoute> {
-                HomeScreen(
-                    onLibraryClick = {
-                        navController.safeNavigate(
-                            LibraryRoute(
-                                libraryId = it.id.toString(),
-                                libraryName = it.name,
-                                libraryType = it.type,
-                            )
-                        )
+                // CGFLIX (Etapa 1B): Início enxuta do Lite (a do Findroid segue em HomeScreen.kt)
+                CgflixHomeScreen(
+                    onCategoryClick = { category ->
+                        navController.safeNavigate(CgflixCategoryRoute(category.name))
                     },
-                    onSearchClick = {
-                        searchExpanded = true
-                        navController.safeNavigate(MediaRoute) {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    onSettingsClick = {
-                        navController.safeNavigate(
-                            SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings))
-                        )
-                    },
-                    onManageServers = { navController.safeNavigate(ServersRoute) },
                     onItemClick = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
                 )
+            }
+            composable<CgflixCategoryRoute> { backStackEntry ->
+                val route: CgflixCategoryRoute = backStackEntry.toRoute()
+                CgflixCategoryScreen(
+                    category = CgflixCategory.valueOf(route.category),
+                    onItemClick = { item ->
+                        navigateToItem(navController = navController, item = item)
+                    },
+                    navigateBack = { navController.safePopBackStack() },
+                )
+            }
+            composable<CgflixSearchRoute> {
+                CgflixSearchScreen(
+                    onItemClick = { item ->
+                        navigateToItem(navController = navController, item = item)
+                    }
+                )
+            }
+            composable<CgflixYouRoute> {
+                CgflixYouScreen(
+                    onMyRequests = { navController.safeNavigate(CgflixMyRequestsRoute) },
+                    onLibraries = { navController.safeNavigate(MediaRoute) },
+                    onFavorites = { navController.safeNavigate(FavoritesRoute) },
+                    onSwitchUser = { navController.safeNavigate(UsersRoute) },
+                    onSettings = {
+                        navController.safeNavigate(
+                            SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings))
+                        )
+                    },
+                    onAbout = { navController.safeNavigate(AboutRoute) },
+                )
+            }
+            composable<CgflixMyRequestsRoute> {
+                CgflixMyRequestsScreen(navigateBack = { navController.safePopBackStack() })
             }
             composable<MediaRoute> {
                 MediaScreen(
