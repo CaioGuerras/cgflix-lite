@@ -71,7 +71,10 @@ fun CgflixCategoryScreen(
     ) { innerPadding ->
         if (state.missing) {
             Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                Text("Essa categoria não existe neste servidor.", color = MaterialTheme.cgflix.textMuted)
+                Text(
+                    "Essa categoria não existe neste servidor.",
+                    color = MaterialTheme.cgflix.textMuted,
+                )
             }
             return@Scaffold
         }

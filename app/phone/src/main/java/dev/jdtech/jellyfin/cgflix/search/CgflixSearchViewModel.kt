@@ -81,7 +81,11 @@ constructor(private val cgflix: CgflixRepository, private val repository: Jellyf
                         emptyList()
                     }
                 _state.update {
-                    it.copy(results = ours, loading = false, requests = CgflixRequestsSection.Loading)
+                    it.copy(
+                        results = ours,
+                        loading = false,
+                        requests = CgflixRequestsSection.Loading,
+                    )
                 }
                 val requests =
                     try {
@@ -110,7 +114,10 @@ constructor(private val cgflix: CgflixRepository, private val repository: Jellyf
                                     section.copy(
                                         items =
                                             section.items.map {
-                                                if (it.tmdbId == item.tmdbId && it.isMovie == item.isMovie) {
+                                                if (
+                                                    it.tmdbId == item.tmdbId &&
+                                                        it.isMovie == item.isMovie
+                                                ) {
                                                     it.copy(state = CgflixRequestState.REQUESTED)
                                                 } else {
                                                     it

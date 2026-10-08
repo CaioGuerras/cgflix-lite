@@ -58,7 +58,7 @@ jobs:
 
       # Etapa 1B: regras do CGFLIX (categorias, Em alta, pedidos, selos) com dados falsos
       - name: Testes de unidade do CGFLIX
-        run: ./gradlew :app:phone:testLibreReleaseUnitTest
+        run: ./gradlew :app:phone:testLibreDebugUnitTest
 
       - name: Conferir assinatura e tamanho do APK
         run: |

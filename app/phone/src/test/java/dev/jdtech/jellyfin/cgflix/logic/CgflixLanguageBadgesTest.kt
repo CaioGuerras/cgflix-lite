@@ -12,20 +12,41 @@ class CgflixLanguageBadgesTest {
 
     @Test
     fun `audio por e Dublado e legenda por ou pob e Legendado`() {
-        assertEquals(CgflixLanguageBadges(true, false), cgflixLanguageBadges(listOf(audio("por"), sub("eng"))))
-        assertEquals(CgflixLanguageBadges(false, true), cgflixLanguageBadges(listOf(audio("jpn"), sub("pob"))))
-        assertEquals(CgflixLanguageBadges(true, true), cgflixLanguageBadges(listOf(audio("pt-BR"), sub("por"))))
+        assertEquals(
+            CgflixLanguageBadges(true, false),
+            cgflixLanguageBadges(listOf(audio("por"), sub("eng"))),
+        )
+        assertEquals(
+            CgflixLanguageBadges(false, true),
+            cgflixLanguageBadges(listOf(audio("jpn"), sub("pob"))),
+        )
+        assertEquals(
+            CgflixLanguageBadges(true, true),
+            cgflixLanguageBadges(listOf(audio("pt-BR"), sub("por"))),
+        )
     }
 
     @Test
     fun `legenda em portugues nao faz Dublado e vice-versa`() {
-        assertEquals(CgflixLanguageBadges(false, true), cgflixLanguageBadges(listOf(audio("eng"), sub("por"))))
-        assertEquals(CgflixLanguageBadges(false, false), cgflixLanguageBadges(listOf(audio("eng"), sub("spa"))))
+        assertEquals(
+            CgflixLanguageBadges(false, true),
+            cgflixLanguageBadges(listOf(audio("eng"), sub("por"))),
+        )
+        assertEquals(
+            CgflixLanguageBadges(false, false),
+            cgflixLanguageBadges(listOf(audio("eng"), sub("spa"))),
+        )
     }
 
     @Test
     fun `sem codigo usa o titulo da faixa`() {
-        assertEquals(CgflixLanguageBadges(true, false), cgflixLanguageBadges(listOf(audio("und", "Português"))))
-        assertEquals(CgflixLanguageBadges(false, false), cgflixLanguageBadges(listOf(audio("eng", "Português"))))
+        assertEquals(
+            CgflixLanguageBadges(true, false),
+            cgflixLanguageBadges(listOf(audio("und", "Português"))),
+        )
+        assertEquals(
+            CgflixLanguageBadges(false, false),
+            cgflixLanguageBadges(listOf(audio("eng", "Português"))),
+        )
     }
 }

@@ -18,8 +18,8 @@ val MaterialTheme.cgflix: CgflixPalette
     @Composable @ReadOnlyComposable get() = LocalCgflixPalette.current
 
 /**
- * CGFLIX: `true` quando a pessoa desligou as animações do sistema ("Remover animações" /
- * escala de duração do animador = 0). As telas do CGFLIX trocam transições por cortes secos.
+ * CGFLIX: `true` quando a pessoa desligou as animações do sistema ("Remover animações" / escala de
+ * duração do animador = 0). As telas do CGFLIX trocam transições por cortes secos.
  */
 @Composable
 fun rememberCgflixReduceMotion(): Boolean {

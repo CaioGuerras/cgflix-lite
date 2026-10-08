@@ -21,7 +21,8 @@ fun cgflixNormalize(text: String): String =
     Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD)
         .replace(Regex("\\p{Mn}+"), "")
 
-private fun isAnimeName(name: String) = cgflixNormalize(name).let { it == "animes" || it == "anime" }
+private fun isAnimeName(name: String) =
+    cgflixNormalize(name).let { it == "animes" || it == "anime" }
 
 /**
  * Biblioteca de cada categoria, na ordem Filmes, Séries, Animes:
@@ -30,7 +31,9 @@ private fun isAnimeName(name: String) = cgflixNormalize(name).let { it == "anime
  *   animes);
  * - Animes: a biblioteca `tvshows` chamada "Animes". Sem ela, a categoria (e o chip) some.
  */
-fun cgflixResolveCategories(libraries: List<CgflixLibraryInfo>): Map<CgflixCategory, CgflixLibraryInfo> {
+fun cgflixResolveCategories(
+    libraries: List<CgflixLibraryInfo>
+): Map<CgflixCategory, CgflixLibraryInfo> {
     fun type(l: CgflixLibraryInfo) = l.collectionType?.lowercase()
     val movies = libraries.filter { type(it) == "movies" }
     val shows = libraries.filter { type(it) == "tvshows" }
@@ -97,8 +100,8 @@ fun cgflixHomeRows(categories: Map<CgflixCategory, CgflixLibraryInfo>): List<Cgf
     }
 
 /**
- * Linhas de uma categoria (chip): Em alta da categoria e Adicionados recentemente, as duas presas
- * à biblioteca da categoria. A grade com tudo vem embaixo, também pelo `ParentId`.
+ * Linhas de uma categoria (chip): Em alta da categoria e Adicionados recentemente, as duas presas à
+ * biblioteca da categoria. A grade com tudo vem embaixo, também pelo `ParentId`.
  */
 fun cgflixCategoryRows(category: CgflixCategory, library: CgflixLibraryInfo): List<CgflixRowSpec> =
     listOf(

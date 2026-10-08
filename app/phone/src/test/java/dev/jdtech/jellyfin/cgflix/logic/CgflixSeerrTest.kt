@@ -58,15 +58,25 @@ class CgflixSeerrTest {
                            {"id":2,"status":2,"createdAt":"2026-10-05","media":{"tmdbId":20,"mediaType":"tv","status":5}}]}""",
                     )
                 path.startsWith("/movie/10") ->
-                    CgflixHttpResponse(200, """{"title":"Filme Pedido","releaseDate":"2024-01-01","posterPath":"/abc.jpg"}""")
+                    CgflixHttpResponse(
+                        200,
+                        """{"title":"Filme Pedido","releaseDate":"2024-01-01","posterPath":"/abc.jpg"}""",
+                    )
                 path.startsWith("/tv/20") ->
-                    CgflixHttpResponse(200, """{"name":"Série Pedida","firstAirDate":"2020-05-01","posterPath":"../x.jpg"}""")
+                    CgflixHttpResponse(
+                        200,
+                        """{"name":"Série Pedida","firstAirDate":"2020-05-01","posterPath":"../x.jpg"}""",
+                    )
                 else -> CgflixHttpResponse(404, "{}")
             }
         }
     }
 
-    private fun client(fake: FakeSeerr, store: CgflixSessionStore = MemoryStore(), authorized: MutableList<String> = mutableListOf()) =
+    private fun client(
+        fake: FakeSeerr,
+        store: CgflixSessionStore = MemoryStore(),
+        authorized: MutableList<String> = mutableListOf(),
+    ) =
         CgflixSeerrClient(
             jellyfinBaseUrl = jellyfin,
             accountKey = "srv:user",
@@ -112,24 +122,28 @@ class CgflixSeerrTest {
         c.request(CgflixRequestable(10, true, "Filme"))
         assertEquals("""{"mediaType":"movie","mediaId":10}""", fake.calls.last().jsonBody)
         c.request(CgflixRequestable(20, false, "Série"))
-        assertEquals("""{"mediaType":"tv","mediaId":20,"seasons":"all"}""", fake.calls.last().jsonBody)
+        assertEquals(
+            """{"mediaType":"tv","mediaId":20,"seasons":"all"}""",
+            fake.calls.last().jsonBody,
+        )
     }
 
     @Test
-    fun `Seerr fora do ar deixa os pedidos indisponiveis sem tentar de novo na hora`() = runBlocking {
-        val fake = FakeSeerr(seerr).apply { up = false }
-        val c = client(fake)
-        try {
-            c.search("x")
-            fail("devia ficar indisponível")
-        } catch (_: CgflixRequestsUnavailable) {}
-        val callsAfterFirst = fake.calls.size
-        try {
-            c.search("y")
-            fail("devia ficar indisponível")
-        } catch (_: CgflixRequestsUnavailable) {}
-        assertEquals(callsAfterFirst, fake.calls.size) // espera 2 min antes de tentar de novo
-    }
+    fun `Seerr fora do ar deixa os pedidos indisponiveis sem tentar de novo na hora`() =
+        runBlocking {
+            val fake = FakeSeerr(seerr).apply { up = false }
+            val c = client(fake)
+            try {
+                c.search("x")
+                fail("devia ficar indisponível")
+            } catch (_: CgflixRequestsUnavailable) {}
+            val callsAfterFirst = fake.calls.size
+            try {
+                c.search("y")
+                fail("devia ficar indisponível")
+            } catch (_: CgflixRequestsUnavailable) {}
+            assertEquals(callsAfterFirst, fake.calls.size) // espera 2 min antes de tentar de novo
+        }
 
     @Test
     fun `cookie vencido 401 renova sozinho e repete a chamada`() = runBlocking {
@@ -150,7 +164,10 @@ class CgflixSeerrTest {
     @Test
     fun `Meus pedidos com nome situacao e poster so com caminho valido`() = runBlocking {
         val list = client(FakeSeerr(seerr)).myRequests()
-        assertEquals(listOf("Série Pedida", "Filme Pedido"), list.map { it.title }) // mais novo primeiro
+        assertEquals(
+            listOf("Série Pedida", "Filme Pedido"),
+            list.map { it.title },
+        ) // mais novo primeiro
         assertEquals(CgflixMyRequestStatus.AVAILABLE, list[0].status)
         assertEquals(CgflixMyRequestStatus.WAITING_APPROVAL, list[1].status)
         assertNull(list[0].posterUrl) // "../x.jpg" não passa na regra
@@ -161,13 +178,19 @@ class CgflixSeerrTest {
     @Test
     fun `endereco do Seerr derivado do Jellyfin`() {
         assertEquals(seerr, cgflixSeerrCandidates(jellyfin).first())
-        assertEquals(listOf("http://192.168.0.10:5055"), cgflixSeerrCandidates("http://192.168.0.10:8096"))
+        assertEquals(
+            listOf("http://192.168.0.10:5055"),
+            cgflixSeerrCandidates("http://192.168.0.10:8096"),
+        )
         assertTrue(cgflixSeerrCandidates("lixo sem host").isEmpty())
     }
 
     @Test
     fun `regra do poster igual a do site`() {
-        assertEquals("$seerr/imageproxy/tmdb/t/p/w300_and_h450_face/a_b-1.webp", cgflixSeerrPoster(seerr, "/a_b-1.webp"))
+        assertEquals(
+            "$seerr/imageproxy/tmdb/t/p/w300_and_h450_face/a_b-1.webp",
+            cgflixSeerrPoster(seerr, "/a_b-1.webp"),
+        )
         assertNull(cgflixSeerrPoster(seerr, "/a/b.jpg"))
         assertNull(cgflixSeerrPoster(seerr, "https://evil/x.jpg"))
         assertNull(cgflixSeerrPoster(seerr, "/x.gif"))
@@ -184,7 +207,10 @@ class CgflixSeerrTest {
 
     @Test
     fun `le so o connect sid do Set-Cookie`() {
-        assertEquals("connect.sid=s%3Aabc", CgflixSeerrClient.sessionCookieOf("connect.sid=s%3Aabc; Path=/; HttpOnly"))
+        assertEquals(
+            "connect.sid=s%3Aabc",
+            CgflixSeerrClient.sessionCookieOf("connect.sid=s%3Aabc; Path=/; HttpOnly"),
+        )
         assertNull(CgflixSeerrClient.sessionCookieOf("outro=1; Path=/"))
     }
 }

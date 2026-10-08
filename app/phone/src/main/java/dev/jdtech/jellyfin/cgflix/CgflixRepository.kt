@@ -51,8 +51,10 @@ constructor(
     private val http = CgflixOkHttp(okHttp)
     private val diskCache = context.getSharedPreferences("cgflix_cache", Context.MODE_PRIVATE)
 
-    private val trendingCache = CgflixTtlCache<Pair<String, CgflixTrending?>>(CGFLIX_TRENDING_TTL_MS)
-    @Volatile private var categoriesCache: Pair<String, Map<CgflixCategory, CgflixLibraryInfo>>? = null
+    private val trendingCache =
+        CgflixTtlCache<Pair<String, CgflixTrending?>>(CGFLIX_TRENDING_TTL_MS)
+    @Volatile
+    private var categoriesCache: Pair<String, Map<CgflixCategory, CgflixLibraryInfo>>? = null
 
     private val baseUrl: String
         get() = jellyfinApi.api.baseUrl.orEmpty().trimEnd('/')
@@ -66,13 +68,19 @@ constructor(
     /** Bibliotecas de cada categoria (Filmes, Séries, Animes) da pessoa. */
     suspend fun categories(force: Boolean = false): Map<CgflixCategory, CgflixLibraryInfo> {
         val key = accountKey
-        categoriesCache?.takeIf { !force && it.first == key }?.let {
-            return it.second
-        }
+        categoriesCache
+            ?.takeIf { !force && it.first == key }
+            ?.let {
+                return it.second
+            }
         val views =
             withContext(Dispatchers.IO) {
                 jellyfinApi.viewsApi.getUserViews(userId).content.items.map {
-                    CgflixLibraryInfo(it.id.toString(), it.name.orEmpty(), it.collectionType?.serialName)
+                    CgflixLibraryInfo(
+                        it.id.toString(),
+                        it.name.orEmpty(),
+                        it.collectionType?.serialName,
+                    )
                 }
             }
         return cgflixResolveCategories(views).also { categoriesCache = key to it }
@@ -85,9 +93,12 @@ constructor(
     suspend fun trending(force: Boolean = false): CgflixTrending? {
         val key = baseUrl
         if (!force) {
-            trendingCache.get()?.takeIf { it.first == key }?.let {
-                return it.second
-            }
+            trendingCache
+                .get()
+                ?.takeIf { it.first == key }
+                ?.let {
+                    return it.second
+                }
             val savedAt = diskCache.getLong("emalta_at:$key", 0L)
             val saved = diskCache.getString("emalta:$key", null)
             if (saved != null && System.currentTimeMillis() - savedAt < CGFLIX_TRENDING_TTL_MS) {
@@ -178,11 +189,13 @@ constructor(
                 .getItems(
                     userId,
                     parentId = parseUuid(libraryId),
-                    includeItemTypes = listOf(if (movies) BaseItemKind.MOVIE else BaseItemKind.SERIES),
+                    includeItemTypes =
+                        listOf(if (movies) BaseItemKind.MOVIE else BaseItemKind.SERIES),
                     recursive = true,
                     sortBy =
                         listOf(
-                            if (movies) ItemSortBy.DATE_CREATED else ItemSortBy.DATE_LAST_CONTENT_ADDED
+                            if (movies) ItemSortBy.DATE_CREATED
+                            else ItemSortBy.DATE_LAST_CONTENT_ADDED
                         ),
                     sortOrder = listOf(SortOrder.DESCENDING),
                     limit = limit,
@@ -196,10 +209,14 @@ constructor(
     suspend fun tvdbIdOf(itemId: UUID): String? =
         withContext(Dispatchers.IO) {
             runCatching {
-                    jellyfinApi.userLibraryApi.getItem(itemId, userId).content.providerIds?.entries
-                        ?.firstOrNull { it.key.equals("Tvdb", ignoreCase = true) }
-                        ?.value
-                }
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, userId)
+                    .content
+                    .providerIds
+                    ?.entries
+                    ?.firstOrNull { it.key.equals("Tvdb", ignoreCase = true) }
+                    ?.value
+            }
                 .getOrNull()
                 ?.takeIf { it.isNotBlank() && it.all(Char::isDigit) }
         }
@@ -215,9 +232,11 @@ constructor(
     /** Cliente do Seerr da conta em uso (um por servidor + usuário). */
     fun seerr(): CgflixSeerrClient {
         val key = accountKey
-        seerr?.takeIf { it.first == key }?.let {
-            return it.second
-        }
+        seerr
+            ?.takeIf { it.first == key }
+            ?.let {
+                return it.second
+            }
         val client =
             CgflixSeerrClient(
                 jellyfinBaseUrl = baseUrl,
@@ -239,7 +258,10 @@ constructor(
             UUID.fromString(id)
         } else {
             UUID.fromString(
-                id.replaceFirst(Regex("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"), "$1-$2-$3-$4-$5")
+                id.replaceFirst(
+                    Regex("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"),
+                    "$1-$2-$3-$4-$5",
+                )
             )
         }
 }

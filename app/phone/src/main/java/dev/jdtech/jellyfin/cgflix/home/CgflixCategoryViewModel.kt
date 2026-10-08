@@ -38,8 +38,8 @@ data class CgflixCategoryState(
 
 /**
  * CGFLIX (Etapa 1B): página de uma categoria (chip). Em alta da própria categoria (`porBiblioteca`
- * do emalta.json; some com menos de 3), Adicionados recentemente e a biblioteca inteira. Tudo
- * preso ao `ParentId` da biblioteca da categoria.
+ * do emalta.json; some com menos de 3), Adicionados recentemente e a biblioteca inteira. Tudo preso
+ * ao `ParentId` da biblioteca da categoria.
  */
 @HiltViewModel
 class CgflixCategoryViewModel
@@ -65,7 +65,8 @@ constructor(private val cgflix: CgflixRepository, private val repository: Jellyf
                 return@launch
             }
             val rows = cgflixCategoryRows(category, library)
-            val type = if (category == CgflixCategory.FILMES) BaseItemKind.MOVIE else BaseItemKind.SERIES
+            val type =
+                if (category == CgflixCategory.FILMES) BaseItemKind.MOVIE else BaseItemKind.SERIES
             val all =
                 repository
                     .getItemsPaging(
@@ -108,7 +109,10 @@ constructor(private val cgflix: CgflixRepository, private val repository: Jellyf
                 val trending = cgflix.trending()
                 val items =
                     if (trending != null) {
-                        trending.idsFor(category)?.let { cgflix.itemsByIds(it, repository) }.orEmpty()
+                        trending
+                            .idsFor(category)
+                            ?.let { cgflix.itemsByIds(it, repository) }
+                            .orEmpty()
                     } else if (category == CgflixCategory.FILMES) {
                         // Sem o arquivo, só Filmes dá para separar (filme é sempre filme)
                         cgflix.trendingCollection(repository).filterIsInstance<FindroidMovie>()

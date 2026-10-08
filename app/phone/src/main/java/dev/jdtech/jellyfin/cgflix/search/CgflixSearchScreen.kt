@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -111,12 +110,18 @@ fun CgflixSearchLayout(
                     singleLine = true,
                     shape = CircleShape,
                     leadingIcon = {
-                        Icon(painterResource(CoreR.drawable.ic_cgflix_search), contentDescription = null)
+                        Icon(
+                            painterResource(CoreR.drawable.ic_cgflix_search),
+                            contentDescription = null,
+                        )
                     },
                     trailingIcon = {
                         if (state.query.isNotEmpty()) {
                             IconButton(onClick = { onQueryChange("") }) {
-                                Icon(painterResource(CoreR.drawable.ic_x), contentDescription = "Limpar busca")
+                                Icon(
+                                    painterResource(CoreR.drawable.ic_x),
+                                    contentDescription = "Limpar busca",
+                                )
                             }
                         }
                     },

@@ -60,7 +60,8 @@ class CgflixCategoriesTest {
 
     @Test
     fun `Animes nunca vira Series mesmo vindo primeiro`() {
-        val map = cgflixResolveCategories(listOf(animes, CgflixLibraryInfo("x", "Novelas", "tvshows")))
+        val map =
+            cgflixResolveCategories(listOf(animes, CgflixLibraryInfo("x", "Novelas", "tvshows")))
         assertEquals("x", map[CgflixCategory.SERIES]?.id)
         assertEquals(animes, map[CgflixCategory.ANIMES])
     }
@@ -79,9 +80,15 @@ class CgflixCategoriesTest {
             )
         }
         val animeRow = rows.first { it.category == CgflixCategory.ANIMES }
-        assertEquals(listOf("One Piece", "Naruto"), queryByParentId(animeRow.libraryId).map { it.name })
+        assertEquals(
+            listOf("One Piece", "Naruto"),
+            queryByParentId(animeRow.libraryId).map { it.name },
+        )
         val seriesRow = rows.first { it.category == CgflixCategory.SERIES }
-        assertEquals(listOf("Sintonia", "Cidade Invisível"), queryByParentId(seriesRow.libraryId).map { it.name })
+        assertEquals(
+            listOf("Sintonia", "Cidade Invisível"),
+            queryByParentId(seriesRow.libraryId).map { it.name },
+        )
     }
 
     @Test

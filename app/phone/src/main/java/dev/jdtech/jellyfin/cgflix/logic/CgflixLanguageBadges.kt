@@ -9,14 +9,19 @@ enum class CgflixStreamKind {
     OTHER,
 }
 
-data class CgflixStreamInfo(val kind: CgflixStreamKind, val language: String?, val title: String? = null)
+data class CgflixStreamInfo(
+    val kind: CgflixStreamKind,
+    val language: String?,
+    val title: String? = null,
+)
 
 data class CgflixLanguageBadges(val dubbed: Boolean, val subtitled: Boolean) {
     val isEmpty: Boolean
         get() = !dubbed && !subtitled
 }
 
-private val portugueseCodes = setOf("por", "pob", "pt", "pt-br", "pt_br", "ptbr", "pt-pt", "portuguese")
+private val portugueseCodes =
+    setOf("por", "pob", "pt", "pt-br", "pt_br", "ptbr", "pt-pt", "portuguese")
 
 fun cgflixIsPortuguese(language: String?, title: String? = null): Boolean {
     val code = language?.trim()?.lowercase().orEmpty()
@@ -32,7 +37,9 @@ fun cgflixIsPortuguese(language: String?, title: String? = null): Boolean {
 fun cgflixLanguageBadges(streams: List<CgflixStreamInfo>): CgflixLanguageBadges =
     CgflixLanguageBadges(
         dubbed =
-            streams.any { it.kind == CgflixStreamKind.AUDIO && cgflixIsPortuguese(it.language, it.title) },
+            streams.any {
+                it.kind == CgflixStreamKind.AUDIO && cgflixIsPortuguese(it.language, it.title)
+            },
         subtitled =
             streams.any {
                 it.kind == CgflixStreamKind.SUBTITLE && cgflixIsPortuguese(it.language, it.title)

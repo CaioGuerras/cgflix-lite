@@ -43,8 +43,8 @@ data class CgflixTrending(
      * Ids do "Em alta" de uma categoria, na ordem; `null` = esconder a linha.
      * 1. `porBiblioteca` (o certo); 2. sem ele, os `itens` cuja `biblioteca` é a da categoria;
      * 3. sem nenhum dos dois, Filmes ainda separa pelo tipo (filme é sempre "Movie"), mas Séries e
-     *    Animes não têm como (as duas guardam "Series"): a linha some.
-     * Com menos de [CGFLIX_TRENDING_MIN_IN_CATEGORY] títulos a linha também some.
+     *    Animes não têm como (as duas guardam "Series"): a linha some. Com menos de
+     *    [CGFLIX_TRENDING_MIN_IN_CATEGORY] títulos a linha também some.
      */
     fun idsFor(category: CgflixCategory): List<String>? {
         val picked =
@@ -108,8 +108,8 @@ data class CgflixTrending(
 }
 
 /**
- * Reordena [items] pela ordem de [ids] (o `/Items?Ids=` do Jellyfin não garante ordem). Itens
- * que o servidor não devolveu (apagados, sem permissão) somem.
+ * Reordena [items] pela ordem de [ids] (o `/Items?Ids=` do Jellyfin não garante ordem). Itens que o
+ * servidor não devolveu (apagados, sem permissão) somem.
  */
 fun <T> cgflixOrderByIds(items: List<T>, ids: List<String>, idOf: (T) -> String): List<T> {
     val byId = items.associateBy { cgflixCompactId(idOf(it)) }
@@ -120,7 +120,10 @@ fun <T> cgflixOrderByIds(items: List<T>, ids: List<String>, idOf: (T) -> String)
 fun cgflixCompactId(id: String): String = id.replace("-", "").lowercase()
 
 /** Cache simples com prazo (o "Em alta" vale 1 h). [now] é trocável nos testes. */
-class CgflixTtlCache<T>(private val ttlMs: Long, private val now: () -> Long = System::currentTimeMillis) {
+class CgflixTtlCache<T>(
+    private val ttlMs: Long,
+    private val now: () -> Long = System::currentTimeMillis,
+) {
     private var value: T? = null
     private var storedAt = 0L
 

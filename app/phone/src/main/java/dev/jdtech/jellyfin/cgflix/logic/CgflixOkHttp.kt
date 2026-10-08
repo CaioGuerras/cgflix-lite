@@ -16,8 +16,7 @@ import okhttp3.Response
 // carrega (Coil). Sem logging interceptor: cookies nunca vão para o log.
 class CgflixOkHttp(private val client: OkHttpClient) : CgflixHttp {
     override suspend fun send(request: CgflixHttpRequest): CgflixHttpResponse {
-        val body =
-            request.jsonBody?.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val body = request.jsonBody?.toRequestBody("application/json; charset=utf-8".toMediaType())
         val builder =
             Request.Builder()
                 .url(request.url)

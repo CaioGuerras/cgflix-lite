@@ -91,7 +91,10 @@ fun CgflixMyRequestsScreen(
                 title = { Text("Meus pedidos") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(painterResource(CoreR.drawable.ic_arrow_left), contentDescription = "Voltar")
+                        Icon(
+                            painterResource(CoreR.drawable.ic_arrow_left),
+                            contentDescription = "Voltar",
+                        )
                     }
                 },
             )
@@ -99,23 +102,34 @@ fun CgflixMyRequestsScreen(
     ) { innerPadding ->
         when (val s = state) {
             CgflixMyRequestsState.Loading ->
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
                     Text("Carregando…", color = palette.textMuted)
                 }
             CgflixMyRequestsState.Unavailable ->
                 Column(
-                    Modifier.fillMaxSize().padding(innerPadding).padding(MaterialTheme.spacings.default),
+                    Modifier.fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(MaterialTheme.spacings.default),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text("Pedidos indisponíveis agora.", color = palette.textMuted, textAlign = TextAlign.Center)
+                    Text(
+                        "Pedidos indisponíveis agora.",
+                        color = palette.textMuted,
+                        textAlign = TextAlign.Center,
+                    )
                     Spacer(Modifier.padding(top = MaterialTheme.spacings.medium))
                     CgflixButton(onClick = viewModel::load) { Text("Tentar de novo") }
                 }
             is CgflixMyRequestsState.Ready ->
                 if (s.items.isEmpty()) {
                     Box(
-                        Modifier.fillMaxSize().padding(innerPadding).padding(MaterialTheme.spacings.default),
+                        Modifier.fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(MaterialTheme.spacings.default),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -131,12 +145,17 @@ fun CgflixMyRequestsScreen(
                                 start = MaterialTheme.spacings.default,
                                 end = MaterialTheme.spacings.default,
                                 top = innerPadding.calculateTopPadding(),
-                                bottom = innerPadding.calculateBottomPadding() + MaterialTheme.spacings.default,
+                                bottom =
+                                    innerPadding.calculateBottomPadding() +
+                                        MaterialTheme.spacings.default,
                             ),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
                         items(s.items, key = { it.id }) { request ->
-                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
                                 CgflixSeerrPoster(request.posterUrl, request.title)
                                 Spacer(Modifier.width(MaterialTheme.spacings.medium))
                                 Column(Modifier.weight(1f)) {

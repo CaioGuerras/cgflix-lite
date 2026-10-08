@@ -68,8 +68,8 @@ fun CgflixSectionTitle(text: String, modifier: Modifier = Modifier) {
 }
 
 /**
- * Uma linha de pôsteres. [ranked] desenha o número grande vazado ao lado (Em alta);
- * [horizontal] usa a miniatura larga (Continuar assistindo, como no Findroid).
+ * Uma linha de pôsteres. [ranked] desenha o número grande vazado ao lado (Em alta); [horizontal]
+ * usa a miniatura larga (Continuar assistindo, como no Findroid).
  */
 @Composable
 fun CgflixRow(
@@ -103,7 +103,8 @@ fun CgflixRow(
                         items(state.items, key = { it.id }) { item ->
                             ItemCard(
                                 item = item,
-                                direction = if (horizontal) Direction.HORIZONTAL else Direction.VERTICAL,
+                                direction =
+                                    if (horizontal) Direction.HORIZONTAL else Direction.VERTICAL,
                                 onClick = onItemClick,
                             )
                         }
@@ -115,7 +116,11 @@ fun CgflixRow(
 
 /** Esqueleto parado (sem brilho animado): título e quatro cartões no tamanho certo. */
 @Composable
-fun CgflixSkeletonRow(contentPadding: PaddingValues, horizontal: Boolean = false, modifier: Modifier = Modifier) {
+fun CgflixSkeletonRow(
+    contentPadding: PaddingValues,
+    horizontal: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
     val color = MaterialTheme.cgflix.skeleton
     Column(modifier = modifier.semantics { contentDescription = "Carregando" }) {
         Box(
@@ -219,7 +224,10 @@ fun CgflixChipsRow(
 fun CgflixLanguageBadgesRow(badges: CgflixLanguageBadges?, modifier: Modifier = Modifier) {
     if (badges == null || badges.isEmpty) return
     val palette = MaterialTheme.cgflix
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+    ) {
         if (badges.dubbed) CgflixBadge("Dublado", palette.badgeDubbed)
         if (badges.subtitled) CgflixBadge("Legendado", palette.badgeSubtitled)
     }

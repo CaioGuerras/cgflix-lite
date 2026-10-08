@@ -72,7 +72,11 @@ fun CgflixHomeLayout(
     // A posição da rolagem fica guardada enquanto a Início está na pilha (voltar mantém a rolagem)
     val listState = rememberLazyListState()
 
-    PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh, modifier = Modifier.fillMaxSize()) {
+    PullToRefreshBox(
+        isRefreshing = false,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize(),
+    ) {
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize(),

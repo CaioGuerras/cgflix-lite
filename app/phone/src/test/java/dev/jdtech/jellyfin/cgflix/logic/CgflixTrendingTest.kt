@@ -45,7 +45,8 @@ class CgflixTrendingTest {
 
     @Test
     fun `sem biblioteca nenhuma Series e Animes somem`() {
-        val json = """{"itens":[{"id":"1","tipo":"Movie"},{"id":"2","tipo":"Movie"},{"id":"3"},{"id":"4","tipo":"Series"}]}"""
+        val json =
+            """{"itens":[{"id":"1","tipo":"Movie"},{"id":"2","tipo":"Movie"},{"id":"3"},{"id":"4","tipo":"Series"}]}"""
         val t = CgflixTrending.parse(json)!!
         assertEquals(listOf("1", "2", "3"), t.idsFor(CgflixCategory.FILMES))
         assertNull(t.idsFor(CgflixCategory.SERIES))

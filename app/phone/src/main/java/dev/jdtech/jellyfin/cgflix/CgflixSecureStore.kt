@@ -30,7 +30,9 @@ class CgflixSecureStore(context: Context) : CgflixSessionStore {
             cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(TAG_BITS, iv))
             String(cipher.doFinal(raw, IV_SIZE, raw.size - IV_SIZE), Charsets.UTF_8)
         } catch (e: Exception) {
-            Timber.w("CGFLIX: sessão dos Pedidos não abriu (${e.javaClass.simpleName}); entra de novo")
+            Timber.w(
+                "CGFLIX: sessão dos Pedidos não abriu (${e.javaClass.simpleName}); entra de novo"
+            )
             delete(key)
             null
         }
@@ -44,7 +46,9 @@ class CgflixSecureStore(context: Context) : CgflixSessionStore {
             prefs.edit().putString(key, Base64.encodeToString(encrypted, Base64.NO_WRAP)).apply()
         } catch (e: Exception) {
             // Sem onde guardar com segurança: não guarda (a sessão fica só na memória)
-            Timber.w("CGFLIX: não deu para guardar a sessão dos Pedidos (${e.javaClass.simpleName})")
+            Timber.w(
+                "CGFLIX: não deu para guardar a sessão dos Pedidos (${e.javaClass.simpleName})"
+            )
         }
     }
 

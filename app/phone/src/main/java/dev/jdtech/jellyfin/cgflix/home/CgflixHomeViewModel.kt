@@ -56,7 +56,9 @@ constructor(
     private var lastLoadedAt = 0L
 
     fun load(force: Boolean = false) {
-        if (!force && lastLoadedAt != 0L && System.currentTimeMillis() - lastLoadedAt < REFRESH_MS) {
+        if (
+            !force && lastLoadedAt != 0L && System.currentTimeMillis() - lastLoadedAt < REFRESH_MS
+        ) {
             return
         }
         lastLoadedAt = System.currentTimeMillis()
@@ -74,7 +76,10 @@ constructor(
                     chips = categories.orEmpty().toList(),
                     rows = rows,
                     // Recarga em segundo plano mantém o que já está na tela (sem esqueleto de novo)
-                    rowStates = rows.associate { it.key to (current.rowStates[it.key] ?: CgflixRowState.Loading) },
+                    rowStates =
+                        rows.associate {
+                            it.key to (current.rowStates[it.key] ?: CgflixRowState.Loading)
+                        },
                     failed = false,
                 )
             }
@@ -91,7 +96,8 @@ constructor(
                             }
                         if (result != null) anyLoaded = true
                         val rowState =
-                            if (result == null || result.items.isEmpty()) CgflixRowState.Hidden else result
+                            if (result == null || result.items.isEmpty()) CgflixRowState.Hidden
+                            else result
                         _state.update { it.copy(rowStates = it.rowStates + (row.key to rowState)) }
                     }
                 }
@@ -114,7 +120,10 @@ constructor(
             CgflixRowSpec.Kind.TRENDING -> {
                 val trending = cgflix.trending(force)
                 val items =
-                    trending?.homeIds?.takeIf { it.isNotEmpty() }?.let { cgflix.itemsByIds(it, repository) }
+                    trending
+                        ?.homeIds
+                        ?.takeIf { it.isNotEmpty() }
+                        ?.let { cgflix.itemsByIds(it, repository) }
                 if (!items.isNullOrEmpty()) {
                     CgflixRowState.Ready(items, trending?.title)
                 } else {

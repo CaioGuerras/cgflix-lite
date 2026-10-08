@@ -81,8 +81,8 @@ class CgflixRequestRejected(override val message: String) : Exception(message)
 
 /**
  * `mediaInfo.status` do Seerr → situação na busca; `null` = já é nosso (ou bloqueado): não mostrar.
- * ausente/1 = pedir; 2 = "Pedido"; 3 = "Baixando"; 4/5 = disponível (já aparece como nosso);
- * 6 = bloqueado; 7 = apagado do servidor (dá para pedir de novo).
+ * ausente/1 = pedir; 2 = "Pedido"; 3 = "Baixando"; 4/5 = disponível (já aparece como nosso); 6 =
+ * bloqueado; 7 = apagado do servidor (dá para pedir de novo).
  */
 fun cgflixRequestStateFor(mediaStatus: Int?): CgflixRequestState? =
     when (mediaStatus) {
@@ -240,9 +240,10 @@ class CgflixSeerrClient(
         }
         val res = send("POST", "/request", body.toString())
         if (res.code < 400) return
-        val message =
-            runCatching { (json.parseToJsonElement(res.body) as? JsonObject)?.str("message") }
-                .getOrNull()
+        val message = runCatching {
+            (json.parseToJsonElement(res.body) as? JsonObject)?.str("message")
+        }
+            .getOrNull()
         throw CgflixRequestRejected(
             when {
                 res.code == 403 -> "Sua conta não tem permissão para pedir. Fale com o Caio."
@@ -259,7 +260,13 @@ class CgflixSeerrClient(
         val current = currentSession()
         val data = getJson("/user/${current.userId}/requests?take=50&skip=0") as? JsonObject
         val results = data?.get("results") as? JsonArray ?: return emptyList()
-        data class Raw(val id: Int, val tmdbId: Int, val isMovie: Boolean, val status: CgflixMyRequestStatus, val createdAt: String)
+        data class Raw(
+            val id: Int,
+            val tmdbId: Int,
+            val isMovie: Boolean,
+            val status: CgflixMyRequestStatus,
+            val createdAt: String,
+        )
         val raws =
             results
                 .mapNotNull { element ->
@@ -276,7 +283,8 @@ class CgflixSeerrClient(
                     )
                 }
                 .sortedByDescending { it.createdAt }
-        // O Seerr não manda o nome no pedido: busca cada título (em paralelo; falha vira só o número)
+        // O Seerr não manda o nome no pedido: busca cada título (em paralelo; falha vira só o
+        // número)
         return coroutineScope {
             raws
                 .map { r ->
@@ -287,7 +295,8 @@ class CgflixSeerrClient(
                             tmdbId = r.tmdbId,
                             isMovie = r.isMovie,
                             status = r.status,
-                            title = info?.first?.takeIf { it.isNotBlank() } ?: "Título nº ${r.tmdbId}",
+                            title =
+                                info?.first?.takeIf { it.isNotBlank() } ?: "Título nº ${r.tmdbId}",
                             year = info?.second,
                             posterUrl = info?.third,
                         )
@@ -330,14 +339,13 @@ class CgflixSeerrClient(
     }
 
     /** Esquece o cookie vencido (401/403) e entra de novo. */
-    private suspend fun renew(stale: Session): Session =
-        signInMutex.withLock {
-            val current = session
-            if (current != null && current != stale) return@withLock current
-            session = null
-            store.delete(storeKey)
-            signIn(preferredUrl = stale.baseUrl)
-        }
+    private suspend fun renew(stale: Session): Session = signInMutex.withLock {
+        val current = session
+        if (current != null && current != stale) return@withLock current
+        session = null
+        store.delete(storeKey)
+        signIn(preferredUrl = stale.baseUrl)
+    }
 
     private suspend fun signIn(preferredUrl: String?): Session =
         try {
@@ -351,9 +359,17 @@ class CgflixSeerrClient(
         val baseUrl = discover(preferredUrl)
         try {
             val initiate =
-                http.send(CgflixHttpRequest("POST", "$baseUrl$API/auth/jellyfin/quickconnect/initiate", "{}"))
+                http.send(
+                    CgflixHttpRequest(
+                        "POST",
+                        "$baseUrl$API/auth/jellyfin/quickconnect/initiate",
+                        "{}",
+                    )
+                )
             if (initiate.code >= 400) {
-                throw CgflixRequestsUnavailable("Quick Connect indisponível no Seerr (${initiate.code})")
+                throw CgflixRequestsUnavailable(
+                    "Quick Connect indisponível no Seerr (${initiate.code})"
+                )
             }
             val started = json.parseToJsonElement(initiate.body) as? JsonObject
             val code = started?.str("code")
@@ -367,12 +383,18 @@ class CgflixSeerrClient(
             while (true) {
                 val res =
                     http.send(
-                        CgflixHttpRequest("POST", "$baseUrl$API/auth/jellyfin/quickconnect/authenticate", body)
+                        CgflixHttpRequest(
+                            "POST",
+                            "$baseUrl$API/auth/jellyfin/quickconnect/authenticate",
+                            body,
+                        )
                     )
                 val cookie = res.setCookies.firstNotNullOfOrNull { sessionCookieOf(it) }
                 if (res.code < 400 && cookie != null) {
                     val userId =
-                        runCatching { (json.parseToJsonElement(res.body) as? JsonObject)?.int("id") }
+                        runCatching {
+                            (json.parseToJsonElement(res.body) as? JsonObject)?.int("id")
+                        }
                             .getOrNull() ?: fetchUserId(baseUrl, cookie)
                     val fresh = Session(baseUrl, cookie, userId)
                     store.write(storeKey, encode(fresh))
@@ -409,7 +431,10 @@ class CgflixSeerrClient(
                 .map { candidate ->
                     async {
                         try {
-                            val res = http.send(CgflixHttpRequest("GET", "$candidate$API/settings/public"))
+                            val res =
+                                http.send(
+                                    CgflixHttpRequest("GET", "$candidate$API/settings/public")
+                                )
                             res.code == 200 && res.body.trimStart().startsWith("{")
                         } catch (_: Exception) {
                             false
@@ -424,13 +449,24 @@ class CgflixSeerrClient(
     }
 
     /** Chamada autenticada; em 401/403 renova a sessão e tenta mais uma vez. */
-    private suspend fun send(method: String, path: String, body: String? = null): CgflixHttpResponse {
+    private suspend fun send(
+        method: String,
+        path: String,
+        body: String? = null,
+    ): CgflixHttpResponse {
         var current = currentSession()
         var attempt = 0
         while (true) {
             val res =
                 try {
-                    http.send(CgflixHttpRequest(method, "${current.baseUrl}$API$path", body, current.cookie))
+                    http.send(
+                        CgflixHttpRequest(
+                            method,
+                            "${current.baseUrl}$API$path",
+                            body,
+                            current.cookie,
+                        )
+                    )
                 } catch (e: IOException) {
                     throw CgflixRequestsUnavailable("Seerr fora do ar: ${e.javaClass.simpleName}")
                 }
@@ -449,20 +485,19 @@ class CgflixSeerrClient(
         return runCatching { json.parseToJsonElement(res.body) }.getOrNull()
     }
 
-    private fun encode(s: Session): String =
-        buildJsonObject {
-                put("url", s.baseUrl)
-                put("cookie", s.cookie)
-                put("user", s.userId)
-            }
-            .toString()
+    private fun encode(s: Session): String = buildJsonObject {
+        put("url", s.baseUrl)
+        put("cookie", s.cookie)
+        put("user", s.userId)
+    }
+        .toString()
 
     private fun decode(raw: String?): Session? {
         if (raw.isNullOrEmpty()) return null
         return runCatching {
-                val obj = json.parseToJsonElement(raw) as JsonObject
-                Session(obj.str("url")!!, obj.str("cookie")!!, obj.int("user")!!)
-            }
+            val obj = json.parseToJsonElement(raw) as JsonObject
+            Session(obj.str("url")!!, obj.str("cookie")!!, obj.int("user")!!)
+        }
             .getOrNull()
     }
 
