@@ -83,8 +83,8 @@ android {
         }
     }
 
-    // CGFLIX (Etapa 1B): só português do Brasil (e o inglês de reserva). As traduções do Findroid em
-    // outros idiomas ainda dizem "Findroid" na tela; sem elas o APK também fica menor.
+    // CGFLIX (Etapa 1B): só português do Brasil (e o inglês de reserva). As traduções do
+    // Findroid em outros idiomas ainda dizem "Findroid" na tela; sem elas o APK fica menor.
     androidResources { localeFilters += listOf("en", "pt-rBR") }
 
     buildFeatures {
