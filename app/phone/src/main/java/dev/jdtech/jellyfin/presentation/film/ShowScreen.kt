@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +39,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.cgflix.title.CgflixShowExtras
+import dev.jdtech.jellyfin.cgflix.title.cgflixShowPlayLabel
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
@@ -51,7 +51,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
-import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
@@ -209,6 +208,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         onDownloadDeleteClick = {},
                         modifier = Modifier.fillMaxWidth(),
                         canPlay = state.seasons.isNotEmpty(),
+                        playLabel = cgflixShowPlayLabel(state.nextUp), // CGFLIX
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(text = show.overview, maxCollapsedLines = 3)
@@ -252,29 +252,16 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                     }
                 }
 
-                if (state.seasons.isNotEmpty()) {
-                    Column(modifier = Modifier.padding(start = paddingStart, end = paddingEnd)) {
-                        Text(
-                            text = stringResource(CoreR.string.seasons),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                        Spacer(Modifier.height(MaterialTheme.spacings.small))
-                    }
-                    LazyRow(
-                        contentPadding = PaddingValues(start = paddingStart, end = paddingEnd),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
-                        items(items = state.seasons, key = { item -> item.id }) { season ->
-                            ItemCard(
-                                item = season,
-                                direction = Direction.VERTICAL,
-                                onClick = { onAction(ShowAction.NavigateToItem(season)) },
-                            )
-                        }
-                    }
-                    Spacer(Modifier.height(MaterialTheme.spacings.medium))
-                }
+                // CGFLIX (Etapa 1B): selos, temporadas em chips e episódios (o próximo já
+                // selecionado) no lugar da fileira de capas de temporada; música tema opcional
+                CgflixShowExtras(
+                    seriesId = show.id,
+                    seasons = state.seasons,
+                    nextUp = state.nextUp,
+                    contentPadding = PaddingValues(start = paddingStart, end = paddingEnd),
+                    onEpisodeClick = { episode -> onAction(ShowAction.NavigateToItem(episode)) },
+                )
+                Spacer(Modifier.height(MaterialTheme.spacings.medium))
 
                 if (state.actors.isNotEmpty()) {
                     ActorsRow(

@@ -196,7 +196,17 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string.extra_info_summary,
                                                     backendPreference =
                                                         appPreferences.displayExtraInfo,
-                                                )
+                                                ),
+                                                // CGFLIX (Etapa 1B): música tema (desligada por
+                                                // padrão)
+                                                PreferenceSwitch(
+                                                    nameStringResource =
+                                                        R.string.cgflix_theme_music,
+                                                    descriptionStringRes =
+                                                        R.string.cgflix_theme_music_summary,
+                                                    backendPreference =
+                                                        appPreferences.cgflixThemeMusic,
+                                                ),
                                             )
                                     ),
                                 ),

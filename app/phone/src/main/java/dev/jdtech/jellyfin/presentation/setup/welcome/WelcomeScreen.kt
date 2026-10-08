@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.cgflix.ui.CgflixSlogan
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.theme.CgflixButton
@@ -57,6 +58,9 @@ private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
                 contentDescription = null,
                 modifier = Modifier.width(250.dp),
             )
+            // CGFLIX: slogan parado, em lilás
+            Spacer(modifier = Modifier.height(8.dp))
+            CgflixSlogan()
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(SetupR.string.welcome),

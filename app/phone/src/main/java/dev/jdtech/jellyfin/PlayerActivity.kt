@@ -34,11 +34,11 @@ import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.cgflix.player.CgflixTrackMenu
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
-import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.PlayerGestureHelper
 import dev.jdtech.jellyfin.utils.PreviewScrubListener
@@ -279,9 +279,9 @@ class PlayerActivity : BasePlayerActivity() {
             pipSpace.isVisible = false
         }
 
+        // CGFLIX: menu discreto preso ao botão, sem cobrir nem pausar o vídeo
         audioButton.setOnClickListener {
-            TrackSelectionDialogFragment(C.TRACK_TYPE_AUDIO, viewModel)
-                .show(supportFragmentManager, "trackselectiondialog")
+            CgflixTrackMenu.show(it, C.TRACK_TYPE_AUDIO, viewModel)
         }
 
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
@@ -302,8 +302,7 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         subtitleButton.setOnClickListener {
-            TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel)
-                .show(supportFragmentManager, "trackselectiondialog")
+            CgflixTrackMenu.show(it, C.TRACK_TYPE_TEXT, viewModel)
         }
 
         speedButton.setOnClickListener {

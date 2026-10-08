@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.cgflix.ui.CgflixOpening
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity() {
                             hasCurrentUser = state.hasCurrentUser,
                         )
                     }
+                } else {
+                    CgflixOpening() // CGFLIX: abertura com o slogan
                 }
             }
         }

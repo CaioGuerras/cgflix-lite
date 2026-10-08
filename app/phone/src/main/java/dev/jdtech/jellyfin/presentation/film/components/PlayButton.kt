@@ -1,18 +1,17 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
@@ -27,22 +26,22 @@ fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    // CGFLIX: texto pronto ("Continuar S01E03"); nulo = "Assistir" ou "Continuar"
+    label: String? = null,
 ) {
-    val runtimeMinutesLeft by
-        remember(item.playbackPositionTicks) {
-            mutableLongStateOf((item.runtimeTicks - item.playbackPositionTicks) / 600000000)
-        }
-
-    CgflixButton(onClick = onClick, modifier = modifier, enabled = enabled) {
+    // CGFLIX: botão principal grande (52 dp) com "Assistir" / "Continuar"
+    CgflixButton(onClick = onClick, modifier = modifier.heightIn(min = 52.dp), enabled = enabled) {
         Icon(painter = painterResource(CoreR.drawable.ic_play), contentDescription = null)
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
         Text(
             text =
-                if (item.playbackPositionTicks > 0) {
-                    stringResource(CoreR.string.runtime_minutes_left, runtimeMinutesLeft)
-                } else {
-                    stringResource(CoreR.string.play)
-                }
+                label
+                    ?: if (item.playbackPositionTicks > 0) {
+                        stringResource(CoreR.string.cgflix_continue)
+                    } else {
+                        stringResource(CoreR.string.cgflix_watch)
+                    },
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

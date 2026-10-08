@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.cgflix.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -26,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -36,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.jdtech.jellyfin.cgflix.home.CgflixRowState
 import dev.jdtech.jellyfin.cgflix.logic.CgflixLanguageBadges
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
@@ -50,7 +55,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 @Composable
 fun CgflixSlogan(modifier: Modifier = Modifier) {
     Text(
-        text = "Aperte o play",
+        text = stringResource(CoreR.string.cgflix_slogan),
         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
         color = MaterialTheme.cgflix.lilac,
         modifier = modifier,
@@ -245,4 +250,23 @@ fun CgflixBadge(text: String, color: Color, modifier: Modifier = Modifier) {
                 .background(color)
                 .padding(horizontal = 8.dp, vertical = 3.dp),
     )
+}
+
+/** Abertura (enquanto o app lê o servidor salvo): marca e slogan, parados. */
+@Composable
+fun CgflixOpening() {
+    Box(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.cgflix.background),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(CoreR.drawable.ic_banner),
+                contentDescription = "CGFLIX Lite",
+                modifier = Modifier.width(220.dp),
+            )
+            Spacer(Modifier.height(MaterialTheme.spacings.small))
+            CgflixSlogan()
+        }
+    }
 }

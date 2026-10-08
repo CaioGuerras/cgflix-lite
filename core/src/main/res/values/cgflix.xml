@@ -7,4 +7,8 @@
     <string name="cgflix_tab_search" translatable="false">Buscar</string>
     <string name="cgflix_tab_downloads" translatable="false">Baixados</string>
     <string name="cgflix_tab_you" translatable="false">Você</string>
+    <!-- CGFLIX (Etapa 1B): botão principal da página do título -->
+    <string name="cgflix_watch" translatable="false">Assistir</string>
+    <string name="cgflix_continue" translatable="false">Continuar</string>
+    <string name="cgflix_slogan" translatable="false">Aperte o play</string>
 </resources>
