@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
 import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 
 @Composable
@@ -33,6 +34,7 @@ fun FindroidTheme(
         CompositionLocalProvider(
             LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
             LocalSpacings provides Spacings,
+            LocalCgflixPalette provides CgflixIsis, // CGFLIX: único tema por enquanto ("Isis")
         ) {
             content()
         }

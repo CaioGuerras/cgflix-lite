@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -23,10 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// CGFLIX: botões com a cara da marca (só estilo; a disposição das telas não muda)
-private val CgflixPurple = Color(0xFF9333EA)
-private val CgflixPurpleLight = Color(0xFFA855F7)
-private val CgflixLilac = Color(0xFFC084FC)
+// CGFLIX: botões com a cara da marca (só estilo; a disposição das telas não muda).
+// Cores da paleta (MaterialTheme.cgflix), nada solto aqui.
 
 /** Botão principal: pílula roxa com gradiente sutil (#9333ea → #a855f7) e texto semibold. */
 @Composable
@@ -38,6 +37,7 @@ fun CgflixButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focused by interactionSource.collectIsFocusedAsState()
+    val palette = MaterialTheme.cgflix
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -46,16 +46,16 @@ fun CgflixButton(
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
-                contentColor = Color.White,
+                contentColor = palette.onAccent,
                 disabledContainerColor = Color.Transparent,
-                disabledContentColor = Color.White,
+                disabledContentColor = palette.onAccent,
             ),
-        border = if (focused) BorderStroke(2.dp, CgflixLilac) else null,
+        border = if (focused) BorderStroke(2.dp, palette.lilac) else null,
         modifier =
             modifier
                 .alpha(if (enabled) 1f else 0.38f)
                 .background(
-                    Brush.horizontalGradient(listOf(CgflixPurple, CgflixPurpleLight)),
+                    Brush.horizontalGradient(listOf(palette.accentStrong, palette.accent)),
                     CircleShape,
                 ),
     ) {
@@ -73,16 +73,17 @@ fun CgflixOutlinedButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focused by interactionSource.collectIsFocusedAsState()
+    val palette = MaterialTheme.cgflix
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
         interactionSource = interactionSource,
         shape = CircleShape,
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = CgflixLilac),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = palette.lilac),
         border =
             BorderStroke(
                 width = if (focused) 2.dp else 1.dp,
-                color = if (focused) CgflixLilac else CgflixPurpleLight,
+                color = if (focused) palette.lilac else palette.accent,
             ),
         modifier = modifier,
         content = content,
