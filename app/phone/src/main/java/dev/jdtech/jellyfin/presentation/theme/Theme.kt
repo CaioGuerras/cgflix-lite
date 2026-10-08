@@ -15,7 +15,7 @@ import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 
 @Composable
 fun FindroidTheme(
-    darkTheme: Boolean? = isSystemInDarkTheme(),
+    darkTheme: Boolean? = true, // CGFLIX: só o tema Isis (escuro) até o "Heitor"
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
