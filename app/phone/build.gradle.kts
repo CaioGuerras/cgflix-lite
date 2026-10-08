@@ -146,4 +146,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
+
+    // CGFLIX: Seerr e emalta.json (OkHttp já vem com o Coil) e testes de unidade das regras
+    implementation(libs.okhttp)
+    testImplementation("junit:junit:4.13.2")
 }
