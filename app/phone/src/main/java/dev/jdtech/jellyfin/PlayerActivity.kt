@@ -279,10 +279,8 @@ class PlayerActivity : BasePlayerActivity() {
             pipSpace.isVisible = false
         }
 
-        // CGFLIX: menu discreto preso ao botão, sem cobrir nem pausar o vídeo
-        audioButton.setOnClickListener {
-            CgflixTrackMenu.show(it, C.TRACK_TYPE_AUDIO, viewModel)
-        }
+        // CGFLIX: menu discreto preso ao botao, sem cobrir nem pausar o video
+        audioButton.setOnClickListener { CgflixTrackMenu.show(it, C.TRACK_TYPE_AUDIO, viewModel) }
 
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
         val lockedLayout = findViewById<FrameLayout>(R.id.locked_player_view)
@@ -301,9 +299,7 @@ class PlayerActivity : BasePlayerActivity() {
             isControlsLocked = false
         }
 
-        subtitleButton.setOnClickListener {
-            CgflixTrackMenu.show(it, C.TRACK_TYPE_TEXT, viewModel)
-        }
+        subtitleButton.setOnClickListener { CgflixTrackMenu.show(it, C.TRACK_TYPE_TEXT, viewModel) }
 
         speedButton.setOnClickListener {
             SpeedSelectionDialogFragment(viewModel)
