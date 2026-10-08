@@ -70,10 +70,12 @@ constructor(
                     Timber.w(e, "CGFLIX: bibliotecas não carregaram")
                     null
                 }
-            val rows = cgflixHomeRows(categories.orEmpty())
+            // Sem rede numa recarga, mantém as categorias que já estavam na tela
+            val known = categories ?: _state.value.chips.toMap()
+            val rows = cgflixHomeRows(known)
             _state.update { current ->
                 current.copy(
-                    chips = categories.orEmpty().toList(),
+                    chips = known.toList(),
                     rows = rows,
                     // Recarga em segundo plano mantém o que já está na tela (sem esqueleto de novo)
                     rowStates =
