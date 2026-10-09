@@ -58,6 +58,7 @@ fun SettingsScreen(
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     navigateToAbout: () -> Unit,
+    navigateToApoio: () -> Unit = {},
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -75,6 +76,7 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> navigateToAbout()
+            is SettingsEvent.NavigateToApoio -> navigateToApoio() // CGFLIX
             // CGFLIX: tema do Lite (Isis, Heitor ou automático), aplicado na hora
             is SettingsEvent.UpdateTheme ->
                 applyCgflixNightMode(context, CgflixThemeChoice.from(event.theme))

@@ -9,6 +9,9 @@ sealed interface SettingsEvent {
 
     data object NavigateToAbout : SettingsEvent
 
+    // CGFLIX: "Apoiar o CGFLIX" (só no celular)
+    data object NavigateToApoio : SettingsEvent
+
     data class NavigateToSettings(val indexes: IntArray) : SettingsEvent
 
     data class NavigateToSettingsFileEdit(val filePath: String) : SettingsEvent

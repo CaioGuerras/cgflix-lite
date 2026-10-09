@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -49,6 +50,8 @@ import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import dev.jdtech.jellyfin.BuildConfig
 import dev.jdtech.jellyfin.R
+import dev.jdtech.jellyfin.cgflix.apoio.CGFLIX_APOIO_TITULO
+import dev.jdtech.jellyfin.cgflix.apoio.apoioDoSabor
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.cgflix
@@ -57,7 +60,7 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun AboutScreen(navigateBack: () -> Unit) {
+fun AboutScreen(navigateBack: () -> Unit, navigateToApoio: () -> Unit = {}) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val density = LocalDensity.current
@@ -151,6 +154,12 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                 text = stringResource(CoreR.string.app_description),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
+                            // CGFLIX: uma linha discreta para a gorjeta opcional (sem pop-up)
+                            if (apoioDoSabor.disponivel()) {
+                                TextButton(onClick = navigateToApoio) {
+                                    Text(text = CGFLIX_APOIO_TITULO)
+                                }
+                            }
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
                             HorizontalDivider()
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
@@ -179,27 +188,30 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                         contentDescription = null,
                                     )
                                 }
-                                FilledTonalIconButton(
-                                    onClick = {
-                                        try {
-                                            uriHandler.openUri(
-                                                "https://ko-fi.com/jarnedemeulemeester"
-                                            )
-                                        } catch (e: IllegalArgumentException) {
-                                            Toast.makeText(
-                                                    context,
-                                                    e.localizedMessage,
-                                                    Toast.LENGTH_SHORT,
+                                // CGFLIX: sem link de pagamento externo no sabor `play` (regra da
+                                // Play); os créditos do Findroid seguem no GitHub acima
+                                if (BuildConfig.FLAVOR != "play")
+                                    FilledTonalIconButton(
+                                        onClick = {
+                                            try {
+                                                uriHandler.openUri(
+                                                    "https://ko-fi.com/jarnedemeulemeester"
                                                 )
-                                                .show()
+                                            } catch (e: IllegalArgumentException) {
+                                                Toast.makeText(
+                                                        context,
+                                                        e.localizedMessage,
+                                                        Toast.LENGTH_SHORT,
+                                                    )
+                                                    .show()
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(CoreR.drawable.ic_coffee),
+                                            contentDescription = null,
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(CoreR.drawable.ic_coffee),
-                                        contentDescription = null,
-                                    )
-                                }
                             }
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
                         }
