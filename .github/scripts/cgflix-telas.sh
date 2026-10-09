@@ -50,4 +50,15 @@ for tema in isis heitor; do
   done
 done
 
+# Brilho do fundo (0 = preto, 1 = branco): média de uma faixa da borda esquerda, abaixo da barra
+# de status, e média da imagem toda. Heitor deve ficar claro (> 0,8); Isis escuro (< 0,2).
+if command -v convert > /dev/null; then
+  for f in "$OUT"/isis-*.png "$OUT"/heitor-*.png; do
+    h=$(identify -format '%h' "$f")
+    borda=$(convert "$f" -crop "16x$((h / 2))+0+$((h / 4))" -colorspace Gray -format '%[fx:mean]' info:)
+    tudo=$(convert "$f" -colorspace Gray -format '%[fx:mean]' info:)
+    echo "brilho $(basename "$f" .png): borda $borda, imagem $tudo" | tee -a "$OUT/medicoes.txt"
+  done
+fi
+
 ls -l "$OUT"
