@@ -129,7 +129,30 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             },
                             nestedPreferenceGroups =
                                 listOf(
-                                    // CGFLIX: sem o grupo Aparência (o Lite usa só o tema Isis)
+                                    // CGFLIX: Aparência só com o tema do Lite (Isis, Heitor ou
+                                    // automático); sem "cores dinâmicas", que trocariam a marca
+                                    PreferenceGroup(
+                                        nameStringResource = R.string.settings_category_appearance,
+                                        preferences =
+                                            listOf(
+                                                PreferenceSelect(
+                                                    nameStringResource = R.string.theme,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference = appPreferences.cgflixTheme,
+                                                    onUpdate = { value ->
+                                                        viewModelScope.launch {
+                                                            eventsChannel.send(
+                                                                SettingsEvent.UpdateTheme(
+                                                                    value ?: "isis"
+                                                                )
+                                                            )
+                                                        }
+                                                    },
+                                                    options = R.array.cgflix_theme,
+                                                    optionValues = R.array.cgflix_theme_values,
+                                                )
+                                            ),
+                                    ),
                                     PreferenceGroup(
                                         nameStringResource = R.string.home,
                                         preferences =

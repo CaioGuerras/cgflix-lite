@@ -113,7 +113,8 @@ fun AboutScreen(navigateBack: () -> Unit) {
                         ) {
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
                             Image(
-                                painter = painterResource(CoreR.drawable.ic_banner),
+                                // CGFLIX: marca do tema (Isis ou Heitor)
+                                painter = painterResource(MaterialTheme.cgflix.banner),
                                 contentDescription = null,
                                 modifier = Modifier.width(240.dp),
                             )

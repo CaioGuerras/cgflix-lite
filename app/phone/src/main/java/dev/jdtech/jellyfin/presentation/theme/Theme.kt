@@ -1,7 +1,9 @@
 package dev.jdtech.jellyfin.presentation.theme
 
 import android.os.Build
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
@@ -9,13 +11,15 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixHeitor
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
 import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 
 @Composable
 fun FindroidTheme(
-    darkTheme: Boolean? = true, // CGFLIX: só o tema Isis (escuro) até o "Heitor"
+    darkTheme: Boolean? = isSystemInDarkTheme(), // CGFLIX: escuro = Isis, claro = Heitor
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -34,9 +38,13 @@ fun FindroidTheme(
         CompositionLocalProvider(
             LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
             LocalSpacings provides Spacings,
-            LocalCgflixPalette provides CgflixIsis, // CGFLIX: único tema por enquanto ("Isis")
+            // CGFLIX: paleta da marca do tema ativo (Isis escuro, Heitor claro)
+            LocalCgflixPalette provides if (darkTheme) CgflixIsis else CgflixHeitor,
         ) {
-            content()
+            // CGFLIX: fundo do tema por baixo de todas as telas. Sem ele, telas sem Scaffold
+            // (Login, Início, Você, fim de Detalhes) mostravam o fundo da janela, que segue o modo
+            // noturno do sistema e pode ficar escuro com o Heitor (texto escuro sobre preto)
+            Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) { content() }
         }
     }
 }

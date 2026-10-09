@@ -11,7 +11,7 @@ import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixPalette
 
 // CGFLIX: paleta da marca disponível nas telas como `MaterialTheme.cgflix` (ver CgflixPalette.kt).
-// Trocar o tema (ex.: o claro "Heitor", numa etapa futura) é trocar o valor deste Local.
+// FindroidTheme troca o valor deste Local: Isis (escuro) ou Heitor (claro).
 val LocalCgflixPalette = staticCompositionLocalOf { CgflixIsis }
 
 val MaterialTheme.cgflix: CgflixPalette

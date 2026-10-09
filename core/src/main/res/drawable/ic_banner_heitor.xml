@@ -1,0 +1,65 @@
+<!-- CGFLIX: marca do tema Heitor, gerada por cgflix-brand/heitor/gerar.py -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="1536dp"
+    android:height="512dp"
+    android:viewportWidth="1536"
+    android:viewportHeight="512">
+  <group
+      android:scaleX="0.192000"
+      android:scaleY="0.192000"
+      android:translateX="-17.280"
+      android:translateY="86.080">
+    <group
+        android:scaleX="1.9"
+        android:scaleY="1.9"
+        android:translateX="-49"
+        android:translateY="-65">
+    <path
+        android:pathData="M760.9 281.0A340 340 0 1 0 760.9 719.0"
+        android:strokeWidth="128"
+        android:strokeLineCap="round">
+      <aapt:attr name="android:strokeColor">
+        <gradient android:type="linear" android:startX="240" android:startY="160" android:endX="760" android:endY="840">
+          <item android:offset="0" android:color="#8be3a1"/>
+          <item android:offset="0.3" android:color="#34c759"/>
+          <item android:offset="0.7" android:color="#1a9443"/>
+          <item android:offset="1" android:color="#00531d"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path
+        android:pathData="M452 368L452 632L668 500Z"
+        android:strokeWidth="54"
+        android:strokeLineJoin="round">
+      <aapt:attr name="android:fillColor">
+        <gradient android:type="linear" android:startX="500" android:startY="368" android:endX="500" android:endY="632">
+          <item android:offset="0" android:color="#2b3a2a"/>
+          <item android:offset="0.55" android:color="#1c261c"/>
+          <item android:offset="1" android:color="#161d16"/>
+        </gradient>
+      </aapt:attr>
+      <aapt:attr name="android:strokeColor">
+        <gradient android:type="linear" android:startX="500" android:startY="368" android:endX="500" android:endY="632">
+          <item android:offset="0" android:color="#2b3a2a"/>
+          <item android:offset="0.55" android:color="#1c261c"/>
+          <item android:offset="1" android:color="#161d16"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    </group>
+    <group
+        android:translateX="190"
+        android:translateY="140">
+      <path android:pathData="M2400 1510Q2191 1510 2033.0 1417.5Q1875 1325 1787.0 1154.0Q1699 983 1699 747Q1699 506 1790.5 334.0Q1882 162 2039.5 71.0Q2197 -20 2393 -20Q2561 -20 2697.0 44.0Q2833 108 2920.0 220.5Q3007 333 3028 480H2718Q2686 373 2604.0 312.0Q2522 251 2398 251Q2226 251 2117.5 379.0Q2009 507 2009 744Q2009 981 2116.0 1110.0Q2223 1239 2402 1239Q2561 1239 2652.0 1155.0Q2743 1071 2747 928H2423V696H3043V882Q3043 1078 2960.0 1218.5Q2877 1359 2732.0 1434.5Q2587 1510 2400 1510Z M3367 1490V0H4347V253H3672V669H4281V918H3672V1490Z M4659 1490V0H4964V1237H5607V1490Z M6212 0V1490H5907V0Z M6488 1490 7023 728 6536 0H6890L7053 250Q7105 330 7136.0 392.5Q7167 455 7196 516Q7226 456 7258.0 393.0Q7290 330 7342 250L7508 0H7854L7371 719L7898 1490H7536L7329 1178Q7277 1099 7249.5 1049.0Q7222 999 7193 944Q7164 998 7136.0 1048.5Q7108 1099 7055 1178L6841 1490Z">
+      <aapt:attr name="android:fillColor">
+        <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="0" android:endY="1510">
+          <item android:offset="0" android:color="#2b3a2a"/>
+          <item android:offset="0.55" android:color="#1c261c"/>
+          <item android:offset="1" android:color="#161d16"/>
+        </gradient>
+      </aapt:attr>
+      </path>
+    </group>
+  </group>
+</vector>

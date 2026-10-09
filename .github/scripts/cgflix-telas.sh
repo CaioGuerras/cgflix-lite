@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# CGFLIX (Etapa 1B): roda dentro do emulador do workflow "CGFLIX Telas".
-# 1) mede a abertura a frio do 1.1.0 e da versão nova (instalada POR CIMA, mesma assinatura);
-# 2) tira capturas das telas novas pela tela de demonstração do build de debug (dados falsos).
+# CGFLIX: roda dentro do emulador do workflow "CGFLIX Telas".
+# 1) mede a abertura a frio da versão anterior e da nova (instalada POR CIMA, mesma assinatura);
+# 2) tira capturas das telas pela tela de demonstração do build de debug (dados falsos), nos dois
+#    temas: Isis (escuro, roxo) e Heitor (claro, verde).
 set -euo pipefail
 
 PKG=br.com.docaio.cgflix.lite
@@ -29,22 +30,29 @@ medir() {
 }
 
 adb install antes.apk
-medir "1.1.0 (antes)"
+medir "antes ($CGFLIX_ANTES_NOME)"
 
 # Por cima: só funciona com a mesma chave (prova que atualiza sem desinstalar)
 adb install -r depois.apk
-medir "1.2.0 (depois)"
+medir "depois (versão do PR)"
 adb shell am start -S -W -n "$MAIN" > /dev/null
 sleep 4
 adb exec-out screencap -p > "$OUT/0-abertura-sem-servidor.png"
 
 adb install -r demo.apk
-n=1
-for tela in abertura inicio filmes series animes busca voce; do
-  adb shell am start -S -W -n "$DEMO" --es tela "$tela" > /dev/null
-  sleep 4
-  adb exec-out screencap -p > "$OUT/$n-$tela.png"
-  n=$((n + 1))
+for tema in isis heitor; do
+  n=1
+  for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce; do
+    adb shell am start -S -W -n "$DEMO" --es tela "$tela" --es tema "$tema" > /dev/null
+    sleep 4
+    adb exec-out screencap -p > "$OUT/$tema-$n-$tela.png"
+    n=$((n + 1))
+  done
 done
+
+# Brilho do fundo (0 = preto, 1 = branco) na borda esquerda de cada captura: Heitor deve ficar
+# claro (> 0,8) e Isis escuro (< 0,2)
+python3 .github/scripts/cgflix-brilho.py "$OUT"/isis-*.png "$OUT"/heitor-*.png \
+  | sed 's/^/brilho /' | tee -a "$OUT/medicoes.txt" || true
 
 ls -l "$OUT"

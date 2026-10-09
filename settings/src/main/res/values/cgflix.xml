@@ -3,4 +3,18 @@
     <!-- CGFLIX (Etapa 1B): música tema da série (o app é em português) -->
     <string name="cgflix_theme_music" translatable="false">Música tema das séries</string>
     <string name="cgflix_theme_music_summary" translatable="false">Toca baixinho a música de abertura na página da série. Gasta um pouco de internet.</string>
+    <!-- CGFLIX: escolha de tema (Configurações > Interface > Aparência) -->
+    <string name="cgflix_theme_isis" translatable="false">Isis (escuro, roxo)</string>
+    <string name="cgflix_theme_heitor" translatable="false">Heitor (claro, verde)</string>
+    <string name="cgflix_theme_auto" translatable="false">Automático (segue o aparelho)</string>
+    <string-array name="cgflix_theme" translatable="false">
+        <item>@string/cgflix_theme_isis</item>
+        <item>@string/cgflix_theme_heitor</item>
+        <item>@string/cgflix_theme_auto</item>
+    </string-array>
+    <string-array name="cgflix_theme_values" translatable="false">
+        <item>isis</item>
+        <item>heitor</item>
+        <item>auto</item>
+    </string-array>
 </resources>

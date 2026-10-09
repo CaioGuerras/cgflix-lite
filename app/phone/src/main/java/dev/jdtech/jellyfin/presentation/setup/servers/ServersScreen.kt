@@ -43,6 +43,7 @@ import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.setup.components.ServerBottomSheet
 import dev.jdtech.jellyfin.presentation.setup.components.ServerItem
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersAction
 import dev.jdtech.jellyfin.setup.presentation.servers.ServersEvent
@@ -109,7 +110,8 @@ private fun ServersScreenLayout(
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
-                painter = painterResource(id = CoreR.drawable.ic_banner),
+                // CGFLIX: marca do tema (Isis ou Heitor)
+                painter = painterResource(id = MaterialTheme.cgflix.banner),
                 contentDescription = null,
                 modifier = Modifier.width(250.dp).align(Alignment.CenterHorizontally),
             )

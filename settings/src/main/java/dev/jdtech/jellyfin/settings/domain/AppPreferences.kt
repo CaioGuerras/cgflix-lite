@@ -17,6 +17,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // CGFLIX: tema escuro (preto OLED) e roxo da marca (sem cores dinâmicas) por padrão
     val theme = Preference("pref_theme", "dark")
     val dynamicColors = Preference("pref_dynamic_colors", false)
+    // CGFLIX: tema do Lite: "isis" (escuro, roxo, padrão), "heitor" (claro, verde) ou "auto"
+    val cgflixTheme = Preference("pref_cgflix_theme", "isis")
     val homeSuggestions = Preference<Boolean>("home_suggestions", true)
     val homeContinueWatching = Preference<Boolean>("home_continue_watching", true)
     val homeNextUp = Preference<Boolean>("home_next_up", true)

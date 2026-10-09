@@ -25,6 +25,7 @@ import android.widget.ImageView
 import android.widget.Space
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -88,6 +89,8 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // CGFLIX: player sempre escuro, nos dois temas (Heitor é claro só fora do vídeo)
+        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
         super.onCreate(savedInstanceState)
 
         val itemId = UUID.fromString(intent.extras!!.getString("itemId"))

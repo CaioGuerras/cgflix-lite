@@ -51,6 +51,7 @@ import dev.jdtech.jellyfin.presentation.setup.components.LoadingButton
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.theme.CgflixOutlinedButton
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.login.LoginAction
 import dev.jdtech.jellyfin.setup.presentation.login.LoginEvent
@@ -97,8 +98,9 @@ fun LoginScreen(
     )
 }
 
+// CGFLIX: internal para a tela de demonstração (capturas Isis x Heitor no CI)
 @Composable
-private fun LoginScreenLayout(
+internal fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
     prefilledUsername: String? = null,
@@ -121,7 +123,8 @@ private fun LoginScreenLayout(
                     .verticalScroll(scrollState),
         ) {
             Image(
-                painter = painterResource(id = CoreR.drawable.ic_banner),
+                // CGFLIX: marca do tema (Isis ou Heitor)
+                painter = painterResource(id = MaterialTheme.cgflix.banner),
                 contentDescription = null,
                 modifier = Modifier.width(250.dp).align(Alignment.CenterHorizontally),
             )

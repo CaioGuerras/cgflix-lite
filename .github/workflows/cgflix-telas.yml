@@ -1,7 +1,7 @@
 name: CGFLIX Telas
 
-# Etapa 1B: capturas das telas novas (dados falsos, tela de demonstração só do build de debug) e
-# medição da abertura a frio no emulador, 1.1.0 (Etapa 1A) x versão do PR. Só informa; o APK
+# Capturas das telas nos temas Isis e Heitor (dados falsos, tela de demonstração só do build de
+# debug) e medição da abertura a frio no emulador, versão anterior x versão do PR. Só informa; o APK
 # oficial continua saindo do workflow "CGFLIX Android".
 on:
   pull_request:
@@ -30,8 +30,9 @@ jobs:
       CGFLIX_KEYSTORE_PASSWORD: ${{ secrets.CGFLIX_KEYSTORE_PASSWORD }}
       CGFLIX_KEY_ALIAS: ${{ secrets.CGFLIX_KEY_ALIAS }}
       CGFLIX_KEY_PASSWORD: ${{ secrets.CGFLIX_KEY_PASSWORD }}
-      # Último commit da Etapa 1A (versão 1.1.0), para comparar
-      CGFLIX_ANTES: a3fa8c63c0ef53bfea50ce298d33cc89968367e5
+      # Versão anterior para comparar: main com a 1.2.0 (40), Etapa 1B (PR #3)
+      CGFLIX_ANTES: ed6de24161f3d9a3e55a51ae1a139e70a88774bd
+      CGFLIX_ANTES_NOME: "1.2.0"
     steps:
       - name: Baixar o código
         uses: actions/checkout@v7
@@ -54,7 +55,7 @@ jobs:
             echo "CGFLIX_KEYSTORE=$RUNNER_TEMP/cgflix.jks" >> "$GITHUB_ENV"
           fi
 
-      - name: Compilar a 1.1.0 (antes)
+      - name: Compilar a versão anterior (antes)
         run: |
           git worktree add "$RUNNER_TEMP/antes" "$CGFLIX_ANTES"
           (cd "$RUNNER_TEMP/antes" && ./gradlew :app:phone:assembleLibreRelease)

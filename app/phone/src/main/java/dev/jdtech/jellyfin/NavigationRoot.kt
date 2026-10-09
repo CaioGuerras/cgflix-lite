@@ -6,8 +6,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
@@ -65,6 +69,7 @@ import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.presentation.theme.rememberCgflixReduceMotion
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import java.util.UUID
@@ -228,6 +233,28 @@ fun NavigationRoot(
     val reduceMotion = rememberCgflixReduceMotion()
     val fadeMs = if (reduceMotion) 0 else 300
 
+    // CGFLIX: no tema claro (Heitor) o item ativo fica em primary sobre a pílula secondaryContainer
+    val colorScheme = MaterialTheme.colorScheme
+    val itemColors =
+        if (MaterialTheme.cgflix.isLight) {
+            NavigationSuiteDefaults.itemColors(
+                navigationBarItemColors =
+                    NavigationBarItemDefaults.colors(
+                        selectedIconColor = colorScheme.primary,
+                        selectedTextColor = colorScheme.primary,
+                        indicatorColor = colorScheme.secondaryContainer,
+                    ),
+                navigationRailItemColors =
+                    NavigationRailItemDefaults.colors(
+                        selectedIconColor = colorScheme.primary,
+                        selectedTextColor = colorScheme.primary,
+                        indicatorColor = colorScheme.secondaryContainer,
+                    ),
+            )
+        } else {
+            null
+        }
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             navigationItems.forEach { item ->
@@ -258,6 +285,7 @@ fun NavigationRoot(
                     },
                     enabled = item.enabled,
                     label = { Text(text = stringResource(item.title)) },
+                    colors = itemColors,
                 )
             }
         },

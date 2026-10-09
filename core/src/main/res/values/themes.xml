@@ -22,7 +22,8 @@
         <item name="colorOnSecondaryContainer">@color/on_secondary_container_light</item>
 
         <!-- Surface -->
-        <item name="android:colorBackground">@color/neutral_50</item>
+        <!-- CGFLIX: fundo do tema Heitor -->
+        <item name="android:colorBackground">@color/cgflix_window_heitor</item>
         <item name="colorSurface">@color/neutral_100</item>
         <item name="colorSurfaceContainer">?attr/colorSurface</item>
         <item name="colorSurfaceContainerLow">?attr/colorSurface</item>
