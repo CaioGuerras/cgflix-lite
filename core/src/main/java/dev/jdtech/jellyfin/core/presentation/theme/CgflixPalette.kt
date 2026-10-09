@@ -12,7 +12,8 @@ import dev.jdtech.jellyfin.core.R
  * corações do Sobre), `MaterialTheme.cgflix` (app/phone). Nada de cor solta nas telas.
  *
  * Dois temas: "Isis" (escuro OLED, roxo) e "Heitor" (claro, verde). As telas não sabem qual está
- * ativo: só leem a paleta. O esquema do Material de cada um fica em Color.kt (ColorDark/ColorLight).
+ * ativo: só leem a paleta. O esquema do Material de cada um está em Color.kt (ColorDark e
+ * ColorLight).
  *
  * Contraste conferido (teste `CgflixContrastTest`): texto ≥ 4,5:1 e bordas/ícones ≥ 3:1 nos dois.
  */

@@ -13,7 +13,8 @@
         <item name="colorOnSecondaryContainer">@color/on_secondary_container_dark</item>
 
         <!-- Surface -->
-        <item name="android:colorBackground">@color/neutral_1000</item>
+        <!-- CGFLIX: fundo do tema Isis -->
+        <item name="android:colorBackground">@color/cgflix_window_isis</item>
         <item name="colorSurface">@color/neutral_900</item>
     </style>
 

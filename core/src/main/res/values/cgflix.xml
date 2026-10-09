@@ -11,4 +11,7 @@
     <string name="cgflix_watch" translatable="false">Assistir</string>
     <string name="cgflix_continue" translatable="false">Continuar</string>
     <string name="cgflix_slogan" translatable="false">Aperte o play</string>
+    <!-- CGFLIX: fundo da janela (antes do Compose desenhar), sem piscar a cor do Findroid -->
+    <color name="cgflix_window_isis">#07060a</color>
+    <color name="cgflix_window_heitor">#f4fcee</color>
 </resources>

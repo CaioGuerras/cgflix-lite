@@ -1,11 +1,15 @@
 package dev.jdtech.jellyfin
 
+import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -27,7 +31,17 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
-            FindroidTheme(dynamicColor = state.isDynamicColors) {
+            // CGFLIX: tema escolhido (Isis, Heitor ou automático), sem cores dinâmicas (trocariam
+            // a marca); ícones das barras do sistema escuros no tema claro
+            val darkTheme = state.cgflixTheme.isDark(isSystemInDarkTheme())
+            LaunchedEffect(darkTheme) {
+                val style =
+                    if (darkTheme) SystemBarStyle.dark(Color.TRANSPARENT)
+                    else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
+            }
+
+            FindroidTheme(darkTheme = darkTheme, dynamicColor = false) {
                 val navController = rememberNavController()
                 if (!state.isLoading) {
                     CompositionLocalProvider(LocalOfflineMode provides state.isOfflineMode) {

@@ -1,10 +1,7 @@
 package dev.jdtech.jellyfin.presentation.settings
 
 import android.app.Activity
-import android.app.UiModeManager
-import android.os.Build
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +31,9 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.cgflix.applyCgflixNightMode
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixThemeChoice
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -76,34 +75,9 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> navigateToAbout()
-            is SettingsEvent.UpdateTheme -> {
-                val uiModeManager = context.getSystemService(UiModeManager::class.java)
-                val nightMode =
-                    when (event.theme) {
-                        "system" ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                                UiModeManager.MODE_NIGHT_AUTO
-                            else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                        "light" ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                                UiModeManager.MODE_NIGHT_NO
-                            else AppCompatDelegate.MODE_NIGHT_NO
-                        "dark" ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                                UiModeManager.MODE_NIGHT_YES
-                            else AppCompatDelegate.MODE_NIGHT_YES
-                        else ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                                UiModeManager.MODE_NIGHT_AUTO
-                            else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    uiModeManager.setApplicationNightMode(nightMode)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(nightMode)
-                }
-            }
+            // CGFLIX: tema do Lite (Isis, Heitor ou automático), aplicado na hora
+            is SettingsEvent.UpdateTheme ->
+                applyCgflixNightMode(context, CgflixThemeChoice.from(event.theme))
             is SettingsEvent.LaunchIntent -> {
                 try {
                     context.startActivity(event.intent)
