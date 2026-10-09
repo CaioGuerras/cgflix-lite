@@ -11,6 +11,10 @@ DEMO="$PKG.debug/dev.jdtech.jellyfin.cgflix.demo.CgflixDemoActivity"
 OUT=telas
 mkdir -p "$OUT"
 
+# O emulador do CI às vezes mostra "Pixel Launcher isn't responding" por cima das capturas (09/10):
+# esconde os diálogos de erro e de ANR do sistema (só no emulador).
+adb shell settings put global hide_error_dialogs 1
+
 # Abertura a frio (am start -W, TotalTime em ms) até a primeira tela, sem servidor configurado.
 # A 1ª abertura (logo após instalar) fica de fora; mediana das 5 seguintes.
 medir() {
@@ -56,6 +60,7 @@ done
 
 # Gorjeta no sabor `play` (mesmo pacote e mesma chave de debug: instala por cima do `libre`)
 adb install -r demo-play.apk
+adb shell cmd locale set-app-locales "$PKG.debug" --locales pt-BR
 for tema in isis heitor; do
   adb shell am start -S -W -n "$DEMO" --es tela apoio --es tema "$tema" > /dev/null
   sleep 4
