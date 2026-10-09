@@ -39,3 +39,6 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# Pacotes Python baixados para gerar paleta/marca (não versionar)
+*.whl
