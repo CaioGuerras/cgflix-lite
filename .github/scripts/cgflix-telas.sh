@@ -35,11 +35,15 @@ medir "antes ($CGFLIX_ANTES_NOME)"
 # Por cima: só funciona com a mesma chave (prova que atualiza sem desinstalar)
 adb install -r depois.apk
 medir "depois (versão do PR)"
+# O emulador vem em inglês; as capturas saem em pt-BR (idioma por app, Android 13+), como no celular do público.
+# Depois das medições, para não mudar a abertura a frio comparada com a versão anterior.
+adb shell cmd locale set-app-locales "$PKG" --locales pt-BR
 adb shell am start -S -W -n "$MAIN" > /dev/null
 sleep 4
 adb exec-out screencap -p > "$OUT/0-abertura-sem-servidor.png"
 
 adb install -r demo.apk
+adb shell cmd locale set-app-locales "$PKG.debug" --locales pt-BR
 for tema in isis heitor; do
   n=1
   for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce apoio; do
