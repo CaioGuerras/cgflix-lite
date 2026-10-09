@@ -38,7 +38,7 @@ Redesenho **leve** (aparelho fraco, internet ruim), na direção do app completo
 | Área | Mudança | Arquivos |
 |---|---|---|
 | Cores | Todas as cores da marca numa paleta só (`CgflixPalette`, tema escuro "Isis": fundo `#07060a`, destaque `#a855f7`, texto ≥ 4,5:1). O esquema escuro do Material sai dela; as telas usam `MaterialTheme.cgflix` para selos, número do Em alta, esqueleto e corações. Tema claro "Heitor" = outra paleta, sem mexer nas telas | `core/.../theme/CgflixPalette.kt`, `core/.../theme/Color.kt`, `presentation/theme/CgflixTheme.kt`, `Theme.kt`, `CgflixButtons.kt`, `AboutScreen.kt` |
-| Tema fixo | Sempre o tema Isis (escuro), inclusive no Android 12+, que seguia o sistema e ficava claro; o grupo Aparência saiu das Configurações (commit do servidor CGSERVER em 08/10) | `BaseApplication.kt`, `presentation/theme/Theme.kt`, `SettingsViewModel.kt` |
+| Tema fixo | Sempre o tema Isis (escuro), inclusive no Android 12+, que seguia o sistema e ficava claro; o grupo Aparência saiu das Configurações (commit do servidor CGSERVER em 08/10). **Na 1.3.0** volta como escolha Isis/Heitor/Automático (ver abaixo) | `BaseApplication.kt`, `presentation/theme/Theme.kt`, `SettingsViewModel.kt` |
 | Ícones | Material Symbols Rounded só como vetores dos ícones usados (contorno no inativo, preenchido no ativo). Licença Apache 2.0 (Google) | `core/src/main/res/drawable/ic_cgflix_*.xml` |
 | A. Navegação | Barra inferior Início · Buscar · Baixados · Você (Material 3: 80 dp, pílula 64×32, rótulos sempre visíveis). "Você": Meus pedidos, Bibliotecas, Favoritos, Trocar usuário, Configurações, Sobre | `NavigationRoot.kt`, `cgflix/you/CgflixYouScreen.kt`, `core/.../values/cgflix.xml` |
 | A/B. Categorias | Chips Filmes · Séries · Animes no topo da Início. Categoria = **biblioteca** (Id achado pelo nome "Séries"/"Animes"), nunca o tipo do item; toda linha filtra por `ParentId`. Sem biblioteca "Animes", o chip some | `cgflix/logic/CgflixCategories.kt`, `cgflix/home/CgflixCategory*.kt` |
@@ -58,6 +58,24 @@ Ajustes de Início do Findroid em Configurações: "Sugestões" e "Próximos" n�
 linhas); "Continuar assistindo" e "Recentes" continuam valendo.
 
 Não mexemos no módulo `app/tv` (o Findroid não tem interface de Android TV de verdade).
+
+## O que mudou (tema Heitor, versão 1.3.0 (50))
+
+Segundo tema, **Heitor** (claro, verde; semente `#34C759`, Material 3 `SchemeContent`), ao lado do **Isis** (escuro, roxo,
+que não muda e continua o padrão). As telas não mudaram de código: leem as cores do tema ativo (`MaterialTheme.colorScheme`
+e `MaterialTheme.cgflix`). Ganchos nos arquivos do Findroid marcados com `CGFLIX`.
+
+| Item | Mudança | Arquivos |
+|---|---|---|
+| A. Esquema | `lightColorScheme` do Heitor com a paleta oficial (fundo `#f4fcee`, cartões `#ffffff`, barras/campos `#e8f0e3`/`#e2ebde`, texto `#161d16`/`#3d4a3c`, `primary` `#006e28`, item ativo `#b0efb0`, bordas `#6d7b6b`/`#bccbb8`). `CgflixPalette` ganhou a variante Heitor e a paleta da marca segue o tema ativo; botões próprios seguem o esquema. Fundo da janela (antes do Compose) por tema, sem piscar | `core/.../theme/CgflixPalette.kt`, `core/.../theme/Color.kt`, `presentation/theme/CgflixTheme.kt`, `Theme.kt`, `CgflixButtons.kt`, `core/src/main/res/values{,-night}/themes.xml`, `core/.../values/cgflix.xml` |
+| B. Camadas | Véu claro e degradê que clareia mais cedo sobre a foto de fundo (título escuro legível); sombra suave nos pôsteres do Heitor (Isis sem sombra); ícones das barras do sistema escuros no Heitor; item ativo em `primary`. **Player sempre escuro** nos dois temas | `ItemHeader.kt`, `ItemCard.kt`, `MovieScreen.kt`, `MainActivity.kt`, `NavigationRoot.kt`, `cgflix/home/CgflixHomeScreen.kt`, `cgflix/ui/CgflixComponents.kt`, `PlayerActivity.kt` |
+| C. Escolha | Configurações → Aparência: "Tema: Isis (escuro, roxo) / Heitor (claro, verde) / Automático (segue o aparelho)", padrão Isis, guardado no aparelho (`pref_cgflix_theme`), vale na hora. Substitui a opção claro/escuro do Findroid (não há duas); cores dinâmicas desligadas (trocariam a marca) | `core/.../theme/CgflixThemeChoice.kt`, `cgflix/CgflixThemeMode.kt`, `BaseApplication.kt`, `MainViewModel.kt`, `AppPreferences.kt`, `SettingsViewModel.kt`, `settings/.../values/cgflix.xml`, `SettingsScreen.kt` |
+| D. Logo Heitor | `cgflix-brand/heitor/*.svg` gerados de `cgflix-brand/*.svg` só com a troca de cores da ordem (`gerar.py`), e o vetor `ic_banner_heitor.xml` usado no login, no Sobre, na abertura e na escolha de servidor/usuário quando o tema é Heitor (vetor, não PNG) | `cgflix-brand/heitor/*`, `core/src/main/res/drawable/ic_banner_heitor.xml`, `LoginScreen.kt`, `AboutScreen.kt`, `WelcomeScreen.kt`, `AddServerScreen.kt`, `ServersScreen.kt`, `UsersScreen.kt` |
+| E. Ícone | Glifo "C com play" a ~70% da zona segura (46 de 66 dp) e centrado, fundo `#07060a`; camada **monocromática** própria (ícones temáticos do Android 13+). Ícone único (Isis), não troca por tema | `core/src/main/res/drawable/ic_launcher_foreground.xml`, `ic_launcher_monochrome.xml`, `core/src/main/res/mipmap-anydpi/ic_launcher.xml` |
+| F. Testes | Contraste WCAG dos pares principais do Isis e do Heitor (texto ≥ 4,5:1, bordas/ícones ≥ 3:1) e regra da escolha de tema (testes de unidade). Capturas de Abertura, Login, Início, Detalhes e Configurações nos dois temas no workflow "CGFLIX Telas" (1.2.0 × 1.3.0) | `app/phone/src/test/.../cgflix/theme/*Test.kt`, `app/phone/src/debug/.../CgflixDemoActivity.kt`, `.github/scripts/cgflix-telas.sh`, `.github/workflows/cgflix-telas.yml` |
+| Versão | 1.3.0 (50) | `buildSrc/src/main/kotlin/Versions.kt` |
+
+Para regerar a marca Heitor depois de mudar a marca Isis: `python3 cgflix-brand/heitor/gerar.py` (da raiz).
 
 ## Assinatura do APK
 
@@ -88,6 +106,5 @@ próprias ficam em poucos arquivos e as demais telas seguem como no original.
 - Preferência de áudio e legenda `por` por padrão.
 - PRs úteis do upstream: #1228 (temporada inteira), #1285 (offline automático), #1293 (download no app),
   #1253 (autoplay do servidor).
-- Tema claro "Heitor" (verde): nova `CgflixPalette`.
 - Interface de TV com a mesma Início por categorias.
 - mpv por conteúdo: o Findroid só deixa escolher o player globalmente (Configurações > Player); trocar sozinho para anime/ASS exige código novo.
