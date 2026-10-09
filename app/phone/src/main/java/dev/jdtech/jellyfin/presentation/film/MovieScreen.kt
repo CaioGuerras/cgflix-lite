@@ -127,8 +127,9 @@ fun MovieScreen(
     )
 }
 
+// CGFLIX: internal para a tela de demonstração (capturas Isis x Heitor no CI)
 @Composable
-private fun MovieScreenLayout(
+internal fun MovieScreenLayout(
     state: MovieState,
     downloaderState: DownloaderState,
     onAction: (MovieAction) -> Unit,

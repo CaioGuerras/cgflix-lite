@@ -109,8 +109,9 @@ fun SettingsScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+// CGFLIX: internal para a tela de demonstração (capturas Isis x Heitor no CI)
 @Composable
-private fun SettingsScreenLayout(
+internal fun SettingsScreenLayout(
     @StringRes title: Int,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,

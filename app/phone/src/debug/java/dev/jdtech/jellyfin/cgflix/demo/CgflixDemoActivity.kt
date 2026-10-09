@@ -1,10 +1,14 @@
 package dev.jdtech.jellyfin.cgflix.demo
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -26,18 +30,31 @@ import dev.jdtech.jellyfin.cgflix.search.CgflixSearchState
 import dev.jdtech.jellyfin.cgflix.ui.CgflixOpening
 import dev.jdtech.jellyfin.cgflix.you.CgflixYouLayout
 import dev.jdtech.jellyfin.cgflix.you.CgflixYouState
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixThemeChoice
+import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.presentation.film.MovieScreenLayout
+import dev.jdtech.jellyfin.presentation.settings.SettingsScreenLayout
+import dev.jdtech.jellyfin.presentation.setup.login.LoginScreenLayout
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
+import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
+import dev.jdtech.jellyfin.setup.presentation.login.LoginState
 import java.util.UUID
 import kotlinx.coroutines.flow.flowOf
 
 /**
- * CGFLIX (só no build de debug): mostra as telas novas com dados falsos, sem servidor, para o CI
- * tirar capturas no emulador. `adb shell am start -n <pacote>/dev.jdtech.jellyfin.cgflix.demo.
- * CgflixDemoActivity --es tela inicio|filmes|series|animes|busca|voce|abertura`.
+ * CGFLIX (só no build de debug): mostra as telas com dados falsos, sem servidor, para o CI tirar
+ * capturas no emulador. `adb shell am start -n <pacote>/dev.jdtech.jellyfin.cgflix.demo.
+ * CgflixDemoActivity --es tela inicio|filmes|series|animes|busca|voce|abertura|detalhes|
+ * configuracoes|login --es tema isis|heitor`.
  */
 class CgflixDemoActivity : ComponentActivity() {
     private val movies =
@@ -75,12 +92,41 @@ class CgflixDemoActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         val screen = intent.getStringExtra("tela") ?: "inicio"
+        val dark = CgflixThemeChoice.from(intent.getStringExtra("tema")).isDark(systemIsDark = true)
+        val barStyle =
+            if (dark) SystemBarStyle.dark(Color.TRANSPARENT)
+            else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        enableEdgeToEdge(statusBarStyle = barStyle, navigationBarStyle = barStyle)
         setContent {
-            FindroidTheme(darkTheme = true, dynamicColor = false) {
+            FindroidTheme(darkTheme = dark, dynamicColor = false) {
                 when (screen) {
                     "abertura" -> CgflixOpening()
+                    "detalhes" ->
+                        MovieScreenLayout(
+                            state =
+                                MovieState(
+                                    movie = movies[0],
+                                    videoMetadata = dummyVideoMetadata,
+                                ),
+                            downloaderState = DownloaderState(),
+                            onAction = {},
+                            onDownloaderAction = {},
+                        )
+                    "configuracoes" -> {
+                        val settings = remember { demoSettings(dark) }
+                        val settingsState by settings.state.collectAsState()
+                        SettingsScreenLayout(
+                            title = SettingsR.string.settings_category_interface,
+                            state = settingsState,
+                            onAction = {},
+                        )
+                    }
+                    "login" ->
+                        LoginScreenLayout(
+                            state = LoginState(serverName = "CGFLIX"),
+                            onAction = {},
+                        )
                     "busca" -> {
                         val snackbar = remember { SnackbarHostState() }
                         CgflixSearchLayout(
@@ -129,6 +175,18 @@ class CgflixDemoActivity : ComponentActivity() {
                         )
                 }
             }
+        }
+    }
+
+    /** Configurações > Interface de verdade (com o grupo Aparência), em preferências só da demo. */
+    private fun demoSettings(dark: Boolean): SettingsViewModel {
+        val prefs = AppPreferences(getSharedPreferences("cgflix_demo", MODE_PRIVATE))
+        prefs.setValue(prefs.cgflixTheme, if (dark) "isis" else "heitor")
+        return SettingsViewModel(prefs).also {
+            it.loadPreferences(
+                intArrayOf(SettingsR.string.settings_category_interface),
+                DeviceType.PHONE,
+            )
         }
     }
 

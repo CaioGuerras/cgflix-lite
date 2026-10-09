@@ -98,8 +98,9 @@ fun LoginScreen(
     )
 }
 
+// CGFLIX: internal para a tela de demonstração (capturas Isis x Heitor no CI)
 @Composable
-private fun LoginScreenLayout(
+internal fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
     prefilledUsername: String? = null,
