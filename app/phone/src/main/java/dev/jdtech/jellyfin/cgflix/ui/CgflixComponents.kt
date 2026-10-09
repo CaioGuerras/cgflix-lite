@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
@@ -156,10 +157,13 @@ fun CgflixSkeletonRow(
 @Composable
 fun CgflixRankedCard(rank: Int, item: FindroidItem, onClick: (FindroidItem) -> Unit) {
     val palette = MaterialTheme.cgflix
+    val elevation = palette.cardElevation
     Row(
         verticalAlignment = Alignment.Bottom,
         modifier =
-            Modifier.clip(MaterialTheme.shapes.small)
+            Modifier.then(
+                    if (elevation > 0.dp) Modifier else Modifier.clip(MaterialTheme.shapes.small)
+                )
                 .clickable { onClick(item) }
                 .semantics(mergeDescendants = true) { contentDescription = "$rank. ${item.name}" },
     ) {
@@ -180,7 +184,8 @@ fun CgflixRankedCard(rank: Int, item: FindroidItem, onClick: (FindroidItem) -> U
             ItemPoster(
                 item = item,
                 direction = Direction.VERTICAL,
-                modifier = Modifier.clip(MaterialTheme.shapes.small),
+                // sombra suave só no tema claro (Heitor); recorte arredondado nos dois
+                modifier = Modifier.shadow(elevation, MaterialTheme.shapes.small, clip = true),
             )
             Spacer(Modifier.height(MaterialTheme.spacings.extraSmall))
             Text(
@@ -261,7 +266,7 @@ fun CgflixOpening() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(CoreR.drawable.ic_banner),
+                painter = painterResource(MaterialTheme.cgflix.banner),
                 contentDescription = "CGFLIX Lite",
                 modifier = Modifier.width(220.dp),
             )

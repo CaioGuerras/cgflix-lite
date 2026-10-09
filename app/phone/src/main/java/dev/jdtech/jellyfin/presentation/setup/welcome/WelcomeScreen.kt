@@ -22,11 +22,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.cgflix.ui.CgflixSlogan
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
 import dev.jdtech.jellyfin.presentation.theme.CgflixButton
 import dev.jdtech.jellyfin.presentation.theme.CgflixOutlinedButton
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
 
@@ -54,7 +54,8 @@ private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
             modifier = Modifier.align(Alignment.Center).verticalScroll(rememberScrollState()),
         ) {
             Image(
-                painter = painterResource(id = CoreR.drawable.ic_banner),
+                // CGFLIX: marca do tema (Isis ou Heitor)
+                painter = painterResource(id = MaterialTheme.cgflix.banner),
                 contentDescription = null,
                 modifier = Modifier.width(250.dp),
             )

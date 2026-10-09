@@ -25,6 +25,7 @@ import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
 
@@ -128,14 +129,25 @@ private fun ItemHeaderBase(
 
     Box(modifier = Modifier.height(288.dp).clipToBounds()) {
         backdropImage()
+        // CGFLIX: véu do tema sobre a foto; no Heitor (claro) o degradê clareia mais cedo para o
+        // título escuro ler bem por cima da foto
+        val palette = MaterialTheme.cgflix
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRect(Color.Black.copy(alpha = 0.1f))
+            drawRect(palette.photoVeil)
             drawRect(
                 brush =
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, backgroundColor),
-                        startY = 0f,
-                    )
+                    if (palette.isLight) {
+                        Brush.verticalGradient(
+                            0f to Color.Transparent,
+                            0.45f to backgroundColor.copy(alpha = 0.75f),
+                            1f to backgroundColor,
+                        )
+                    } else {
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, backgroundColor),
+                            startY = 0f,
+                        )
+                    }
             )
         }
         content()

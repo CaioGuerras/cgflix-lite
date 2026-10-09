@@ -31,7 +31,6 @@ import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRowSpec
 import dev.jdtech.jellyfin.cgflix.ui.CgflixChipsRow
 import dev.jdtech.jellyfin.cgflix.ui.CgflixRow
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.presentation.theme.CgflixButton
 import dev.jdtech.jellyfin.presentation.theme.cgflix
@@ -94,7 +93,7 @@ fun CgflixHomeLayout(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
-                            painter = painterResource(CoreR.drawable.ic_banner),
+                            painter = painterResource(MaterialTheme.cgflix.banner),
                             contentDescription = "CGFLIX Lite",
                             modifier = Modifier.height(28.dp),
                         )

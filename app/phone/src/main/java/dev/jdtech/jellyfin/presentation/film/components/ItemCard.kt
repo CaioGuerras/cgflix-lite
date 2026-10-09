@@ -27,6 +27,7 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
@@ -41,14 +42,17 @@ fun ItemCard(
             Direction.HORIZONTAL -> 260
             Direction.VERTICAL -> 150
         }
+    // CGFLIX: sombra suave no pôster do tema claro (Heitor); sem recorte no cartão para ela
+    // aparecer
+    val elevation = MaterialTheme.cgflix.cardElevation
     Column(
         modifier =
             modifier
                 .width(width.dp)
-                .clip(MaterialTheme.shapes.small)
+                .then(if (elevation > 0.dp) Modifier else Modifier.clip(MaterialTheme.shapes.small))
                 .clickable(onClick = { onClick(item) })
     ) {
-        Surface(shape = MaterialTheme.shapes.small) {
+        Surface(shape = MaterialTheme.shapes.small, shadowElevation = elevation) {
             Box {
                 ItemPoster(item = item, direction = direction)
                 Row(
