@@ -10,12 +10,13 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixHeitor
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
 import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 
 @Composable
 fun FindroidTheme(
-    darkTheme: Boolean? = true, // CGFLIX: só o tema Isis (escuro) até o "Heitor"
+    darkTheme: Boolean? = isSystemInDarkTheme(), // CGFLIX: escuro = Isis, claro = Heitor
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -34,7 +35,8 @@ fun FindroidTheme(
         CompositionLocalProvider(
             LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
             LocalSpacings provides Spacings,
-            LocalCgflixPalette provides CgflixIsis, // CGFLIX: único tema por enquanto ("Isis")
+            // CGFLIX: paleta da marca do tema ativo (Isis escuro, Heitor claro)
+            LocalCgflixPalette provides if (darkTheme) CgflixIsis else CgflixHeitor,
         ) {
             content()
         }

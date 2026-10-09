@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 // CGFLIX: botões com a cara da marca (só estilo; a disposição das telas não muda).
 // Cores da paleta (MaterialTheme.cgflix), nada solto aqui.
 
-/** Botão principal: pílula roxa com gradiente sutil (#9333ea → #a855f7) e texto semibold. */
+/** Botão principal: pílula com gradiente sutil do destaque do tema (Isis roxo, Heitor verde). */
 @Composable
 fun CgflixButton(
     onClick: () -> Unit,
@@ -63,7 +63,7 @@ fun CgflixButton(
     }
 }
 
-/** Botão secundário: contorno roxo, texto lilás. */
+/** Botão secundário: contorno no destaque do tema, texto em [CgflixPalette.lilac]. */
 @Composable
 fun CgflixOutlinedButton(
     onClick: () -> Unit,
