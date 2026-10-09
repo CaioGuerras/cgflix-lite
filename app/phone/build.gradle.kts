@@ -66,6 +66,12 @@ android {
             dimension = "variant"
             isDefault = true
         }
+        // CGFLIX: sabor da Play Store (.aab). Gorjeta só pelo Google Play Billing; o `libre` (.apk
+        // da VPS/GitHub) tem a gorjeta por Pix. Os módulos só têm `libre`: o `play` usa o deles.
+        register("play") {
+            dimension = "variant"
+            matchingFallbacks += "libre"
+        }
     }
 
     splits {
@@ -154,4 +160,9 @@ dependencies {
     // CGFLIX: Seerr e emalta.json (OkHttp já vem com o Coil) e testes de unidade das regras
     implementation(libs.okhttp)
     testImplementation("junit:junit:4.13.2")
+
+    // CGFLIX: "Apoiar o CGFLIX". Billing só no `play`; QR do Pix (ZXing core, só o codificador
+    // sobra depois do R8) só no `libre`; o teste do `libre` lê o QR gerado com o próprio ZXing.
+    "playImplementation"("com.android.billingclient:billing-ktx:9.1.0")
+    "libreImplementation"("com.google.zxing:core:3.5.4")
 }

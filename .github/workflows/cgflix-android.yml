@@ -58,7 +58,7 @@ jobs:
 
       # Etapa 1B: regras do CGFLIX (categorias, Em alta, pedidos, selos) com dados falsos
       - name: Testes de unidade do CGFLIX
-        run: ./gradlew :app:phone:testLibreDebugUnitTest
+        run: ./gradlew :app:phone:testLibreDebugUnitTest :app:phone:testPlayDebugUnitTest
 
       - name: Conferir assinatura e tamanho do APK
         run: |
@@ -80,15 +80,18 @@ jobs:
           path: app/phone/build/outputs/apk/libre/release/*.apk
           if-no-files-found: error
 
-      # Play Store (07/10): mesmo build e mesma assinatura do APK, no formato que a Play aceita
+      # Play Store (07/10): mesma assinatura do APK, no formato que a Play aceita. Desde a 1.4.0 é o
+      # sabor `play` (gorjeta pelo Google Play Billing; o APK `libre` tem a gorjeta por Pix)
       - name: Compilar o AAB (Play Store)
-        run: ./gradlew :app:phone:bundleLibreRelease
+        run: |
+          ./gradlew :app:phone:bundlePlayRelease
+          ls -l app/phone/build/outputs/bundle/playRelease/*.aab | awk '{print "Tamanho:", $5, "bytes -", $9}'
 
       - name: Enviar o AAB (artifact)
         uses: actions/upload-artifact@v7
         with:
           name: cgflix-lite-aab
-          path: app/phone/build/outputs/bundle/libreRelease/*.aab
+          path: app/phone/build/outputs/bundle/playRelease/*.aab
           if-no-files-found: error
 
       - name: Renomear APKs para a Release
