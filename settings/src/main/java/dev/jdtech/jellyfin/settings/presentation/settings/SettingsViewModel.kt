@@ -796,6 +796,22 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                         )
                     )
             ),
+            // CGFLIX: gorjeta opcional, último item (só no celular; a TV fica sem)
+            PreferenceGroup(
+                preferences =
+                    listOf(
+                        PreferenceCategory(
+                            nameStringResource = R.string.cgflix_apoio,
+                            iconDrawableId = R.drawable.ic_cgflix_heart_outline,
+                            supportedDeviceTypes = listOf(DeviceType.PHONE),
+                            onClick = {
+                                viewModelScope.launch {
+                                    eventsChannel.send(SettingsEvent.NavigateToApoio)
+                                }
+                            },
+                        )
+                    )
+            ),
         )
 
     fun loadPreferences(indexes: IntArray = intArrayOf(), deviceType: DeviceType) {

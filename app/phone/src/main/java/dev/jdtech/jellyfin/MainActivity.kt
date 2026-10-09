@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.cgflix.apoio.apoioDoSabor
 import dev.jdtech.jellyfin.cgflix.ui.CgflixOpening
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        // CGFLIX: no sabor `play`, consome gorjetas que se concluíram depois (pendentes)
+        if (savedInstanceState == null) apoioDoSabor.aoAbrirApp(this)
 
         setContent {
             val state by viewModel.state.collectAsStateWithLifecycle()

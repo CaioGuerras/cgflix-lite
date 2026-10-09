@@ -77,6 +77,55 @@ e `MaterialTheme.cgflix`). Ganchos nos arquivos do Findroid marcados com `CGFLIX
 
 Para regerar a marca Heitor depois de mudar a marca Isis: `python3 cgflix-brand/heitor/gerar.py` (da raiz).
 
+## O que mudou (gorjeta "Apoiar o CGFLIX", versão 1.4.0 (60))
+
+Gorjeta **opcional** pelo app: não destrava nada, sem anúncio, sem pop-up, sem lembrete. Nada fala de servidor ou acervo.
+
+### Dois sabores: o que vai para onde
+
+| Sabor | Arquivo | Para onde vai | Gorjeta | Comando |
+|---|---|---|---|---|
+| `libre` | `.apk` (artifact `cgflix-lite-apk`, Release das tags `v*`) | VPS / GitHub (instalação direta) | **Pix** (QR + copia e cola + chave). Sem a biblioteca de Billing e sem a permissão `com.android.vending.BILLING` | `./gradlew :app:phone:assembleLibreRelease` |
+| `play` | `.aab` (artifact `cgflix-lite-aab`) | Google Play | **Google Play Billing** (3 consumíveis). Nenhum código, texto ou recurso de Pix; sem o botão Ko-fi do Findroid no Sobre | `./gradlew :app:phone:bundlePlayRelease` |
+
+A Play exige o Play Billing para pagamento de coisa digital dentro do app (política de Pagamentos); Pix ou link externo
+no app da Play é proibido. Por isso a separação. Os módulos (`core`, `tv`) só têm `libre`; o `play` do celular usa o
+`libre` deles (`matchingFallbacks`). A TV fica sem gorjeta.
+
+| Item | Mudança | Arquivos |
+|---|---|---|
+| A. Tela | "Apoiar o CGFLIX" (Configurações → Sobre, e o último item das Configurações): "O CGFLIX Lite é grátis e continua grátis. Se ele te ajuda, você pode apoiar o desenvolvimento." Segue o tema Isis/Heitor | `cgflix/apoio/Apoio.kt` (interface comum `Apoio`: `disponivel()`, `aoAbrirApp()`, `Abrir()`), `cgflix/apoio/CgflixApoioScreen.kt`, `NavigationRoot.kt`, `AboutScreen.kt`, `SettingsScreen.kt`, `settings/.../SettingsViewModel.kt`, `SettingsEvent.kt` |
+| B. `play` | Produtos `gorjeta_pequena`, `gorjeta_media`, `gorjeta_grande`; preço e título vêm do `ProductDetails`. Conecta, consulta, `launchBillingFlow`, **consome** (`consumeAsync`, que já confirma) toda compra `PURCHASED`, inclusive pendentes que se concluem depois (conferidas 5 s após abrir o app). Trata pendente, cancelado, sem rede, "Apoio indisponível no momento" e "em breve" (produtos ainda não criados). Sem servidor de verificação | `src/play/.../cgflix/apoio/` (`GorjetaMaquina.kt` = regras; `PlayGorjetaLoja.kt` = `BillingClient`; `ApoioDoSabor.kt` = tela). Biblioteca `com.android.billingclient:billing-ktx:9.1.0` só no `play` |
+| C. `libre` | BR Code **estático** (EMV do Banco Central: 00, 26 `br.gov.bcb.pix` + chave, 52 `0000`, 53 `986`, 58 `BR`, 59 nome, 60 cidade, 62/05 `***`, 63 CRC16-CCITT `0xFFFF`), sem valor fixo; QR desenhado em Compose com o codificador do ZXing core; botões "Copiar Pix copia e cola" e "Copiar chave". **Para trocar a chave: só `ApoioPix.kt`** | `src/libre/.../cgflix/apoio/` (`ApoioPix.kt`, `BrCode.kt`, `QrPix.kt`, `ApoioDoSabor.kt`). `com.google.zxing:core` só no `libre` |
+| D. Sem pressão | Uma linha discreta no Sobre e um item no fim das Configurações. Nada mais | — |
+| E. Testes | `testLibreDebugUnitTest`: CRC do exemplo do manual do BC (`1D3D`), payload campo a campo, QR lido de volta. `testPlayDebugUnitTest`: máquina de estados com loja falsa no lugar do `BillingClient`. Capturas `isis/heitor-11-apoio.png` (libre) e `isis/heitor-play-apoio.png` (play, produtos de exemplo) no "CGFLIX Telas" | `src/testLibre/`, `src/testPlay/`, `CgflixDemoActivity.kt`, `.github/scripts/cgflix-telas.sh` |
+| Versão | 1.4.0 (60) | `buildSrc/src/main/kotlin/Versions.kt` |
+
+### Passo a passo no Play Console (dono)
+
+1. **Perfil de pagamentos**: Play Console → Configuração → Perfil de pagamentos (precisa existir para vender qualquer
+   produto, mesmo gorjeta). Sem ele, o menu de produtos fica bloqueado.
+2. Enviar um AAB do sabor `play` (1.4.0 ou mais nova) para alguma faixa (o teste interno basta): a Play só libera produtos
+   depois de ver a permissão de Billing num envio.
+3. **Monetizar → Produtos → Produtos no app → Criar produto**, três vezes:
+
+   | ID do produto (exato) | Nome sugerido | Preço |
+   |---|---|---|
+   | `gorjeta_pequena` | Gorjeta pequena | R$ 5,00 |
+   | `gorjeta_media` | Gorjeta média | R$ 10,00 |
+   | `gorjeta_grande` | Gorjeta grande | R$ 25,00 |
+
+   Descrição sugerida: "Apoio ao desenvolvimento do CGFLIX Lite. Não desbloqueia recursos." Salvar e **Ativar** cada um.
+   O app mostra o nome e o preço que estiverem no Console (pode mudar lá sem nova versão). Enquanto não existirem, a tela
+   mostra "Em breve você vai poder apoiar por aqui." e não quebra.
+4. **Testar sem pagar de verdade**: Play Console (página inicial, fora do app) → Configuração → **Teste de licença** →
+   colocar os e-mails das contas Google de teste e "Resposta da licença" = `RESPOND_NORMALLY`. Essas contas, instalando pela
+   faixa de teste interno, compram com "Cartão de teste, sempre aprova" (ou "aprova após atraso", para testar o
+   **pendente**, ou "sempre recusa"). Nada é cobrado.
+5. Conferir: comprar a pequena → "Obrigado pelo apoio!"; comprar de novo funciona (consumível). Pendente → aviso; quando
+   o cartão de teste aprovar, a gorjeta é consumida na próxima abertura do app. Em Monetizar → Pedidos aparecem as
+   compras de teste.
+
 ## Assinatura do APK
 
 Os quatro secrets já existem neste repositório (keystore PKCS12, alias `cgflix`) e o workflow assina com eles em push e PRs
@@ -104,6 +153,7 @@ próprias ficam em poucos arquivos e as demais telas seguem como no original.
 - Aviso claro em PT quando o limite de **2 telas** (StreamLimiter) recusar o play.
 - **mpv como player padrão** para anime (legenda ASS com estilo).
 - Preferência de áudio e legenda `por` por padrão.
+- Gorjeta: contribuir a ideia dos sabores ao upstream não faz sentido (o Findroid tem o Ko-fi dele); manter isolado.
 - PRs úteis do upstream: #1228 (temporada inteira), #1285 (offline automático), #1293 (download no app),
   #1253 (autoplay do servidor).
 - Interface de TV com a mesma Início por categorias.

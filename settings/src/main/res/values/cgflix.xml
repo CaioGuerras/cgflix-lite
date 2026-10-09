@@ -17,4 +17,6 @@
         <item>heitor</item>
         <item>auto</item>
     </string-array>
+    <!-- CGFLIX: gorjeta opcional (último item das Configurações) -->
+    <string name="cgflix_apoio" translatable="false">Apoiar o CGFLIX</string>
 </resources>

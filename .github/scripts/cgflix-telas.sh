@@ -42,12 +42,20 @@ adb exec-out screencap -p > "$OUT/0-abertura-sem-servidor.png"
 adb install -r demo.apk
 for tema in isis heitor; do
   n=1
-  for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce; do
+  for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce apoio; do
     adb shell am start -S -W -n "$DEMO" --es tela "$tela" --es tema "$tema" > /dev/null
     sleep 4
     adb exec-out screencap -p > "$OUT/$tema-$n-$tela.png"
     n=$((n + 1))
   done
+done
+
+# Gorjeta no sabor `play` (mesmo pacote e mesma chave de debug: instala por cima do `libre`)
+adb install -r demo-play.apk
+for tema in isis heitor; do
+  adb shell am start -S -W -n "$DEMO" --es tela apoio --es tema "$tema" > /dev/null
+  sleep 4
+  adb exec-out screencap -p > "$OUT/$tema-play-apoio.png"
 done
 
 # Brilho do fundo (0 = preto, 1 = branco) na borda esquerda de cada captura: Heitor deve ficar
