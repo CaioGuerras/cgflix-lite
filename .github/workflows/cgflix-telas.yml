@@ -30,9 +30,9 @@ jobs:
       CGFLIX_KEYSTORE_PASSWORD: ${{ secrets.CGFLIX_KEYSTORE_PASSWORD }}
       CGFLIX_KEY_ALIAS: ${{ secrets.CGFLIX_KEY_ALIAS }}
       CGFLIX_KEY_PASSWORD: ${{ secrets.CGFLIX_KEY_PASSWORD }}
-      # Versão anterior para comparar: main com a 1.2.0 (40), Etapa 1B (PR #3)
-      CGFLIX_ANTES: ed6de24161f3d9a3e55a51ae1a139e70a88774bd
-      CGFLIX_ANTES_NOME: "1.2.0"
+      # Versão anterior para comparar: main com a 1.3.0 (50), tema Heitor (PR #4)
+      CGFLIX_ANTES: f837d5031a44a743c984add902d5c64154872f84
+      CGFLIX_ANTES_NOME: "1.3.0"
     steps:
       - name: Baixar o código
         uses: actions/checkout@v7
@@ -63,10 +63,11 @@ jobs:
 
       - name: Compilar a versão do PR (release e debug com a tela de demonstração)
         run: |
-          ./gradlew :app:phone:assembleLibreRelease :app:phone:assembleLibreDebug
+          ./gradlew :app:phone:assembleLibreRelease :app:phone:assembleLibreDebug :app:phone:assemblePlayDebug
           cp app/phone/build/outputs/apk/libre/release/*x86_64*.apk depois.apk
           cp app/phone/build/outputs/apk/libre/debug/*x86_64*.apk demo.apk
-          ls -l antes.apk depois.apk demo.apk
+          cp app/phone/build/outputs/apk/play/debug/*x86_64*.apk demo-play.apk
+          ls -l antes.apk depois.apk demo.apk demo-play.apk
 
       - name: Ligar o KVM
         run: |

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioScreen
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryLayout
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryState
 import dev.jdtech.jellyfin.cgflix.home.CgflixHomeLayout
@@ -54,7 +55,7 @@ import kotlinx.coroutines.flow.flowOf
  * CGFLIX (só no build de debug): mostra as telas com dados falsos, sem servidor, para o CI tirar
  * capturas no emulador. `adb shell am start -n <pacote>/dev.jdtech.jellyfin.cgflix.demo.
  * CgflixDemoActivity --es tela inicio|filmes|series|animes|busca|voce|abertura|detalhes|
- * configuracoes|login --es tema isis|heitor`.
+ * configuracoes|login|apoio --es tema isis|heitor`.
  */
 class CgflixDemoActivity : ComponentActivity() {
     private val movies =
@@ -102,6 +103,8 @@ class CgflixDemoActivity : ComponentActivity() {
             FindroidTheme(darkTheme = dark, dynamicColor = false) {
                 when (screen) {
                     "abertura" -> CgflixOpening()
+                    // Gorjeta: Pix no `libre`; no `play`, produtos de exemplo (nada é cobrado)
+                    "apoio" -> CgflixApoioScreen(navigateBack = {}, demonstracao = true)
                     "detalhes" ->
                         MovieScreenLayout(
                             state =
