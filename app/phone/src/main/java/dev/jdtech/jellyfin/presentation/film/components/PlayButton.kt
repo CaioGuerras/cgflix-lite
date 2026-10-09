@@ -2,7 +2,6 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +17,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.presentation.theme.CgflixButton
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -33,7 +33,7 @@ fun PlayButton(
             mutableLongStateOf((item.runtimeTicks - item.playbackPositionTicks) / 600000000)
         }
 
-    Button(onClick = onClick, modifier = modifier, enabled = enabled) {
+    CgflixButton(onClick = onClick, modifier = modifier, enabled = enabled) {
         Icon(painter = painterResource(CoreR.drawable.ic_play), contentDescription = null)
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
         Text(

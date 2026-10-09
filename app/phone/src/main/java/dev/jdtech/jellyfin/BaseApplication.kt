@@ -15,6 +15,7 @@ import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import coil3.annotation.ExperimentalCoilApi
 import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
 import coil3.network.cachecontrol.CacheControlCacheStrategy
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.CachePolicy
@@ -25,8 +26,10 @@ import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
 import dev.jdtech.jellyfin.work.SyncWorker
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
+import okhttp3.OkHttpClient
 import okio.Path.Companion.toOkioPath
 import timber.log.Timber
 
@@ -74,7 +77,19 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
-                add(OkHttpNetworkFetcherFactory(cacheStrategy = { CacheControlCacheStrategy() }))
+                // CGFLIX: imagens no tamanho da tela e timeouts pensados para 4G
+                add(CgflixImageSizeInterceptor(context.resources.displayMetrics.widthPixels))
+                add(
+                    OkHttpNetworkFetcherFactory(
+                        callFactory = {
+                            OkHttpClient.Builder()
+                                .connectTimeout(15, TimeUnit.SECONDS)
+                                .readTimeout(30, TimeUnit.SECONDS)
+                                .build()
+                        },
+                        cacheStrategy = { CacheControlCacheStrategy() },
+                    )
+                )
                 add(SvgDecoder.Factory())
             }
             .diskCachePolicy(
@@ -89,6 +104,8 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
                     )
                     .build()
             }
+            // CGFLIX: cache em memória moderado (15% da memória do app) para celular fraco
+            .memoryCache { MemoryCache.Builder().maxSizePercent(context, 0.15).build() }
             .crossfade(true)
             .build()
     }

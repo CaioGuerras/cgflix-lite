@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +23,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
+import dev.jdtech.jellyfin.presentation.theme.CgflixButton
+import dev.jdtech.jellyfin.presentation.theme.CgflixOutlinedButton
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
@@ -70,14 +70,14 @@ private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
             )
             Spacer(modifier = Modifier.height(32.dp))
             Column(modifier = Modifier.widthIn(max = 480.dp)) {
-                OutlinedButton(
+                CgflixOutlinedButton(
                     onClick = { onAction(WelcomeAction.OnLearnMoreClick) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(SetupR.string.welcome_btn_learn_more))
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Button(
+                CgflixButton(
                     onClick = { onAction(WelcomeAction.OnContinueClick) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {

@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: write # necessário só para criar a Release em tags v*
     env:
-      # Assinatura opcional. Sem os secrets, o APK sai assinado com a chave de debug.
+      # Assinatura fixa (push e PRs deste repositório). Sem os secrets (ex.: PR de fork), cai na chave de debug.
       # Secrets esperados: CGFLIX_KEYSTORE_BASE64, CGFLIX_KEYSTORE_PASSWORD,
       # CGFLIX_KEY_ALIAS e CGFLIX_KEY_PASSWORD.
       CGFLIX_KEYSTORE_BASE64: ${{ secrets.CGFLIX_KEYSTORE_BASE64 }}
@@ -56,11 +56,35 @@ jobs:
       - name: Compilar o APK de release
         run: ./gradlew :app:phone:assembleLibreRelease
 
+      - name: Conferir assinatura e tamanho do APK
+        run: |
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
+          for f in app/phone/build/outputs/apk/libre/release/*.apk; do
+            ls -l "$f" | awk '{print "Tamanho:", $5, "bytes -", $9}'
+            # verify falha o passo se a assinatura for inválida; o certificado impresso é público
+            "$APKSIGNER" verify --verbose --print-certs "$f" > "$RUNNER_TEMP/apksigner.txt"
+            grep -iE "certificate (DN|SHA-256)" "$RUNNER_TEMP/apksigner.txt" || cat "$RUNNER_TEMP/apksigner.txt"
+          done
+          if [ -z "$CGFLIX_KEYSTORE_BASE64" ]; then
+            echo "::warning::Sem os secrets de assinatura (PR de fork?): APK assinado com a chave de debug, não instala por cima do anterior."
+          fi
+
       - name: Enviar os APKs (artifact)
         uses: actions/upload-artifact@v7
         with:
           name: cgflix-lite-apk
           path: app/phone/build/outputs/apk/libre/release/*.apk
+          if-no-files-found: error
+
+      # Play Store (07/10): mesmo build e mesma assinatura do APK, no formato que a Play aceita
+      - name: Compilar o AAB (Play Store)
+        run: ./gradlew :app:phone:bundleLibreRelease
+
+      - name: Enviar o AAB (artifact)
+        uses: actions/upload-artifact@v7
+        with:
+          name: cgflix-lite-aab
+          path: app/phone/build/outputs/bundle/libreRelease/*.aab
           if-no-files-found: error
 
       - name: Renomear APKs para a Release

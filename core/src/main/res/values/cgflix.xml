@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- CGFLIX: endereço SUGERIDO do servidor (pré-preenchido e editável na tela de adicionar servidor). Não é embutido. -->
-    <string name="cgflix_suggested_server" translatable="false">https://netflix.docaio.com.br</string>
+    <!-- CGFLIX: dedicatória da tela Sobre (sempre em português) -->
+    <string name="cgflix_dedication" translatable="false">Feito com amor, para Isis e Heitor</string>
 </resources>
