@@ -29,6 +29,34 @@ Tudo marcado com `CGFLIX` no código, para achar na hora de sincronizar com o up
 | Sobre | Dedicatória "Feito com amor, para Isis e Heitor" com dois corações (roxo e verde) | `AboutScreen.kt`, `core/.../values/cgflix.xml`, `ic_cgflix_heart.xml` |
 | CI | Confere e imprime a assinatura (SHA-256 do certificado, público) e o tamanho do APK | `cgflix-android.yml` |
 
+## O que mudou (Etapa 1B, versão 1.2.0 (40))
+
+Redesenho **leve** (aparelho fraco, internet ruim), na direção do app completo 1.3.0. Código novo isolado em
+`app/phone/src/main/java/dev/jdtech/jellyfin/cgflix/` (regras sem Android em `cgflix/logic/`, com testes em
+`app/phone/src/test/.../cgflix/logic/`). Nos arquivos do Findroid, só ganchos curtos marcados com `CGFLIX`.
+
+| Área | Mudança | Arquivos |
+|---|---|---|
+| Cores | Todas as cores da marca numa paleta só (`CgflixPalette`, tema escuro "Isis": fundo `#07060a`, destaque `#a855f7`, texto ≥ 4,5:1). O esquema escuro do Material sai dela; as telas usam `MaterialTheme.cgflix` para selos, número do Em alta, esqueleto e corações. Tema claro "Heitor" = outra paleta, sem mexer nas telas | `core/.../theme/CgflixPalette.kt`, `core/.../theme/Color.kt`, `presentation/theme/CgflixTheme.kt`, `Theme.kt`, `CgflixButtons.kt`, `AboutScreen.kt` |
+| Tema fixo | Sempre o tema Isis (escuro), inclusive no Android 12+, que seguia o sistema e ficava claro; o grupo Aparência saiu das Configurações (commit do servidor CGSERVER em 08/10) | `BaseApplication.kt`, `presentation/theme/Theme.kt`, `SettingsViewModel.kt` |
+| Ícones | Material Symbols Rounded só como vetores dos ícones usados (contorno no inativo, preenchido no ativo). Licença Apache 2.0 (Google) | `core/src/main/res/drawable/ic_cgflix_*.xml` |
+| A. Navegação | Barra inferior Início · Buscar · Baixados · Você (Material 3: 80 dp, pílula 64×32, rótulos sempre visíveis). "Você": Meus pedidos, Bibliotecas, Favoritos, Trocar usuário, Configurações, Sobre | `NavigationRoot.kt`, `cgflix/you/CgflixYouScreen.kt`, `core/.../values/cgflix.xml` |
+| A/B. Categorias | Chips Filmes · Séries · Animes no topo da Início. Categoria = **biblioteca** (Id achado pelo nome "Séries"/"Animes"), nunca o tipo do item; toda linha filtra por `ParentId`. Sem biblioteca "Animes", o chip some | `cgflix/logic/CgflixCategories.kt`, `cgflix/home/CgflixCategory*.kt` |
+| C. Início | Continuar assistindo → Em alta no Brasil → Filmes/Séries/Animes recentes. Sem banner, sem "Novos episódios" soltos. Cada linha carrega sozinha (em paralelo), esqueleto parado, volta mantém a rolagem, sem recarregar se < 60 s. A Início do Findroid (`HomeScreen.kt`/`HomeViewModel`) segue no código, só não é usada | `cgflix/home/CgflixHome*.kt`, `cgflix/ui/CgflixComponents.kt` |
+| C. Em alta | `GET <servidor>/cgflix/emalta.json` (Início usa `itens`; categoria usa `porBiblioteca`, some com < 3; sem o campo, filtra `itens` por `biblioteca`). Se falhar: coleção "Em alta no Brasil"; se nada, a linha some. Número grande vazado desenhado em Compose. Cache de 1 h (memória e disco) | `cgflix/logic/CgflixTrending.kt`, `cgflix/CgflixRepository.kt` |
+| D. Busca e pedidos | Uma busca só: primeiro o que temos, depois "Disponível para pedir" (Seerr, `language=pt-BR`; 1/ausente = Pedir, 2 = Pedido, 3 = Baixando, 4/5 não aparecem). Filme pede direto, série pede todas as temporadas. Entrada automática pelo Quick Connect (initiate → `/QuickConnect/Authorize` com o token da pessoa → authenticate → cookie `connect.sid`), sem formulário nem WebView. Seerr achado ao lado do Jellyfin (`netflix.` → `pedidos.`). Cookie cifrado com chave AES-GCM do Android Keystore e renovado sozinho em 401/403. Fora do ar: "Pedidos indisponíveis agora" | `cgflix/logic/CgflixSeerr.kt`, `cgflix/logic/CgflixOkHttp.kt`, `cgflix/CgflixSecureStore.kt`, `cgflix/search/*` |
+| D. Meus pedidos | Lista nativa (título, ano, situação). Pôster só com caminho que passa na regra do site, pelo proxy do Seerr | `cgflix/you/CgflixMyRequestsScreen.kt` |
+| E. Título | Botão principal grande (52 dp) "Assistir"/"Continuar"/"Continuar S01E03"; selos Dublado (áudio `por`) e Legendado (legenda `por`/`pob`); temporadas em chips com os episódios embaixo e o próximo já selecionado | `PlayButton.kt`, `ItemButtonsBar.kt`, `ShowScreen.kt`, `MovieScreen.kt`, `EpisodeScreen.kt`, `cgflix/title/CgflixShowExtras.kt`, `cgflix/logic/CgflixLanguageBadges.kt` |
+| F. Player | Áudio e legenda num menu pequeno preso ao botão (o vídeo continua tocando), em vez da janela por cima | `PlayerActivity.kt`, `cgflix/player/CgflixTrackMenu.kt` |
+| G. Música tema | `<servidor>/__tema/<tvdb>.mp3` na página da série, **desligada por padrão** (Configurações > Interface). 404 = silêncio. Para ao sair da tela | `AppPreferences.kt`, `SettingsViewModel.kt`, `settings/.../values/cgflix.xml`, `CgflixShowExtras.kt` |
+| G. Nome | O app só leva os textos em português do Brasil e inglês (`localeFilters`): as traduções do Findroid nos outros idiomas ainda diziam "Findroid" na tela. Atribuição GPL-3.0 continua no Sobre | `app/phone/build.gradle.kts` |
+| Slogan | "Aperte o play", parado, em lilás, no login e na abertura (nunca dedicatória fora do Sobre) | `LoginScreen.kt`, `WelcomeScreen.kt`, `MainActivity.kt` |
+| H. Acessibilidade | Descrição em português em todo botão só com ícone; "Remover animações" do sistema vira corte seco entre telas | vários `presentation/**` (marcados), `NavigationRoot.kt` |
+| CI | Testes de unidade das regras (`testLibreDebugUnitTest`) no "CGFLIX Android". Novo "CGFLIX Telas": emulador com capturas (tela de demonstração só do build de debug, dados falsos) e abertura a frio 1.1.0 × 1.2.0, instalando por cima | `.github/workflows/cgflix-*.yml`, `.github/scripts/cgflix-telas.sh`, `app/phone/src/debug/` |
+
+Ajustes de Início do Findroid em Configurações: "Sugestões" e "Próximos" não valem mais (a Início do Lite não tem essas
+linhas); "Continuar assistindo" e "Recentes" continuam valendo.
+
 Não mexemos no módulo `app/tv` (o Findroid não tem interface de Android TV de verdade).
 
 ## Assinatura do APK
@@ -54,11 +82,12 @@ próprias ficam em poucos arquivos e as demais telas seguem como no original.
 ## Próximos passos
 
 - Interface de Android TV (o Findroid não tem; issue #927 do upstream).
-- Selos **Dublado** / **Legendado** nos itens.
+- Selos **Dublado** / **Legendado** também nos cartões (hoje só na página do título).
 - Aviso claro em PT quando o limite de **2 telas** (StreamLimiter) recusar o play.
 - **mpv como player padrão** para anime (legenda ASS com estilo).
 - Preferência de áudio e legenda `por` por padrão.
 - PRs úteis do upstream: #1228 (temporada inteira), #1285 (offline automático), #1293 (download no app),
   #1253 (autoplay do servidor).
-- Redesenho visual da Início e das páginas de título (Etapa 1B, depois da pesquisa de interface).
+- Tema claro "Heitor" (verde): nova `CgflixPalette`.
+- Interface de TV com a mesma Início por categorias.
 - mpv por conteúdo: o Findroid só deixa escolher o player globalmente (Configurações > Player); trocar sozinho para anime/ASS exige código novo.

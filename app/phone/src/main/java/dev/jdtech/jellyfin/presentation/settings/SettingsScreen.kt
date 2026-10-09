@@ -157,7 +157,7 @@ private fun SettingsScreenLayout(
                     IconButton(onClick = { onAction(SettingsAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },

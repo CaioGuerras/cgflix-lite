@@ -154,7 +154,7 @@ private fun ServersScreenLayout(
             ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
+                    contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                 )
             }
         }

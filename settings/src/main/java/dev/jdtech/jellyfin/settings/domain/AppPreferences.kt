@@ -22,6 +22,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val homeNextUp = Preference<Boolean>("home_next_up", true)
     val homeLatest = Preference<Boolean>("home_latest", true)
     val displayExtraInfo = Preference("pref_display_extra_info", false)
+    // CGFLIX (Etapa 1B): música tema da série na página dela; desligada por padrão no Lite
+    val cgflixThemeMusic = Preference("pref_cgflix_theme_music", false)
 
     // Player
     val playerBackend = Preference("pref_player_backend", "exoplayer")

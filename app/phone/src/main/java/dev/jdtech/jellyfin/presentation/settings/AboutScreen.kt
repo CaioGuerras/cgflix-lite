@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -52,6 +51,7 @@ import dev.jdtech.jellyfin.BuildConfig
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.R as SettingsR
 
@@ -84,7 +84,7 @@ fun AboutScreen(navigateBack: () -> Unit) {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
@@ -135,13 +135,13 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_cgflix_heart),
                                     contentDescription = null,
-                                    tint = Color(0xFFA855F7),
+                                    tint = MaterialTheme.cgflix.heartIsis,
                                     modifier = Modifier.size(24.dp),
                                 )
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_cgflix_heart),
                                     contentDescription = null,
-                                    tint = Color(0xFF22C55E),
+                                    tint = MaterialTheme.cgflix.heartHeitor,
                                     modifier = Modifier.size(24.dp),
                                 )
                             }

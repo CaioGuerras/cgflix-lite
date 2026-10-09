@@ -174,7 +174,10 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
             onClick = { onAction(AddServerAction.OnBackClick) },
             modifier = Modifier.padding(start = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_arrow_left),
+                contentDescription = "Voltar", /* CGFLIX: acessibilidade */
+            )
         }
     }
 }

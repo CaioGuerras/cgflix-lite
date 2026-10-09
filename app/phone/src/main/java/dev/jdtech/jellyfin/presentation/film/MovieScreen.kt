@@ -35,6 +35,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.cgflix.title.CgflixItemBadges
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
@@ -216,6 +217,7 @@ private fun MovieScreenLayout(
                         VideoMetadataBar(videoMetadata)
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
+                    CgflixItemBadges(movie) // CGFLIX: selos Dublado/Legendado
                     ItemButtonsBar(
                         item = movie,
                         downloaderState = downloaderState,

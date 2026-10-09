@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.cgflix.ui.CgflixSlogan
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.setup.components.LoadingButton
 import dev.jdtech.jellyfin.presentation.setup.components.RootLayout
@@ -124,6 +125,8 @@ private fun LoginScreenLayout(
                 contentDescription = null,
                 modifier = Modifier.width(250.dp).align(Alignment.CenterHorizontally),
             )
+            // CGFLIX: slogan parado, em lilás
+            CgflixSlogan(Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp))
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(SetupR.string.login),
@@ -167,7 +170,8 @@ private fun LoginScreenLayout(
                             painter =
                                 if (passwordVisible) painterResource(CoreR.drawable.ic_eye_off)
                                 else painterResource(CoreR.drawable.ic_eye),
-                            contentDescription = null,
+                            contentDescription =
+                                "Mostrar ou esconder a senha", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
@@ -252,13 +256,19 @@ private fun LoginScreenLayout(
             onClick = { onAction(LoginAction.OnBackClick) },
             modifier = Modifier.padding(start = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_arrow_left),
+                contentDescription = "Voltar", /* CGFLIX: acessibilidade */
+            )
         }
         IconButton(
             onClick = { onAction(LoginAction.OnChangeServerClick) },
             modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_server),
+                contentDescription = "Trocar servidor", /* CGFLIX: acessibilidade */
+            )
         }
     }
 }

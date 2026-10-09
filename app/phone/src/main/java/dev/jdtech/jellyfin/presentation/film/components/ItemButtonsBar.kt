@@ -23,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +36,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.cgflix
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
@@ -52,6 +52,8 @@ fun ItemButtonsBar(
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
     canPlay: Boolean = true,
+    // CGFLIX: texto do botão principal ("Continuar S01E03"); nulo = Assistir/Continuar
+    playLabel: String? = null,
 ) {
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -90,12 +92,13 @@ fun ItemButtonsBar(
                         onClick = { onPlayClick(false) },
                         modifier = Modifier.weight(weight = 1f, fill = true),
                         enabled = item.canPlay && canPlay,
+                        label = playLabel,
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
                         FilledTonalIconButton(onClick = { onPlayClick(true) }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                                contentDescription = null,
+                                contentDescription = "Assistir do início", // CGFLIX: acessibilidade
                             )
                         }
                     }
@@ -111,12 +114,13 @@ fun ItemButtonsBar(
                         item = item,
                         onClick = { onPlayClick(false) },
                         enabled = item.canPlay && canPlay,
+                        label = playLabel,
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
                         FilledTonalIconButton(onClick = { onPlayClick(true) }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                                contentDescription = null,
+                                contentDescription = "Assistir do início", // CGFLIX: acessibilidade
                             )
                         }
                     }
@@ -125,15 +129,19 @@ fun ItemButtonsBar(
                     FilledTonalIconButton(onClick = { onTrailerClick(uri) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_film),
-                            contentDescription = null,
+                            contentDescription = "Trailer", // CGFLIX: acessibilidade
                         )
                     }
                 }
                 FilledTonalIconButton(onClick = onMarkAsPlayedClick) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_check),
-                        contentDescription = null,
-                        tint = if (item.played) Color.Red else LocalContentColor.current,
+                        contentDescription =
+                            if (item.played) "Desmarcar como visto"
+                            else "Marcar como visto", // CGFLIX: acessibilidade
+                        tint =
+                            if (item.played) MaterialTheme.cgflix.accent
+                            else LocalContentColor.current,
                     )
                 }
                 FilledTonalIconButton(onClick = onMarkAsFavoriteClick) {
@@ -141,14 +149,15 @@ fun ItemButtonsBar(
                         true -> {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_heart_filled),
-                                contentDescription = null,
-                                tint = Color.Red,
+                                contentDescription =
+                                    "Tirar dos favoritos", // CGFLIX: acessibilidade
+                                tint = MaterialTheme.cgflix.accent,
                             )
                         }
                         false -> {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_heart),
-                                contentDescription = null,
+                                contentDescription = "Favoritar", // CGFLIX: acessibilidade
                             )
                         }
                     }
@@ -158,7 +167,7 @@ fun ItemButtonsBar(
                         FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
-                                contentDescription = null,
+                                contentDescription = "Apagar o download", // CGFLIX: acessibilidade
                             )
                         }
                     } else if (item.canDownload) {
@@ -175,7 +184,7 @@ fun ItemButtonsBar(
                         ) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_download),
-                                contentDescription = null,
+                                contentDescription = "Baixar", // CGFLIX: acessibilidade
                             )
                         }
                     }

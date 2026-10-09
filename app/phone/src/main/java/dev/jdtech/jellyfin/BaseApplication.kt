@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 import android.app.Application
+import android.app.UiModeManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
@@ -49,15 +50,12 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             Timber.plant(Timber.DebugTree())
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            val mode =
-                when (appPreferences.getValue(appPreferences.theme)) {
-                    "system" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                    "dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
-            AppCompatDelegate.setDefaultNightMode(mode)
+        // CGFLIX: sempre escuro (tema Isis). No Android 12+ o app seguia o sistema e ficava claro
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getSystemService(UiModeManager::class.java)
+                ?.setApplicationNightMode(UiModeManager.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
         if (appPreferences.getValue(appPreferences.dynamicColors)) {

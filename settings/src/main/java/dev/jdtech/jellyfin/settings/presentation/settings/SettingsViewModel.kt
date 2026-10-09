@@ -129,39 +129,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             },
                             nestedPreferenceGroups =
                                 listOf(
-                                    PreferenceGroup(
-                                        nameStringResource = R.string.settings_category_appearance,
-                                        preferences =
-                                            listOf(
-                                                PreferenceSelect(
-                                                    nameStringResource = R.string.theme,
-                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
-                                                    backendPreference = appPreferences.theme,
-                                                    onUpdate = { value ->
-                                                        viewModelScope.launch {
-                                                            eventsChannel.send(
-                                                                SettingsEvent.UpdateTheme(
-                                                                    value ?: "system"
-                                                                )
-                                                            )
-                                                        }
-                                                    },
-                                                    options = R.array.theme,
-                                                    optionValues = R.array.theme_values,
-                                                ),
-                                                PreferenceSwitch(
-                                                    nameStringResource = R.string.dynamic_colors,
-                                                    descriptionStringRes =
-                                                        R.string.dynamic_colors_summary,
-                                                    enabled =
-                                                        Build.VERSION.SDK_INT >=
-                                                            Build.VERSION_CODES.S,
-                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
-                                                    backendPreference =
-                                                        appPreferences.dynamicColors,
-                                                ),
-                                            ),
-                                    ),
+                                    // CGFLIX: sem o grupo Aparência (o Lite usa só o tema Isis)
                                     PreferenceGroup(
                                         nameStringResource = R.string.home,
                                         preferences =
@@ -196,7 +164,17 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string.extra_info_summary,
                                                     backendPreference =
                                                         appPreferences.displayExtraInfo,
-                                                )
+                                                ),
+                                                // CGFLIX (Etapa 1B): música tema (desligada por
+                                                // padrão)
+                                                PreferenceSwitch(
+                                                    nameStringResource =
+                                                        R.string.cgflix_theme_music,
+                                                    descriptionStringRes =
+                                                        R.string.cgflix_theme_music_summary,
+                                                    backendPreference =
+                                                        appPreferences.cgflixThemeMusic,
+                                                ),
                                             )
                                     ),
                                 ),

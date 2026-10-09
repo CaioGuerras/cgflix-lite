@@ -157,7 +157,7 @@ private fun UsersScreenLayout(
             ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
+                    contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                 )
             }
         }
@@ -165,7 +165,10 @@ private fun UsersScreenLayout(
             onClick = { onAction(UsersAction.OnChangeServerClick) },
             modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp),
         ) {
-            Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
+            Icon(
+                painter = painterResource(CoreR.drawable.ic_server),
+                contentDescription = "Trocar servidor", /* CGFLIX: acessibilidade */
+            )
         }
         ExtendedFloatingActionButton(
             onClick = { onAction(UsersAction.OnAddClick) },

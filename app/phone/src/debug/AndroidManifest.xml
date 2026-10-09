@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- CGFLIX: tela de demonstração só no build de debug, para as capturas do CI (dados falsos) -->
+    <application>
+        <activity
+            android:name="dev.jdtech.jellyfin.cgflix.demo.CgflixDemoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Findroid" />
+    </application>
+</manifest>

@@ -83,6 +83,10 @@ android {
         }
     }
 
+    // CGFLIX (Etapa 1B): só português do Brasil (e o inglês de reserva). As traduções do
+    // Findroid em outros idiomas ainda dizem "Findroid" na tela; sem elas o APK fica menor.
+    androidResources { localeFilters += listOf("en", "pt-rBR") }
+
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -146,4 +150,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
+
+    // CGFLIX: Seerr e emalta.json (OkHttp já vem com o Coil) e testes de unidade das regras
+    implementation(libs.okhttp)
+    testImplementation("junit:junit:4.13.2")
 }

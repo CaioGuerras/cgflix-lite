@@ -121,7 +121,8 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                         FilledTonalIconButton(onClick = onCancelClick) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_x),
-                                contentDescription = null,
+                                contentDescription =
+                                    "Cancelar download", /* CGFLIX: acessibilidade */
                             )
                         }
                     }
@@ -129,7 +130,7 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                         FilledTonalIconButton(onClick = onRetryClick) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
-                                contentDescription = null,
+                                contentDescription = "Tentar de novo", /* CGFLIX: acessibilidade */
                             )
                         }
                     }

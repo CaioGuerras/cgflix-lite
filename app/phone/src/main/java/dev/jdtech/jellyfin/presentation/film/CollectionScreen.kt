@@ -79,7 +79,7 @@ fun CollectionScreenLayout(
                     IconButton(onClick = { onAction(CollectionAction.OnBackClick) }) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },

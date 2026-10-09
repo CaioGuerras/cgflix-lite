@@ -1,0 +1,105 @@
+name: CGFLIX Telas
+
+# Etapa 1B: capturas das telas novas (dados falsos, tela de demonstração só do build de debug) e
+# medição da abertura a frio no emulador, 1.1.0 (Etapa 1A) x versão do PR. Só informa; o APK
+# oficial continua saindo do workflow "CGFLIX Android".
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'core/**'
+      - '.github/workflows/cgflix-telas.yml'
+      - '.github/scripts/cgflix-telas.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cgflix-telas-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  telas:
+    name: Capturas e abertura a frio
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      # Mesma chave do APK oficial: o 1.2.0 é instalado por cima do 1.1.0 no emulador.
+      CGFLIX_KEYSTORE_BASE64: ${{ secrets.CGFLIX_KEYSTORE_BASE64 }}
+      CGFLIX_KEYSTORE_PASSWORD: ${{ secrets.CGFLIX_KEYSTORE_PASSWORD }}
+      CGFLIX_KEY_ALIAS: ${{ secrets.CGFLIX_KEY_ALIAS }}
+      CGFLIX_KEY_PASSWORD: ${{ secrets.CGFLIX_KEY_PASSWORD }}
+      # Último commit da Etapa 1A (versão 1.1.0), para comparar
+      CGFLIX_ANTES: a3fa8c63c0ef53bfea50ce298d33cc89968367e5
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Instalar o JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Configurar o Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Preparar a keystore (se houver secrets)
+        run: |
+          if [ -n "$CGFLIX_KEYSTORE_BASE64" ]; then
+            echo "$CGFLIX_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/cgflix.jks"
+            echo "CGFLIX_KEYSTORE=$RUNNER_TEMP/cgflix.jks" >> "$GITHUB_ENV"
+          fi
+
+      - name: Compilar a 1.1.0 (antes)
+        run: |
+          git worktree add "$RUNNER_TEMP/antes" "$CGFLIX_ANTES"
+          (cd "$RUNNER_TEMP/antes" && ./gradlew :app:phone:assembleLibreRelease)
+          cp "$RUNNER_TEMP"/antes/app/phone/build/outputs/apk/libre/release/*x86_64*.apk antes.apk
+
+      - name: Compilar a versão do PR (release e debug com a tela de demonstração)
+        run: |
+          ./gradlew :app:phone:assembleLibreRelease :app:phone:assembleLibreDebug
+          cp app/phone/build/outputs/apk/libre/release/*x86_64*.apk depois.apk
+          cp app/phone/build/outputs/apk/libre/debug/*x86_64*.apk demo.apk
+          ls -l antes.apk depois.apk demo.apk
+
+      - name: Ligar o KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Emulador, medições e capturas
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          script: ./.github/scripts/cgflix-telas.sh
+
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "## CGFLIX Lite: abertura a frio (emulador, sem servidor)"
+            echo '```'
+            cat telas/medicoes.txt 2>/dev/null || echo "sem medições"
+            echo '```'
+            echo "Tamanhos (x86_64):"
+            ls -l antes.apk depois.apk 2>/dev/null | awk '{print "- " $9 ": " $5 " bytes"}'
+          } >> "$GITHUB_STEP_SUMMARY"
+          cat telas/medicoes.txt 2>/dev/null || true
+
+      - name: Enviar as capturas (artifact)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cgflix-lite-telas
+          path: telas/
+          if-no-files-found: warn

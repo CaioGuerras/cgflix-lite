@@ -97,7 +97,7 @@ private fun SettingsFileEditScreenLayout(
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
-                            contentDescription = null,
+                            contentDescription = "Voltar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
@@ -111,7 +111,7 @@ private fun SettingsFileEditScreenLayout(
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_save),
-                            contentDescription = null,
+                            contentDescription = "Salvar", /* CGFLIX: acessibilidade */
                         )
                     }
                 },
