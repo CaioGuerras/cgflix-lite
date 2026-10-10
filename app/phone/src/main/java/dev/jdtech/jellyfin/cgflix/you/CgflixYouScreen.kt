@@ -259,7 +259,9 @@ fun CgflixYouLayout(
             if (!offline) {
                 item { YouItem(CoreR.drawable.ic_cgflix_favorite, "Favoritos", onFavorites) }
                 item { YouItem(CoreR.drawable.ic_cgflix_video_library, "Bibliotecas", onLibraries) }
-                item { HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small)) }
+                item {
+                    HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small))
+                }
             }
             item {
                 YouItem(

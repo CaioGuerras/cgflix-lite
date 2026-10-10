@@ -87,7 +87,11 @@ constructor(
                 // CGFLIX (Modo Maryanne): criança não pede no Seerr; só o que já temos
                 if (maryanne.isAtivo) {
                     _state.update {
-                        it.copy(results = ours, loading = false, requests = CgflixRequestsSection.Idle)
+                        it.copy(
+                            results = ours,
+                            loading = false,
+                            requests = CgflixRequestsSection.Idle,
+                        )
                     }
                     return@launch
                 }

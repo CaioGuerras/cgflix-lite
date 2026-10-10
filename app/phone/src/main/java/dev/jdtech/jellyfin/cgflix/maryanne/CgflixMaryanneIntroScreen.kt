@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 data class CgflixMaryanneIntroState(
-    /** Páginas mostradas: as 3 na primeira vez, só a da classificação depois do "Não mostrar de novo". */
+    /** Páginas: as 3 na primeira vez; depois do "Não mostrar de novo", só a da classificação. */
     val paginas: List<Int> = listOf(0, 1, 2),
     val indice: Int = 0,
     val teto: CgflixMaryanneTeto = CgflixMaryanneTeto.LIVRE,
@@ -255,7 +255,10 @@ private fun Pontinhos(total: Int, atual: Int) {
         repeat(total) { i ->
             Box(
                 Modifier.size(if (i == atual) 10.dp else 8.dp)
-                    .background(if (i == atual) palette.accent else palette.surfaceHighest, CircleShape)
+                    .background(
+                        if (i == atual) palette.accent else palette.surfaceHighest,
+                        CircleShape,
+                    )
             )
         }
     }
@@ -376,7 +379,11 @@ private fun OpcaoTeto(
 }
 
 @Composable
-private fun PaginaPodeAssistir(naoMostrar: Boolean, enabled: Boolean, onNaoMostrar: (Boolean) -> Unit) {
+private fun PaginaPodeAssistir(
+    naoMostrar: Boolean,
+    enabled: Boolean,
+    onNaoMostrar: (Boolean) -> Unit,
+) {
     val palette = MaterialTheme.cgflix
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         repeat(3) {

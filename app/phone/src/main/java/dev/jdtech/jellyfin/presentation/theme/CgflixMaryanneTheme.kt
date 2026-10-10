@@ -69,23 +69,47 @@ val maryanneShapes =
 /** Fredoka (OFL, em res/font, recortada para o latim) só nos títulos; o corpo segue o padrão. */
 private val fredoka =
     FontFamily(
-        Font(R.font.cgflix_fredoka, FontWeight.Normal, variationSettings = FontVariation.Settings(FontVariation.weight(400))),
-        Font(R.font.cgflix_fredoka, FontWeight.Medium, variationSettings = FontVariation.Settings(FontVariation.weight(500))),
-        Font(R.font.cgflix_fredoka, FontWeight.SemiBold, variationSettings = FontVariation.Settings(FontVariation.weight(600))),
-        Font(R.font.cgflix_fredoka, FontWeight.Bold, variationSettings = FontVariation.Settings(FontVariation.weight(700))),
+        Font(
+            R.font.cgflix_fredoka,
+            FontWeight.Normal,
+            variationSettings = FontVariation.Settings(FontVariation.weight(400)),
+        ),
+        Font(
+            R.font.cgflix_fredoka,
+            FontWeight.Medium,
+            variationSettings = FontVariation.Settings(FontVariation.weight(500)),
+        ),
+        Font(
+            R.font.cgflix_fredoka,
+            FontWeight.SemiBold,
+            variationSettings = FontVariation.Settings(FontVariation.weight(600)),
+        ),
+        Font(
+            R.font.cgflix_fredoka,
+            FontWeight.Bold,
+            variationSettings = FontVariation.Settings(FontVariation.weight(700)),
+        ),
     )
 
 val maryanneTypography =
     Typography().let { base ->
         base.copy(
-            displayLarge = base.displayLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            displayMedium = base.displayMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            displaySmall = base.displaySmall.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            headlineLarge = base.headlineLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            headlineMedium = base.headlineMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            headlineSmall = base.headlineSmall.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            titleLarge = base.titleLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
-            titleMedium = base.titleMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.Medium),
+            displayLarge =
+                base.displayLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            displayMedium =
+                base.displayMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            displaySmall =
+                base.displaySmall.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            headlineLarge =
+                base.headlineLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            headlineMedium =
+                base.headlineMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            headlineSmall =
+                base.headlineSmall.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            titleLarge =
+                base.titleLarge.copy(fontFamily = fredoka, fontWeight = FontWeight.SemiBold),
+            titleMedium =
+                base.titleMedium.copy(fontFamily = fredoka, fontWeight = FontWeight.Medium),
             titleSmall = base.titleSmall.copy(fontFamily = fredoka, fontWeight = FontWeight.Medium),
         )
     }

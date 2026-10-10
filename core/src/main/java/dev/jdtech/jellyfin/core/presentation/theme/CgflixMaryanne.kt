@@ -5,8 +5,8 @@ import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.R
 
 /**
- * CGFLIX (Modo Maryanne): tema do modo infantil. Claro, creme com rosa-morango e folhas verdes.
- * Não é escolha de tema: liga sozinho quando o app entra no Modo Maryanne e sai junto com ele.
+ * CGFLIX (Modo Maryanne): tema do modo infantil. Claro, creme com rosa-morango e folhas verdes. Não
+ * é escolha de tema: liga sozinho quando o app entra no Modo Maryanne e sai junto com ele.
  *
  * Contraste sobre o creme #fff7ee (teste `CgflixContrastTest`): [text] 14,2:1, [textMuted] 7,5:1,
  * [accent] 5,4:1, [lilac] 6,3:1, [outline] 3,9:1, [rankNumber] 3,9:1.

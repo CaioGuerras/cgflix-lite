@@ -118,7 +118,7 @@ class CgflixDemoActivity : ComponentActivity() {
                 CompositionLocalProvider(LocalCgflixMaryanne provides maryanne) {
                     when (screen) {
                         "abertura" -> CgflixOpening()
-                        // Apresentação do Modo Maryanne (3 páginas) e a cobertura da troca de sessão
+                        // Apresentação do Modo Maryanne (3 páginas) e a cobertura da sessão
                         "maryanne-1",
                         "maryanne-2",
                         "maryanne-3" ->

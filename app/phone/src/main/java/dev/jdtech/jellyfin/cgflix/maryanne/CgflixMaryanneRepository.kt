@@ -170,11 +170,12 @@ constructor(
         withContext(Dispatchers.IO) {
             val serverId = appPreferences.getValue(appPreferences.currentServer)
             val kid = prefs.getString(PREF_KID, null)?.let(::uuidOuNulo)
-            val pai = prefs.getString(PREF_PAI, null)?.let(::uuidOuNulo)?.let { database.getUser(it) }
+            val pai =
+                prefs.getString(PREF_PAI, null)?.let(::uuidOuNulo)?.let { database.getUser(it) }
             val tokenKid = jellyfinApi.api.accessToken
 
             _cobertura.value = CgflixMaryanneCobertura("Saindo do Modo Maryanne")
-            // Encerra a sessão infantil no servidor (sem conexão, o token fica lá: não trava a saída)
+            // Encerra a sessão infantil no servidor (sem conexão, não trava a saída)
             if (tokenKid != null) {
                 try {
                     val request =
@@ -196,10 +197,12 @@ constructor(
                     userId = pai.id
                 }
             } else {
-                serverId?.let { database.getServer(it) }?.let {
-                    it.currentUserId = null
-                    database.updateServer(it)
-                }
+                serverId
+                    ?.let { database.getServer(it) }
+                    ?.let {
+                        it.currentUserId = null
+                        database.updateServer(it)
+                    }
                 jellyfinApi.apply {
                     api.update(accessToken = null)
                     userId = null
@@ -254,7 +257,8 @@ constructor(
                 401 -> "Sua sessão expirou. Entre de novo na sua conta."
                 403 -> "O Modo Maryanne já está ativo nesta conta."
                 404 -> "Este servidor não tem o Modo Maryanne."
-                409 -> "Já existe um usuário com o nome do Modo Maryanne no servidor. Avise quem cuida do servidor."
+                409 ->
+                    "Já existe um usuário com o nome do Modo Maryanne no servidor. Avise quem cuida do servidor."
                 429 -> "Muitas tentativas. Espere um minuto e tente de novo."
                 else -> "O servidor não conseguiu ativar o Modo Maryanne agora. Tente mais tarde."
             }

@@ -36,9 +36,12 @@ object CgflixAppIcon {
                 else -> ISIS
             }
         val on = ComponentName(context.packageName, target)
-        val offs = listOf(ISIS, HEITOR, MARYANNE).filter { it != target }.map {
-            ComponentName(context.packageName, it)
-        }
+        val offs =
+            listOf(ISIS, HEITOR, MARYANNE)
+                .filter { it != target }
+                .map {
+                    ComponentName(context.packageName, it)
+                }
         if (
             isEnabled(pm, on, default = target == ISIS) &&
                 offs.none { isEnabled(pm, it, default = it.className == ISIS) }

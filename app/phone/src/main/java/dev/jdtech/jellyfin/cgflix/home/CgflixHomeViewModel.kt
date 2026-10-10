@@ -39,7 +39,8 @@ data class CgflixHomeState(
 ) {
     /** Linhas montadas e nenhuma carregando (ou falha): usado pela cobertura do Modo Maryanne. */
     val pronta: Boolean
-        get() = failed || (rows.isNotEmpty() && rowStates.values.none { it == CgflixRowState.Loading })
+        get() =
+            failed || (rows.isNotEmpty() && rowStates.values.none { it == CgflixRowState.Loading })
 }
 
 /**
