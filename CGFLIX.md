@@ -3,6 +3,8 @@
 O CGFLIX Lite é um fork do [Findroid](https://github.com/jarnedemeulemeester/findroid) (GPL-3.0), cliente Jellyfin nativo
 em Kotlin, para celulares simples. O irmão completo é o `CaioGuerras/cgflix-app` (fork do Plezy).
 A licença (GPL-3.0) e os créditos do projeto original são mantidos (`LICENSE`, `README.md` e tela **Sobre** do app).
+O `README.md` é próprio do CGFLIX (o do Findroid saiu em 10/10): numa sincronização com o upstream, conflito nele se
+resolve ficando com o nosso.
 
 ## O que mudou (Etapa 0)
 
