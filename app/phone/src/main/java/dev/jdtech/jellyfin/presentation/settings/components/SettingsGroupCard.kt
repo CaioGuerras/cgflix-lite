@@ -123,6 +123,16 @@ fun SettingsGroupCard(
                 }
             }
         }
+        // CGFLIX: texto de ajuda embaixo do grupo
+        group.cgflixNotaRes?.let {
+            Spacer(Modifier.height(MaterialTheme.spacings.small))
+            Text(
+                text = stringResource(it),
+                modifier = Modifier.padding(horizontal = MaterialTheme.spacings.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
     }
 }
 

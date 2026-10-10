@@ -34,7 +34,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", false)
     val playerMpvHwdec = Preference("pref_player_mpv_hwdec", "mediacodec")
-    val playerMpvVo = Preference("pref_player_mpv_vo", "gpu-next")
+    // CGFLIX: "gpu" é a saída mais leve do mpv para celular simples (era "gpu-next")
+    val playerMpvVo = Preference("pref_player_mpv_vo", "gpu")
     val playerMpvAo = Preference("pref_player_mpv_ao", "aaudio")
 
     // Player - gestures
@@ -98,8 +99,9 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
 
     // Cache
     val imageCache = Preference("pref_image_cache", true)
-    // CGFLIX: cache de imagens em disco de 256 MB por padrão (era 20)
-    val imageCacheSize = Preference("pref_image_cache_size", 256)
+    // CGFLIX: cache de imagens em disco de 128 MB por padrão (era 20): poupa 4G sem lotar
+    // celular com pouco armazenamento
+    val imageCacheSize = Preference("pref_image_cache_size", 128)
 
     // Sorting
     val sortBy = Preference("pref_sort_by", "SortName")

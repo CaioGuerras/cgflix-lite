@@ -19,4 +19,7 @@
     </string-array>
     <!-- CGFLIX: gorjeta opcional (último item das Configurações) -->
     <string name="cgflix_apoio" translatable="false">Apoiar o CGFLIX</string>
+    <!-- CGFLIX: textos de ajuda embaixo dos grupos do reprodutor (Configurações > Reprodutor) -->
+    <string name="cgflix_nota_reprodutor" translatable="false">ExoPlayer (padrão): o mais leve e o que funciona melhor na maioria dos celulares e TV box.\nmpv: use se a legenda de anime aparecer sem cor, fora do lugar ou com letras estranhas. Ele mostra a legenda com o estilo original, mas pesa mais em aparelho simples.</string>
+    <string name="cgflix_nota_mpv" translatable="false">Estas opções só valem quando o reprodutor escolhido é o mpv.\n\n• Decodificação de hardware: mediacodec é o mais leve, porque usa o chip de vídeo do aparelho. Se a imagem ficar verde, preta ou travando, troque para mediacodec-copy. A opção no usa só o processador: é pesada, use como último recurso.\n\n• Saída de vídeo: gpu é a mais leve, indicada para celular simples. gpu-next deixa a imagem um pouco melhor, mas exige mais do aparelho.\n\n• Saída de áudio: aaudio é o padrão. Se o som falhar, picotar ou sair fora de sincronia, tente audiotrack; opensles é a última opção.\n\n• Avançado: arquivos de configuração do mpv, para quem já conhece. Na dúvida, não mexa.</string>
 </resources>

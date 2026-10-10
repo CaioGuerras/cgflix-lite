@@ -73,7 +73,10 @@ fun SettingsLongInputCard(
 
     SettingsNumberInputCard(
         preference = preference,
-        text = listOf(prefix, preference.value, suffix).fastFilterNotNull().joinToString(" "),
+        text =
+            listOf(prefix, preference.value / preference.cgflixEscala, suffix)
+                .fastFilterNotNull()
+                .joinToString(" "),
         onClick = { showDialog = true },
         modifier = modifier,
     )

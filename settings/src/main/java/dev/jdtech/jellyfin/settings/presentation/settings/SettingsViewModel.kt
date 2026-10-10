@@ -359,10 +359,15 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                                             },
                                                                         ),
                                                                     ),
+                                                                // CGFLIX: explica cada opção do mpv
+                                                                cgflixNotaRes =
+                                                                    R.string.cgflix_nota_mpv,
                                                             ),
                                                         ),
                                                 ),
-                                            )
+                                            ),
+                                        // CGFLIX: explica ExoPlayer x mpv
+                                        cgflixNotaRes = R.string.cgflix_nota_reprodutor,
                                     ),
                                     PreferenceGroup(
                                         nameStringResource = R.string.gestures,
@@ -454,14 +459,16 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string.seek_back_increment,
                                                     backendPreference =
                                                         appPreferences.playerSeekBackInc,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                                 PreferenceLongInput(
                                                     nameStringResource =
                                                         R.string.seek_forward_increment,
                                                     backendPreference =
                                                         appPreferences.playerSeekForwardInc,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                                 PreferenceSwitch(
                                                     nameStringResource =
@@ -569,7 +576,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference =
                                                         appPreferences
                                                             .playerMediaSegmentsNextEpisodeThreshold,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                             ),
                                     ),
@@ -716,21 +724,24 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string.settings_request_timeout,
                                                     backendPreference =
                                                         appPreferences.requestTimeout,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                                 PreferenceLongInput(
                                                     nameStringResource =
                                                         R.string.settings_connect_timeout,
                                                     backendPreference =
                                                         appPreferences.connectTimeout,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                                 PreferenceLongInput(
                                                     nameStringResource =
                                                         R.string.settings_socket_timeout,
                                                     backendPreference =
                                                         appPreferences.socketTimeout,
-                                                    suffixRes = R.string.ms,
+                                                    suffixRes = R.string.seconds,
+                                                    cgflixEscala = 1000L, // CGFLIX: em segundos
                                                 ),
                                             )
                                     )
