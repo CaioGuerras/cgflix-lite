@@ -14,4 +14,6 @@ data class PreferenceCategory(
     override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
     val onClick: (Preference) -> Unit = {},
     val nestedPreferenceGroups: List<PreferenceGroup> = emptyList(),
+    // CGFLIX: cor própria do ícone (ARGB), para destacar "Apoie o CGFLIX"
+    val cgflixIconColor: Long? = null,
 ) : Preference

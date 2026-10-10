@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
-/** CGFLIX: tela "Apoiar o CGFLIX" (Configurações → Sobre, e o último item das Configurações). */
+/** CGFLIX: tela "Apoie o CGFLIX" (Configurações → Sobre, e o último item das Configurações). */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun CgflixApoioScreen(navigateBack: () -> Unit, demonstracao: Boolean = false) {

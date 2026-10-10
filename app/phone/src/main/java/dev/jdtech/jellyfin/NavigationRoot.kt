@@ -130,7 +130,7 @@ data class LibraryRoute(
 
 @Serializable data object CgflixMyRequestsRoute
 
-// CGFLIX: "Apoiar o CGFLIX" (gorjeta opcional)
+// CGFLIX: "Apoie o CGFLIX" (gorjeta opcional)
 @Serializable data object CgflixApoioRoute
 
 data class TabBarItem(
@@ -407,6 +407,7 @@ fun NavigationRoot(
                         )
                     },
                     onAbout = { navController.safeNavigate(AboutRoute) },
+                    onApoio = { navController.safeNavigate(CgflixApoioRoute) },
                 )
             }
             composable<CgflixMyRequestsRoute> {

@@ -34,14 +34,33 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing" />
 
+        <!-- CGFLIX: o ícone do app acompanha o tema (Isis roxo, Heitor verde), como no Telegram.
+             Um atalho por ícone; CgflixAppIcon liga um e desliga o outro quando o app sai da tela. -->
+        <activity-alias
+            android:name=".cgflix.IconeIsis"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity-alias>
 
-        </activity>
+        <activity-alias
+            android:name=".cgflix.IconeHeitor"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_heitor"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <receiver
             android:name=".utils.DownloadReceiver"

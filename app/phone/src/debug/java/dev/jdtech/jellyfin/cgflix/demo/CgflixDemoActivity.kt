@@ -150,6 +150,7 @@ class CgflixDemoActivity : ComponentActivity() {
                             onSwitchUser = {},
                             onSettings = {},
                             onAbout = {},
+                            onApoio = {},
                         )
                     "filmes",
                     "series",

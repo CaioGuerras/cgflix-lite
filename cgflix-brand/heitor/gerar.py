@@ -3,7 +3,8 @@
 
 Só troca cores (tabela TROCA, da ordem de serviço do tema Heitor). Rodar da raiz do repositório:
     python3 cgflix-brand/heitor/gerar.py
-Gera cgflix-brand/heitor/*.svg e core/src/main/res/drawable/ic_banner_heitor.xml (vetor do app).
+Gera cgflix-brand/heitor/*.svg e, no app, core/src/main/res/drawable/ic_banner_heitor.xml e
+ic_launcher_foreground_heitor.xml (o ícone do app no tema Heitor, mipmap-anydpi/ic_launcher_heitor.xml).
 """
 import pathlib
 
@@ -39,4 +40,10 @@ drawable = raiz / "core/src/main/res/drawable"
 vetor = trocar((drawable / "ic_banner.xml").read_text(), TROCA_VETOR)
 (drawable / "ic_banner_heitor.xml").write_text(
     "<!-- CGFLIX: marca do tema Heitor, gerada por cgflix-brand/heitor/gerar.py -->\n" + vetor
+)
+
+# Ícone do app no tema Heitor (frente do ícone adaptativo; o fundo é ic_launcher_background_heitor)
+frente = trocar((drawable / "ic_launcher_foreground.xml").read_text(), TROCA_VETOR)
+(drawable / "ic_launcher_foreground_heitor.xml").write_text(
+    "<!-- CGFLIX: ícone do app no tema Heitor, gerado por cgflix-brand/heitor/gerar.py -->\n" + frente
 )

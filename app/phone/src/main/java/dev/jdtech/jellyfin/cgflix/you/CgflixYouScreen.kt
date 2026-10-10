@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.cgflix.apoio.CGFLIX_APOIO_TITULO
+import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioRosa
+import dev.jdtech.jellyfin.cgflix.apoio.apoioDoSabor
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.presentation.theme.cgflix
@@ -66,8 +70,9 @@ constructor(private val database: ServerDatabaseDao, private val appPreferences:
 }
 
 /**
- * CGFLIX (Etapa 1B): aba "Você": trocar usuário, Meus pedidos, Configurações e Sobre (mais
- * Bibliotecas e Favoritos, que saíram da barra). A dedicatória fica só no Sobre.
+ * CGFLIX (Etapa 1B): aba "Você", na ordem pedida pelo Caio (10/10): Favoritos, Bibliotecas e Meus
+ * pedidos; depois Configurações, Trocar usuário e Sobre; por último, "Apoie o CGFLIX" em destaque.
+ * A dedicatória fica só no Sobre.
  */
 @Composable
 fun CgflixYouScreen(
@@ -77,6 +82,7 @@ fun CgflixYouScreen(
     onSwitchUser: () -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
+    onApoio: () -> Unit,
     viewModel: CgflixYouViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -90,6 +96,7 @@ fun CgflixYouScreen(
         onSwitchUser = onSwitchUser,
         onSettings = onSettings,
         onAbout = onAbout,
+        onApoio = onApoio,
     )
 }
 
@@ -103,6 +110,7 @@ fun CgflixYouLayout(
     onSwitchUser: () -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
+    onApoio: () -> Unit,
 ) {
     val safePadding = rememberSafePadding(handleStartInsets = false)
     val palette = MaterialTheme.cgflix
@@ -133,19 +141,35 @@ fun CgflixYouLayout(
             }
         }
         if (!offline) {
-            item { YouItem(CoreR.drawable.ic_cgflix_list_alt, "Meus pedidos", onMyRequests) }
-            item { YouItem(CoreR.drawable.ic_cgflix_video_library, "Bibliotecas", onLibraries) }
             item { YouItem(CoreR.drawable.ic_cgflix_favorite, "Favoritos", onFavorites) }
+            item { YouItem(CoreR.drawable.ic_cgflix_video_library, "Bibliotecas", onLibraries) }
+            item { YouItem(CoreR.drawable.ic_cgflix_list_alt, "Meus pedidos", onMyRequests) }
+            item { HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small)) }
         }
-        item { YouItem(CoreR.drawable.ic_cgflix_switch_account, "Trocar usuário", onSwitchUser) }
-        item { HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small)) }
         item { YouItem(CoreR.drawable.ic_cgflix_settings, "Configurações", onSettings) }
+        item { YouItem(CoreR.drawable.ic_cgflix_switch_account, "Trocar usuário", onSwitchUser) }
         item { YouItem(CoreR.drawable.ic_cgflix_info, "Sobre", onAbout) }
+        if (apoioDoSabor.disponivel()) {
+            item { HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small)) }
+            item {
+                YouItem(
+                    CoreR.drawable.ic_cgflix_heart,
+                    CGFLIX_APOIO_TITULO,
+                    onApoio,
+                    iconTint = CgflixApoioRosa,
+                )
+            }
+        }
     }
 }
 
 @Composable
-private fun YouItem(@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
+private fun YouItem(
+    @DrawableRes icon: Int,
+    label: String,
+    onClick: () -> Unit,
+    iconTint: Color = MaterialTheme.cgflix.lilac,
+) {
     val palette = MaterialTheme.cgflix
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -155,7 +179,7 @@ private fun YouItem(@DrawableRes icon: Int, label: String, onClick: () -> Unit) 
                 .clickable(onClickLabel = label, role = Role.Button, onClick = onClick)
                 .padding(horizontal = MaterialTheme.spacings.default),
     ) {
-        Icon(painterResource(icon), contentDescription = null, tint = palette.lilac)
+        Icon(painterResource(icon), contentDescription = null, tint = iconTint)
         Spacer(Modifier.width(MaterialTheme.spacings.medium))
         Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
         Icon(
