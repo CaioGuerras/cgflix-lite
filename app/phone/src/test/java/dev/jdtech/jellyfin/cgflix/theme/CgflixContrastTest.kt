@@ -3,8 +3,10 @@ package dev.jdtech.jellyfin.cgflix.theme
 import androidx.compose.ui.graphics.Color
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixHeitor
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixMaryanne
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixPalette
 import dev.jdtech.jellyfin.core.presentation.theme.ColorLight
+import dev.jdtech.jellyfin.core.presentation.theme.ColorMaryanne
 import kotlin.math.pow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -69,6 +71,8 @@ class CgflixContrastTest {
 
     @Test fun `Heitor passa nos pares principais`() = checkPalette("Heitor", CgflixHeitor)
 
+    @Test fun `Maryanne passa nos pares principais`() = checkPalette("Maryanne", CgflixMaryanne)
+
     @Test
     fun `esquema claro do Material (Heitor) passa nos pares principais`() {
         with(ColorLight) {
@@ -101,6 +105,41 @@ class CgflixContrastTest {
             assertContrast("outline/surface", outlineLight, surfaceLight, 3.0)
             assertContrast("outline/cartão", outlineLight, surfaceContainerLowestLight, 3.0)
             assertContrast("tertiary/surface", tertiaryLight, surfaceLight, 4.5)
+        }
+    }
+
+    @Test
+    fun `esquema do Material (Maryanne) passa nos pares principais`() {
+        with(ColorMaryanne) {
+            assertContrast("onSurface/surface", onSurface, surface, 4.5)
+            assertContrast("onSurfaceVariant/surface", onSurfaceVariant, surface, 4.5)
+            assertContrast(
+                "onSurfaceVariant/surfaceContainerHigh",
+                onSurfaceVariant,
+                surfaceContainerHigh,
+                4.5,
+            )
+            assertContrast("onSurface/cartão", onSurface, surfaceContainerLowest, 4.5)
+            assertContrast("primary/surface", primary, surface, 4.5)
+            assertContrast("onPrimary/primary", onPrimary, primary, 4.5)
+            assertContrast(
+                "onPrimaryContainer/primaryContainer",
+                onPrimaryContainer,
+                primaryContainer,
+                4.5,
+            )
+            assertContrast("ativo (primary)/pílula", primary, secondaryContainer, 4.5)
+            assertContrast(
+                "onSecondaryContainer/secondaryContainer",
+                onSecondaryContainer,
+                secondaryContainer,
+                4.5,
+            )
+            assertContrast("error/surface", error, surface, 4.5)
+            assertContrast("onError/error", onError, error, 4.5)
+            assertContrast("outline/surface", outline, surface, 3.0)
+            assertContrast("outline/cartão", outline, surfaceContainerLowest, 3.0)
+            assertContrast("tertiary/surface", tertiary, surface, 4.5)
         }
     }
 

@@ -45,6 +45,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestState
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestable
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneCarregando
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneVazio
+import dev.jdtech.jellyfin.cgflix.maryanne.LocalCgflixMaryanne
 import dev.jdtech.jellyfin.cgflix.ui.CgflixBadge
 import dev.jdtech.jellyfin.cgflix.ui.CgflixSectionTitle
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -86,6 +89,8 @@ fun CgflixSearchLayout(
     val safePadding = rememberSafePadding(handleStartInsets = false)
     val focusManager = LocalFocusManager.current
     val palette = MaterialTheme.cgflix
+    // CGFLIX (Modo Maryanne): morangos no "buscando" e no "nada", sem convite para pedir
+    val maryanne = LocalCgflixMaryanne.current
 
     Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { innerPadding ->
         LazyVerticalGrid(
@@ -135,17 +140,29 @@ fun CgflixSearchLayout(
                 state.query.isBlank() ->
                     item(key = "dica", span = { GridItemSpan(maxLineSpan) }) {
                         Text(
-                            "Procure pelo nome. Se ainda não tivermos, dá para pedir aqui mesmo.",
+                            if (maryanne) {
+                                "Procure pelo nome do desenho ou do filme."
+                            } else {
+                                "Procure pelo nome. Se ainda não tivermos, dá para pedir aqui mesmo."
+                            },
                             color = palette.textMuted,
                         )
                     }
                 state.loading || results == null ->
                     item(key = "buscando", span = { GridItemSpan(maxLineSpan) }) {
-                        Text("Buscando…", color = palette.textMuted)
+                        if (maryanne) {
+                            CgflixMaryanneCarregando(texto = "Buscando…")
+                        } else {
+                            Text("Buscando…", color = palette.textMuted)
+                        }
                     }
                 results.isEmpty() ->
                     item(key = "nada", span = { GridItemSpan(maxLineSpan) }) {
-                        Text("Nada com esse nome no CGFLIX.", color = palette.textMuted)
+                        if (maryanne) {
+                            CgflixMaryanneVazio("Nada com esse nome no CGFLIX.")
+                        } else {
+                            Text("Nada com esse nome no CGFLIX.", color = palette.textMuted)
+                        }
                     }
                 else -> {
                     item(key = "nossos", span = { GridItemSpan(maxLineSpan) }) {

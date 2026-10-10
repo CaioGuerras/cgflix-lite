@@ -66,5 +66,7 @@ Todo o crédito do app original é deles. Se você usa Jellyfin e não é do CGF
 
 Licença [GPLv3](LICENSE), a mesma do original. Os ícones são Material Symbols (Apache 2.0, Google). A marca CGFLIX
 fica em `cgflix-brand/`.
+O Modo Maryanne (infantil) usa a fonte [Fredoka](https://github.com/hafontia/Fredoka-One) (© 2016 The Fredoka
+Project Authors, SIL Open Font License 1.1; licença em `cgflix-brand/maryanne/OFL-Fredoka.txt`).
 
 Android é marca registrada da Google LLC. Google Play e o logo do Google Play são marcas registradas da Google LLC.

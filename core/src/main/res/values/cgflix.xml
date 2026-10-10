@@ -11,6 +11,9 @@
     <string name="cgflix_watch" translatable="false">Assistir</string>
     <string name="cgflix_continue" translatable="false">Continuar</string>
     <string name="cgflix_slogan" translatable="false">Aperte o play</string>
+    <!-- CGFLIX (Test Lab, 10/10): login sem usuário e dica do endereço do servidor -->
+    <string name="cgflix_login_empty_username" translatable="false">Digite o nome de usuário</string>
+    <string name="cgflix_address_placeholder" translatable="false">https://netflix.docaio.com.br</string>
     <!-- CGFLIX: fundo da janela (antes do Compose desenhar), sem piscar a cor do Findroid -->
     <color name="cgflix_window_isis">#07060a</color>
     <color name="cgflix_window_heitor">#f4fcee</color>

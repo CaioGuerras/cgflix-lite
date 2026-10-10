@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -176,7 +177,10 @@ private fun UsersScreenLayout(
             onClick = { onAction(UsersAction.OnAddClick) },
             icon = { Icon(painterResource(CoreR.drawable.ic_plus), contentDescription = null) },
             text = { Text(text = stringResource(SetupR.string.users_btn_add_user)) },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
+            modifier =
+                Modifier.align(Alignment.BottomEnd)
+                    .padding(24.dp)
+                    .testTag("usuarios_adicionar"), // CGFLIX: testes
         )
 
         if (openDeleteDialog && selectedUser != null) {

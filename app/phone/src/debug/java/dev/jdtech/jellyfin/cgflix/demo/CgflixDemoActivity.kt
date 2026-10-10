@@ -7,6 +7,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,6 +29,12 @@ import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestable
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRowSpec
 import dev.jdtech.jellyfin.cgflix.logic.cgflixCategoryRows
 import dev.jdtech.jellyfin.cgflix.logic.cgflixHomeRows
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneCobertura
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneCoberturaOverlay
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneIntroLayout
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneIntroState
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneTeto
+import dev.jdtech.jellyfin.cgflix.maryanne.LocalCgflixMaryanne
 import dev.jdtech.jellyfin.cgflix.search.CgflixRequestsSection
 import dev.jdtech.jellyfin.cgflix.search.CgflixSearchLayout
 import dev.jdtech.jellyfin.cgflix.search.CgflixSearchState
@@ -58,7 +65,8 @@ import kotlinx.coroutines.flow.flowOf
  * CGFLIX (só no build de debug): mostra as telas com dados falsos, sem servidor, para o CI tirar
  * capturas no emulador. `adb shell am start -n <pacote>/dev.jdtech.jellyfin.cgflix.demo.
  * CgflixDemoActivity --es tela inicio|filmes|series|animes|busca|voce|abertura|detalhes|
- * configuracoes|login|apoio --es tema isis|heitor`.
+ * configuracoes|login|apoio --es tema isis|heitor`. Com `--es tema maryanne`, as telas do modo
+ * infantil, mais `maryanne-1|maryanne-2|maryanne-3|cobertura`.
  */
 class CgflixDemoActivity : ComponentActivity() {
     private val movies =
@@ -97,104 +105,142 @@ class CgflixDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val screen = intent.getStringExtra("tela") ?: "inicio"
-        val dark = CgflixThemeChoice.from(intent.getStringExtra("tema")).isDark(systemIsDark = true)
+        val maryanne = intent.getStringExtra("tema") == "maryanne"
+        val dark =
+            !maryanne &&
+                CgflixThemeChoice.from(intent.getStringExtra("tema")).isDark(systemIsDark = true)
         val barStyle =
             if (dark) SystemBarStyle.dark(Color.TRANSPARENT)
             else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         enableEdgeToEdge(statusBarStyle = barStyle, navigationBarStyle = barStyle)
         setContent {
-            FindroidTheme(darkTheme = dark, dynamicColor = false) {
-                when (screen) {
-                    "abertura" -> CgflixOpening()
-                    // Gorjeta: Pix no `libre`; no `play`, produtos de exemplo (nada é cobrado)
-                    "apoio" -> CgflixApoioScreen(navigateBack = {}, demonstracao = true)
-                    "detalhes" ->
-                        MovieScreenLayout(
-                            state =
-                                MovieState(
-                                    movie = movies[0],
-                                    videoMetadata = dummyVideoMetadata,
-                                ),
-                            downloaderState = DownloaderState(),
-                            onAction = {},
-                            onDownloaderAction = {},
-                        )
-                    "configuracoes" -> {
-                        val settings = remember { demoSettings(dark) }
-                        val settingsState by settings.state.collectAsState()
-                        SettingsScreenLayout(
-                            title = SettingsR.string.settings_category_interface,
-                            state = settingsState,
-                            onAction = {},
-                        )
+            FindroidTheme(darkTheme = dark, dynamicColor = false, maryanne = maryanne) {
+                CompositionLocalProvider(LocalCgflixMaryanne provides maryanne) {
+                    when (screen) {
+                        "abertura" -> CgflixOpening()
+                        // Apresentação do Modo Maryanne (3 páginas) e a cobertura da sessão
+                        "maryanne-1",
+                        "maryanne-2",
+                        "maryanne-3" ->
+                            CgflixMaryanneIntroLayout(
+                                state =
+                                    CgflixMaryanneIntroState(
+                                        indice = screen.last().digitToInt() - 1,
+                                        teto = CgflixMaryanneTeto.LIVRE,
+                                        naoMostrar = screen == "maryanne-3",
+                                    ),
+                                onFechar = {},
+                                onAvancar = {},
+                                onTeto = {},
+                                onNaoMostrar = {},
+                            )
+                        "cobertura" ->
+                            CgflixMaryanneCoberturaOverlay(
+                                cobertura = CgflixMaryanneCobertura("Modo Maryanne ativado"),
+                                onFechar = {},
+                            )
+                        // Gorjeta: Pix no `libre`; no `play`, produtos de exemplo (nada é cobrado)
+                        "apoio" -> CgflixApoioScreen(navigateBack = {}, demonstracao = true)
+                        "detalhes" ->
+                            MovieScreenLayout(
+                                state =
+                                    MovieState(
+                                        movie = movies[0],
+                                        videoMetadata = dummyVideoMetadata,
+                                    ),
+                                downloaderState = DownloaderState(),
+                                onAction = {},
+                                onDownloaderAction = {},
+                            )
+                        "configuracoes" -> {
+                            val settings = remember { demoSettings(dark) }
+                            val settingsState by settings.state.collectAsState()
+                            SettingsScreenLayout(
+                                title = SettingsR.string.settings_category_interface,
+                                state = settingsState,
+                                onAction = {},
+                            )
+                        }
+                        "login" ->
+                            LoginScreenLayout(
+                                state = LoginState(serverName = "CGFLIX"),
+                                onAction = {},
+                            )
+                        "busca" -> {
+                            val snackbar = remember { SnackbarHostState() }
+                            CgflixSearchLayout(
+                                // No modo a criança não pede (igual ao ViewModel)
+                                state =
+                                    if (maryanne) {
+                                        searchState().copy(requests = CgflixRequestsSection.Idle)
+                                    } else {
+                                        searchState()
+                                    },
+                                snackbar = snackbar,
+                                onQueryChange = {},
+                                onItemClick = {},
+                                onRequest = {},
+                            )
+                        }
+                        // Minha conta: sem foto (aparece a inicial), com o aviso de senha trocada
+                        "conta" ->
+                            CgflixMinhaContaLayout(
+                                state =
+                                    CgflixMinhaContaState(
+                                        perfil = CgflixPerfil(nome = "Isis", fotoUrl = null),
+                                        mensagem =
+                                            "Senha trocada. Nos outros aparelhos e no site, entre de " +
+                                                "novo com a senha nova. Aqui você continua conectado.",
+                                    ),
+                                navigateBack = {},
+                                onTrocarFoto = {},
+                                onRemoverFoto = {},
+                                onTrocarSenha = { _, _, _ -> },
+                            )
+                        "voce" ->
+                            CgflixYouLayout(
+                                state =
+                                    CgflixYouState(
+                                        userName = if (maryanne) "Maryanne" else "Isis",
+                                        serverName = "CGFLIX",
+                                        maryanneTeto = CgflixMaryanneTeto.LIVRE.rotulo,
+                                    ),
+                                offline = false,
+                                maryanne = maryanne,
+                                onMyRequests = {},
+                                onLibraries = {},
+                                onFavorites = {},
+                                onSwitchUser = {},
+                                onSettings = {},
+                                onAbout = {},
+                                onApoio = {},
+                            )
+                        "filmes",
+                        "series",
+                        "animes" -> {
+                            val category =
+                                when (screen) {
+                                    "filmes" -> CgflixCategory.FILMES
+                                    "series" -> CgflixCategory.SERIES
+                                    else -> CgflixCategory.ANIMES
+                                }
+                            val all = remember { flowOf(PagingData.from(itemsOf(category))) }
+                            CgflixCategoryLayout(
+                                category = category,
+                                state = categoryState(category),
+                                items = all.collectAsLazyPagingItems(),
+                                onItemClick = {},
+                                navigateBack = {},
+                            )
+                        }
+                        else ->
+                            CgflixHomeLayout(
+                                state = homeState(),
+                                onRefresh = {},
+                                onCategoryClick = {},
+                                onItemClick = {},
+                            )
                     }
-                    "login" ->
-                        LoginScreenLayout(
-                            state = LoginState(serverName = "CGFLIX"),
-                            onAction = {},
-                        )
-                    "busca" -> {
-                        val snackbar = remember { SnackbarHostState() }
-                        CgflixSearchLayout(
-                            state = searchState(),
-                            snackbar = snackbar,
-                            onQueryChange = {},
-                            onItemClick = {},
-                            onRequest = {},
-                        )
-                    }
-                    // Minha conta: sem foto (aparece a inicial), com o aviso de senha trocada
-                    "conta" ->
-                        CgflixMinhaContaLayout(
-                            state =
-                                CgflixMinhaContaState(
-                                    perfil = CgflixPerfil(nome = "Isis", fotoUrl = null),
-                                    mensagem =
-                                        "Senha trocada. Nos outros aparelhos e no site, entre de " +
-                                            "novo com a senha nova. Aqui você continua conectado.",
-                                ),
-                            navigateBack = {},
-                            onTrocarFoto = {},
-                            onRemoverFoto = {},
-                            onTrocarSenha = { _, _, _ -> },
-                        )
-                    "voce" ->
-                        CgflixYouLayout(
-                            state = CgflixYouState(userName = "Isis", serverName = "CGFLIX"),
-                            offline = false,
-                            onMyRequests = {},
-                            onLibraries = {},
-                            onFavorites = {},
-                            onSwitchUser = {},
-                            onSettings = {},
-                            onAbout = {},
-                            onApoio = {},
-                        )
-                    "filmes",
-                    "series",
-                    "animes" -> {
-                        val category =
-                            when (screen) {
-                                "filmes" -> CgflixCategory.FILMES
-                                "series" -> CgflixCategory.SERIES
-                                else -> CgflixCategory.ANIMES
-                            }
-                        val all = remember { flowOf(PagingData.from(itemsOf(category))) }
-                        CgflixCategoryLayout(
-                            category = category,
-                            state = categoryState(category),
-                            items = all.collectAsLazyPagingItems(),
-                            onItemClick = {},
-                            navigateBack = {},
-                        )
-                    }
-                    else ->
-                        CgflixHomeLayout(
-                            state = homeState(),
-                            onRefresh = {},
-                            onCategoryClick = {},
-                            onItemClick = {},
-                        )
                 }
             }
         }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CGFLIX: ícone do app no Modo Maryanne (morango); trocado por CgflixAppIcon -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background_maryanne"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground_maryanne"/>
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome_maryanne"/>
+</adaptive-icon>

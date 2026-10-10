@@ -35,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -156,7 +157,7 @@ internal fun LoginScreenLayout(
                     KeyboardOptions(autoCorrectEnabled = false, imeAction = ImeAction.Next),
                 isError = state.error != null,
                 enabled = !state.isLoading,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("login_usuario"), // CGFLIX: testes
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -201,13 +202,13 @@ internal fun LoginScreenLayout(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("login_senha"), // CGFLIX: testes
             )
             LoadingButton(
                 text = stringResource(SetupR.string.login_btn_login),
                 onClick = { doLogin() },
                 isLoading = state.isLoading,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("login_entrar"), // CGFLIX: testes
             )
             // CGFLIX: conexão rápida escondida na interface (continua ligada no servidor)
             AnimatedVisibility(CGFLIX_SHOW_QUICK_CONNECT && state.quickConnectEnabled) {

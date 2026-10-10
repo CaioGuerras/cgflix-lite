@@ -23,6 +23,7 @@ import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.cgflix.CgflixAppIcon
 import dev.jdtech.jellyfin.cgflix.applyCgflixNightMode
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneRepository
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixThemeChoice
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
@@ -37,6 +38,8 @@ import timber.log.Timber
 @HiltAndroidApp
 class BaseApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory {
     @Inject lateinit var appPreferences: AppPreferences
+
+    @Inject lateinit var maryanne: CgflixMaryanneRepository
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
 
@@ -55,8 +58,9 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             this,
             CgflixThemeChoice.from(appPreferences.getValue(appPreferences.cgflixTheme)),
         )
-        // CGFLIX: ícone do app conforme o tema (troca quando o app sai da tela)
-        CgflixAppIcon.syncWhenInBackground(this) {
+        // CGFLIX: ícone do app conforme o tema ou o morango do Modo Maryanne (troca quando o app
+        // sai da tela)
+        CgflixAppIcon.syncWhenInBackground(this, currentMaryanne = { maryanne.isAtivo }) {
             CgflixThemeChoice.from(appPreferences.getValue(appPreferences.cgflixTheme))
         }
 

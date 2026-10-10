@@ -55,6 +55,15 @@ class LoginViewModel @Inject constructor(private val repository: SetupRepository
 
     private fun login(username: String, password: String) {
         viewModelScope.launch {
+            // CGFLIX: sem usuário o servidor responde 400 e o app mostrava "Erro desconhecido"
+            if (username.isBlank()) {
+                _state.emit(
+                    _state.value.copy(
+                        error = UiText.StringResource(CoreR.string.cgflix_login_empty_username)
+                    )
+                )
+                return@launch
+            }
             try {
                 _state.emit(_state.value.copy(isLoading = true, error = null))
                 repository.login(username, password)

@@ -1,0 +1,27 @@
+<!-- CGFLIX: ícone do app no Modo Maryanne, gerado por cgflix-brand/maryanne/gerar.py -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <group android:scaleX="0.06410" android:scaleY="0.06410" android:translateX="21.949" android:translateY="18.744">
+    <path android:pathData="M500 950C350 910 165 740 155 525C150 360 270 300 400 320C450 328 480 340 500 345C520 340 550 328 600 320C730 300 850 360 845 525C835 740 650 910 500 950Z">
+      <aapt:attr name="android:fillColor">
+        <gradient android:type="linear" android:startX="500" android:startY="320" android:endX="500" android:endY="940">
+          <item android:offset="0" android:color="#ff8aa3"/>
+          <item android:offset="0.45" android:color="#e8395f"/>
+          <item android:offset="1" android:color="#b81d47"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path android:pathData="M262 470C228 545 238 645 292 712C300 650 302 560 326 492C310 470 284 462 262 470Z" android:fillColor="#ffffff" android:fillAlpha="0.35"/>
+    <path android:pathData="M693 482A15 22 0 1 0 723 482A15 22 0 1 0 693 482ZM199 652A15 22 0 1 0 229 652A15 22 0 1 0 199 652ZM753 618A15 22 0 1 0 783 618A15 22 0 1 0 753 618ZM307 760A15 22 0 1 0 337 760A15 22 0 1 0 307 760ZM663 760A15 22 0 1 0 693 760A15 22 0 1 0 663 760ZM485 876A15 22 0 1 0 515 876A15 22 0 1 0 485 876ZM403 834A15 22 0 1 0 433 834A15 22 0 1 0 403 834ZM567 834A15 22 0 1 0 597 834A15 22 0 1 0 567 834ZM357 612A15 22 0 1 0 387 612A15 22 0 1 0 357 612ZM631 508A15 22 0 1 0 661 508A15 22 0 1 0 631 508Z" android:fillColor="#ffe7a3"/>
+    <path android:pathData="M446 548L446 712L586 630Z" android:fillColor="#ffffff" android:strokeColor="#ffffff" android:strokeWidth="40" android:strokeLineJoin="round"/>
+    <path android:pathData="M500 338C500 272 522 212 572 162" android:strokeColor="#2e7d32" android:strokeWidth="44" android:strokeLineCap="round"/>
+    <path android:pathData="M500 330C420 288 300 298 228 362C320 404 420 392 500 348Z" android:fillColor="#43a047"/>
+    <path android:pathData="M500 330C580 288 700 298 772 362C680 404 580 392 500 348Z" android:fillColor="#43a047"/>
+    <path android:pathData="M502 336C450 362 400 420 378 482C452 462 492 410 512 348Z" android:fillColor="#2e7d32"/>
+    <path android:pathData="M498 336C550 362 600 420 622 482C548 462 508 410 488 348Z" android:fillColor="#2e7d32"/>
+  </group>
+</vector>

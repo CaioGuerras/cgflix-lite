@@ -58,6 +58,15 @@ for tema in isis heitor; do
   done
 done
 
+# Modo Maryanne (infantil): apresentação, cobertura e as telas no tema creme e morango
+n=1
+for tela in maryanne-1 maryanne-2 maryanne-3 cobertura inicio busca voce; do
+  adb shell am start -S -W -n "$DEMO" --es tela "$tela" --es tema maryanne > /dev/null
+  sleep 4
+  adb exec-out screencap -p > "$OUT/maryanne-$n-$tela.png"
+  n=$((n + 1))
+done
+
 # Gorjeta no sabor `play` (mesmo pacote e mesma chave de debug: instala por cima do `libre`)
 adb install -r demo-play.apk
 adb shell cmd locale set-app-locales "$PKG.debug" --locales pt-BR
