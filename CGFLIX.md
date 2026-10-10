@@ -139,6 +139,19 @@ Pedidos do Caio no teste da 1.4.0: textos naturais, segundos no lugar de ms, aju
 | Celular simples | Cache de imagens em disco 256 → **128 MB** (é limite, não reserva; não pesa na memória). Saída de vídeo do mpv `gpu-next` → **`gpu`** (mais leve). Padrões só valem para quem nunca mudou a opção | `AppPreferences.kt` |
 | Versão | 1.4.1 (61) | `buildSrc/src/main/kotlin/Versions.kt` |
 
+## O que mudou (menu Você e ícone do tema, versão 1.4.2 (62))
+
+Pedidos do Caio de 10/10 (prints no tema Heitor).
+
+| Item | Mudança | Arquivos |
+|---|---|---|
+| Sem Favoritos em Bibliotecas | Saiu o atalho de Favoritos da grade de Bibliotecas (já está no menu Você). `FavoritesCard.kt` continua no projeto | `MediaScreen.kt` |
+| Menu Você | Ordem: Favoritos · Bibliotecas · Meus pedidos ─ Configurações · Trocar usuário · Sobre ─ Apoie o CGFLIX. Off-line esconde os 3 primeiros, como antes. "Apoie o CGFLIX" só aparece onde o sabor tem apoio | `CgflixYouScreen.kt`, `NavigationRoot.kt`, `CgflixDemoActivity.kt` |
+| Apoio em destaque | Nome "Apoie o CGFLIX"; coração preenchido em rosa `#ec4899` (igual nos dois temas, fora do tom monocromático) no Você e nas Configurações. Campo novo `PreferenceCategory.cgflixIconColor`. Texto novo: "O CGFLIX Lite é grátis e vai continuar grátis. Se você gosta de usar, pode dar uma força para manter o projeto." | `Apoio.kt`, `PreferenceCategory.kt`, `SettingsCategoryCard.kt`, `SettingsViewModel.kt`, `ic_cgflix_heart_filled.xml`, `values/cgflix.xml` |
+| Ícone acompanha o tema | Como no Telegram: dois `activity-alias` (`.cgflix.IconeIsis`, ligado por padrão, e `.cgflix.IconeHeitor`, ícone verde). Tema Heitor liga o verde; Isis e automático ficam com o roxo. A troca é feita quando o app sai da tela (`CgflixAppIcon.syncWhenInBackground`), porque alguns aparelhos fecham o app na troca. `MainActivity` continua exportada (sem intent-filter) para o `am start -n` do CI | `AndroidManifest.xml`, `CgflixAppIcon.kt`, `BaseApplication.kt`, `ic_launcher_heitor.xml`, `ic_launcher_foreground_heitor.xml` (gerado por `cgflix-brand/heitor/gerar.py`), `ic_launcher_background.xml` |
+| Minha conta (foto e senha) | O topo do Você (foto, nome, "Minha conta: foto e senha") abre a tela nova. Foto: galeria do sistema (sem permissão), quadrado central de 512 px em JPEG, enviada em base64 para `POST /UserImage`; "Remover foto". Senha: atual + nova + confirmar, `POST /Users/Password`; senha atual errada (403) avisa que a conta bloqueia depois de várias tentativas. O servidor derruba as outras sessões e mantém a deste aparelho. Off-line o topo não abre nada. Testado no Jellyfin 10.11.11 em 10/10 com o `teste-cgflix` | `cgflix/conta/CgflixContaRepository.kt`, `cgflix/conta/CgflixMinhaContaScreen.kt`, `CgflixYouScreen.kt`, `NavigationRoot.kt`, `CgflixDemoActivity.kt` (tela `conta`), `cgflix-telas.sh` |
+| Versão | 1.4.2 (62) | `buildSrc/src/main/kotlin/Versions.kt` |
+
 ## Assinatura do APK
 
 Os quatro secrets já existem neste repositório (keystore PKCS12, alias `cgflix`) e o workflow assina com eles em push e PRs

@@ -35,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioScreen
+import dev.jdtech.jellyfin.cgflix.conta.CgflixMinhaContaScreen
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryScreen
 import dev.jdtech.jellyfin.cgflix.home.CgflixHomeScreen
 import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
@@ -130,8 +131,11 @@ data class LibraryRoute(
 
 @Serializable data object CgflixMyRequestsRoute
 
-// CGFLIX: "Apoiar o CGFLIX" (gorjeta opcional)
+// CGFLIX: "Apoie o CGFLIX" (gorjeta opcional)
 @Serializable data object CgflixApoioRoute
+
+// CGFLIX: Minha conta (foto e senha)
+@Serializable data object CgflixMinhaContaRoute
 
 data class TabBarItem(
     @param:StringRes val title: Int,
@@ -407,6 +411,8 @@ fun NavigationRoot(
                         )
                     },
                     onAbout = { navController.safeNavigate(AboutRoute) },
+                    onApoio = { navController.safeNavigate(CgflixApoioRoute) },
+                    onMinhaConta = { navController.safeNavigate(CgflixMinhaContaRoute) },
                 )
             }
             composable<CgflixMyRequestsRoute> {
@@ -562,6 +568,9 @@ fun NavigationRoot(
             }
             composable<CgflixApoioRoute> {
                 CgflixApoioScreen(navigateBack = { navController.safePopBackStack() })
+            }
+            composable<CgflixMinhaContaRoute> {
+                CgflixMinhaContaScreen(navigateBack = { navController.safePopBackStack() })
             }
         }
     }

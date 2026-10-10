@@ -50,7 +50,7 @@ adb install -r demo.apk
 adb shell cmd locale set-app-locales "$PKG.debug" --locales pt-BR
 for tema in isis heitor; do
   n=1
-  for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce apoio; do
+  for tela in abertura login inicio detalhes configuracoes filmes series animes busca voce conta apoio; do
     adb shell am start -S -W -n "$DEMO" --es tela "$tela" --es tema "$tema" > /dev/null
     sleep 4
     adb exec-out screencap -p > "$OUT/$tema-$n-$tela.png"

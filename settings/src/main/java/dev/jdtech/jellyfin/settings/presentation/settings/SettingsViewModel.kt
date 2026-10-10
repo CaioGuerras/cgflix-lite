@@ -813,7 +813,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                     listOf(
                         PreferenceCategory(
                             nameStringResource = R.string.cgflix_apoio,
-                            iconDrawableId = R.drawable.ic_cgflix_heart_outline,
+                            iconDrawableId = R.drawable.ic_cgflix_heart_filled,
+                            cgflixIconColor = 0xFFEC4899, // CGFLIX: rosa, fora do tom do tema
                             supportedDeviceTypes = listOf(DeviceType.PHONE),
                             onClick = {
                                 viewModelScope.launch {
