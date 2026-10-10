@@ -169,7 +169,13 @@ class CgflixDemoActivity : ComponentActivity() {
                         "busca" -> {
                             val snackbar = remember { SnackbarHostState() }
                             CgflixSearchLayout(
-                                state = searchState(),
+                                // No modo a criança não pede (igual ao ViewModel)
+                                state =
+                                    if (maryanne) {
+                                        searchState().copy(requests = CgflixRequestsSection.Idle)
+                                    } else {
+                                        searchState()
+                                    },
                                 snackbar = snackbar,
                                 onQueryChange = {},
                                 onItemClick = {},
