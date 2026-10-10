@@ -35,13 +35,9 @@ object CgflixAppIcon {
                 choice == CgflixThemeChoice.HEITOR -> HEITOR
                 else -> ISIS
             }
-        val on = ComponentName(context.packageName, target)
-        val offs =
-            listOf(ISIS, HEITOR, MARYANNE)
-                .filter { it != target }
-                .map {
-                    ComponentName(context.packageName, it)
-                }
+        val pkg = context.packageName
+        val on = ComponentName(pkg, target)
+        val offs = (listOf(ISIS, HEITOR, MARYANNE) - target).map { ComponentName(pkg, it) }
         if (
             isEnabled(pm, on, default = target == ISIS) &&
                 offs.none { isEnabled(pm, it, default = it.className == ISIS) }
