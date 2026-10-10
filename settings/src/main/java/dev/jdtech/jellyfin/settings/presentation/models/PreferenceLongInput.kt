@@ -17,4 +17,6 @@ data class PreferenceLongInput(
     @param:StringRes val prefixRes: Int? = null,
     @param:StringRes val suffixRes: Int? = null,
     val value: Long = -1L,
+    // CGFLIX: valor guardado em ms e mostrado/editado em segundos (cgflixEscala = 1000)
+    val cgflixEscala: Long = 1L,
 ) : Preference

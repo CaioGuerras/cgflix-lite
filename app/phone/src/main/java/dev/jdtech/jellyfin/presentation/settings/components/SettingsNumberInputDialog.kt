@@ -62,8 +62,10 @@ fun SettingsLongInputDialog(
 
     SettingsNumberInputDialog(
         preference = preference,
-        initialValue = preference.value.toString(),
-        onUpdate = { value -> value.toLongOrNull()?.let { value -> onUpdate(value) } },
+        initialValue = (preference.value / preference.cgflixEscala).toString(),
+        onUpdate = { value ->
+            value.toLongOrNull()?.let { value -> onUpdate(value * preference.cgflixEscala) }
+        },
         onDismissRequest = onDismissRequest,
         suffix = suffix,
     )

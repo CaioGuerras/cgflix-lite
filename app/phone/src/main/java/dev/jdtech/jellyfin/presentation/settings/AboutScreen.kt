@@ -167,11 +167,12 @@ fun AboutScreen(navigateBack: () -> Unit, navigateToApoio: () -> Unit = {}) {
                                 horizontalArrangement =
                                     Arrangement.spacedBy(MaterialTheme.spacings.small)
                             ) {
+                                // CGFLIX: código-fonte do CGFLIX Lite (GPL-3.0)
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
                                             uriHandler.openUri(
-                                                "https://github.com/jarnedemeulemeester/findroid"
+                                                "https://github.com/CaioGuerras/cgflix-lite"
                                             )
                                         } catch (e: IllegalArgumentException) {
                                             Toast.makeText(
@@ -188,30 +189,8 @@ fun AboutScreen(navigateBack: () -> Unit, navigateToApoio: () -> Unit = {}) {
                                         contentDescription = null,
                                     )
                                 }
-                                // CGFLIX: sem link de pagamento externo no sabor `play` (regra da
-                                // Play); os créditos do Findroid seguem no GitHub acima
-                                if (BuildConfig.FLAVOR != "play")
-                                    FilledTonalIconButton(
-                                        onClick = {
-                                            try {
-                                                uriHandler.openUri(
-                                                    "https://ko-fi.com/jarnedemeulemeester"
-                                                )
-                                            } catch (e: IllegalArgumentException) {
-                                                Toast.makeText(
-                                                        context,
-                                                        e.localizedMessage,
-                                                        Toast.LENGTH_SHORT,
-                                                    )
-                                                    .show()
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(CoreR.drawable.ic_coffee),
-                                            contentDescription = null,
-                                        )
-                                    }
+                                // CGFLIX: sem o Ko-fi do autor do Findroid (o apoio é o do CGFLIX,
+                                // acima); os créditos do Findroid ficam no texto e no código-fonte
                             }
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
                         }

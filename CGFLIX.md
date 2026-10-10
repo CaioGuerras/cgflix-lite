@@ -86,7 +86,7 @@ Gorjeta **opcional** pelo app: não destrava nada, sem anúncio, sem pop-up, sem
 | Sabor | Arquivo | Para onde vai | Gorjeta | Comando |
 |---|---|---|---|---|
 | `libre` | `.apk` (artifact `cgflix-lite-apk`, Release das tags `v*`) | VPS / GitHub (instalação direta) | **Pix** (QR + copia e cola + chave). Sem a biblioteca de Billing e sem a permissão `com.android.vending.BILLING` | `./gradlew :app:phone:assembleLibreRelease` |
-| `play` | `.aab` (artifact `cgflix-lite-aab`) | Google Play | **Google Play Billing** (3 consumíveis). Nenhum código, texto ou recurso de Pix; sem o botão Ko-fi do Findroid no Sobre | `./gradlew :app:phone:bundlePlayRelease` |
+| `play` | `.aab` (artifact `cgflix-lite-aab`) | Google Play | **Google Play Billing** (3 consumíveis). Nenhum código, texto ou recurso de Pix; (o Sobre não tem o Ko-fi do Findroid em nenhum sabor desde a 1.4.1) | `./gradlew :app:phone:bundlePlayRelease` |
 
 A Play exige o Play Billing para pagamento de coisa digital dentro do app (política de Pagamentos); Pix ou link externo
 no app da Play é proibido. Por isso a separação. Os módulos (`core`, `tv`) só têm `libre`; o `play` do celular usa o
@@ -125,6 +125,19 @@ no app da Play é proibido. Por isso a separação. Os módulos (`core`, `tv`) s
 5. Conferir: comprar a pequena → "Obrigado pelo apoio!"; comprar de novo funciona (consumível). Pendente → aviso; quando
    o cartão de teste aprovar, a gorjeta é consumida na próxima abertura do app. Em Monetizar → Pedidos aparecem as
    compras de teste.
+
+## O que mudou (configurações mais claras, versão 1.4.1 (61))
+
+Pedidos do Caio no teste da 1.4.0: textos naturais, segundos no lugar de ms, ajuda do reprodutor e padrões para celular simples.
+
+| Item | Mudança | Arquivos |
+|---|---|---|
+| Segundos na tela | Avançar/voltar, "Próximo episódio" e os 3 tempos-limite de rede aparecem e são editados em **s**; o valor continua guardado em ms (nada muda para quem já configurou). Campo novo `PreferenceLongInput.cgflixEscala` (1 = como no original; 1000 = ms ↔ s) | `PreferenceLongInput.kt`, `SettingsNumberInputCard.kt`, `SettingsNumberInputDialog.kt`, `SettingsViewModel.kt` |
+| Ajuda embaixo do grupo | Campo novo `PreferenceGroup.cgflixNotaRes`, desenhado em texto pequeno abaixo do cartão (só celular). Usado em Reprodutor (ExoPlayer × mpv) e em Opções do mpv (o que é cada opção e qual usar em celular simples) | `PreferenceGroup.kt`, `SettingsGroupCard.kt`, `SettingsViewModel.kt`, `values/cgflix.xml` (`cgflix_nota_*`) |
+| Textos pt-BR | "Buscando/Incremento" → "Avançar e voltar / Avançar quantos segundos"; "Segmentos de Mídia" → "Pular abertura e créditos"; "Intro/Extra" → "Abertura/Créditos finais"; "Back-end do player" → "Reprodutor de vídeo"; tempos-limite e cache em linguagem simples; acento em "Saída de vídeo" | `settings/src/main/res/values-pt-rBR/strings.xml` |
+| Sobre | O ícone do GitHub abre o código do CGFLIX Lite (`CaioGuerras/cgflix-lite`), não o do Findroid; sem o Ko-fi do autor do Findroid (o apoio é o "Apoiar o CGFLIX"). Créditos do Findroid seguem no texto do Sobre, na lista de bibliotecas e no README | `AboutScreen.kt` |
+| Celular simples | Cache de imagens em disco 256 → **128 MB** (é limite, não reserva; não pesa na memória). Saída de vídeo do mpv `gpu-next` → **`gpu`** (mais leve). Padrões só valem para quem nunca mudou a opção | `AppPreferences.kt` |
+| Versão | 1.4.1 (61) | `buildSrc/src/main/kotlin/Versions.kt` |
 
 ## Assinatura do APK
 
