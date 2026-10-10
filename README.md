@@ -1,6 +1,8 @@
 > **CGFLIX Lite** é um fork do Findroid feito para a família e amigos do CGFLIX (servidor Jellyfin particular).
 > Veja as mudanças em [CGFLIX.md](CGFLIX.md). Todo o crédito do app original é de
 > [Jarne de Meulemeester e colaboradores](https://github.com/jarnedemeulemeester/findroid) (GPL-3.0).
+> O Modo Maryanne (infantil) usa a fonte [Fredoka](https://github.com/hafontia/Fredoka-One) (© 2016 The Fredoka
+> Project Authors, SIL Open Font License 1.1; licença em `cgflix-brand/maryanne/OFL-Fredoka.txt`).
 > O texto abaixo é o README original do Findroid.
 
 ![Findroid banner](images/findroid-banner.png)

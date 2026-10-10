@@ -1,0 +1,14 @@
+<!-- CGFLIX: ícone monocromático do Modo Maryanne, gerado por cgflix-brand/maryanne/gerar.py -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <group android:scaleX="0.06410" android:scaleY="0.06410" android:translateX="21.949" android:translateY="18.744">
+    <path android:pathData="M500 950C350 910 165 740 155 525C150 360 270 300 400 320C450 328 480 340 500 345C520 340 550 328 600 320C730 300 850 360 845 525C835 740 650 910 500 950ZM446 548L446 712L586 630Z" android:fillColor="#ffffff" android:fillType="evenOdd"/>
+    <path android:pathData="M500 338C500 272 522 212 572 162" android:strokeColor="#ffffff" android:strokeWidth="44" android:strokeLineCap="round"/>
+    <path android:pathData="M500 330C420 288 300 298 228 362C320 404 420 392 500 348Z" android:fillColor="#ffffff"/>
+    <path android:pathData="M500 330C580 288 700 298 772 362C680 404 580 392 500 348Z" android:fillColor="#ffffff"/>
+  </group>
+</vector>

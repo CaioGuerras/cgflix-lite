@@ -192,6 +192,14 @@ fun AboutScreen(navigateBack: () -> Unit, navigateToApoio: () -> Unit = {}) {
                                 // CGFLIX: sem o Ko-fi do autor do Findroid (o apoio é o do CGFLIX,
                                 // acima); os créditos do Findroid ficam no texto e no código-fonte
                             }
+                            // CGFLIX: crédito da fonte do Modo Maryanne (a licença exige)
+                            Spacer(Modifier.height(MaterialTheme.spacings.small))
+                            Text(
+                                text =
+                                    "Títulos do Modo Maryanne: fonte Fredoka, © 2016 The Fredoka " +
+                                        "Project Authors, SIL Open Font License 1.1.",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
                             Spacer(Modifier.height(MaterialTheme.spacings.small))
                         }
                     }

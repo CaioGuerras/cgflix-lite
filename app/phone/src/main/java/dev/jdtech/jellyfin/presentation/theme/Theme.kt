@@ -15,17 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixHeitor
 import dev.jdtech.jellyfin.core.presentation.theme.CgflixIsis
+import dev.jdtech.jellyfin.core.presentation.theme.CgflixMaryanne
 import dev.jdtech.jellyfin.core.presentation.theme.Spacings
 
 @Composable
 fun FindroidTheme(
     darkTheme: Boolean? = isSystemInDarkTheme(), // CGFLIX: escuro = Isis, claro = Heitor
     dynamicColor: Boolean = true,
+    // CGFLIX (Modo Maryanne): tema infantil claro; vence o escuro/claro e as cores dinâmicas
+    maryanne: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val darkTheme = darkTheme ?: isSystemInDarkTheme()
     val colorScheme =
         when {
+            maryanne -> maryanneScheme
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -34,12 +38,21 @@ fun FindroidTheme(
             else -> lightScheme
         }
 
-    MaterialTheme(colorScheme = colorScheme, shapes = shapes) {
+    MaterialTheme(
+        colorScheme = colorScheme,
+        shapes = if (maryanne) maryanneShapes else shapes,
+        typography = if (maryanne) maryanneTypography else MaterialTheme.typography,
+    ) {
         CompositionLocalProvider(
             LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
             LocalSpacings provides Spacings,
             // CGFLIX: paleta da marca do tema ativo (Isis escuro, Heitor claro)
-            LocalCgflixPalette provides if (darkTheme) CgflixIsis else CgflixHeitor,
+            LocalCgflixPalette provides
+                when {
+                    maryanne -> CgflixMaryanne
+                    darkTheme -> CgflixIsis
+                    else -> CgflixHeitor
+                },
         ) {
             // CGFLIX: fundo do tema por baixo de todas as telas. Sem ele, telas sem Scaffold
             // (Login, Início, Você, fim de Detalhes) mostravam o fundo da janela, que segue o modo

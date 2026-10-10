@@ -37,7 +37,7 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <!-- CGFLIX: o ícone do app acompanha o tema (Isis roxo, Heitor verde), como no Telegram.
-             Um atalho por ícone; CgflixAppIcon liga um e desliga o outro quando o app sai da tela. -->
+             Um atalho por ícone (o morango é o do Modo Maryanne); CgflixAppIcon liga um e desliga os outros quando o app sai da tela. -->
         <activity-alias
             android:name=".cgflix.IconeIsis"
             android:enabled="true"
@@ -55,6 +55,18 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_heitor"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".cgflix.IconeMaryanne"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_maryanne"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

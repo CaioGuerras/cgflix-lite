@@ -39,6 +39,8 @@ import dev.jdtech.jellyfin.cgflix.conta.CgflixMinhaContaScreen
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryScreen
 import dev.jdtech.jellyfin.cgflix.home.CgflixHomeScreen
 import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneIntroScreen
+import dev.jdtech.jellyfin.cgflix.maryanne.LocalCgflixMaryanne
 import dev.jdtech.jellyfin.cgflix.search.CgflixSearchScreen
 import dev.jdtech.jellyfin.cgflix.you.CgflixMyRequestsScreen
 import dev.jdtech.jellyfin.cgflix.you.CgflixYouScreen
@@ -137,6 +139,9 @@ data class LibraryRoute(
 // CGFLIX: Minha conta (foto e senha)
 @Serializable data object CgflixMinhaContaRoute
 
+// CGFLIX (Modo Maryanne): apresentação e ativação do modo infantil
+@Serializable data object CgflixMaryanneIntroRoute
+
 data class TabBarItem(
     @param:StringRes val title: Int,
     @param:DrawableRes val icon: Int,
@@ -190,6 +195,7 @@ fun NavigationRoot(
     hasCurrentUser: Boolean,
 ) {
     val isOfflineMode = LocalOfflineMode.current
+    val maryanne = LocalCgflixMaryanne.current
 
     val startDestination =
         when {
@@ -199,10 +205,13 @@ fun NavigationRoot(
             else -> WelcomeRoute
         }
 
+    // CGFLIX (Modo Maryanne): sem Baixados no modo infantil
     val navigationItems =
-        when (isOfflineMode) {
-            false -> listOf(homeTab, cgflixSearchTab, downloadsTab, cgflixYouTab)
-            true -> listOf(homeTab, downloadsTab, cgflixYouTab)
+        when {
+            maryanne && !isOfflineMode -> listOf(homeTab, cgflixSearchTab, cgflixYouTab)
+            maryanne -> listOf(homeTab, cgflixYouTab)
+            !isOfflineMode -> listOf(homeTab, cgflixSearchTab, downloadsTab, cgflixYouTab)
+            else -> listOf(homeTab, downloadsTab, cgflixYouTab)
         }
     val navigationItemClassNames = navigationItems.map { it.route::class.qualifiedName }
 
@@ -413,6 +422,21 @@ fun NavigationRoot(
                     onAbout = { navController.safeNavigate(AboutRoute) },
                     onApoio = { navController.safeNavigate(CgflixApoioRoute) },
                     onMinhaConta = { navController.safeNavigate(CgflixMinhaContaRoute) },
+                    onMaryanne = { navController.safeNavigate(CgflixMaryanneIntroRoute) },
+                    onMaryanneSaiu = { voltouParaOPai ->
+                        // Sessão trocada: a pilha antiga é do outro usuário
+                        if (voltouParaOPai) {
+                            navController.safeNavigate(HomeRoute) { popUpTo(0) }
+                        } else {
+                            navController.safeNavigate(UsersRoute) { popUpTo(0) }
+                        }
+                    },
+                )
+            }
+            composable<CgflixMaryanneIntroRoute> {
+                CgflixMaryanneIntroScreen(
+                    navigateBack = { navController.safePopBackStack() },
+                    onAtivado = { navController.safeNavigate(HomeRoute) { popUpTo(0) } },
                 )
             }
             composable<CgflixMyRequestsRoute> {

@@ -46,6 +46,7 @@ fun CgflixHomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(true) { viewModel.load() }
+    LaunchedEffect(state.pronta) { if (state.pronta) viewModel.avisarPronta() }
     CgflixHomeLayout(
         state = state,
         onRefresh = { viewModel.load(force = true) },
