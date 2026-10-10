@@ -53,7 +53,7 @@ fun AddServerAddressDialog(onAdd: (address: String) -> Unit, onDismiss: () -> Un
             onValueChange = { textFieldValue = it },
             modifier =
                 Modifier.padding(contentPadding).fillMaxWidth().focusRequester(focusRequester),
-            placeholder = { Text("http://<server_ip>:8096") },
+            placeholder = { Text(stringResource(CoreR.string.cgflix_address_placeholder)) },
             keyboardOptions =
                 KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Done),
             singleLine = true,
