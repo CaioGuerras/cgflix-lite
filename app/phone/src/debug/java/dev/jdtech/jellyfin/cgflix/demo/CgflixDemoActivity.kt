@@ -13,6 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioScreen
+import dev.jdtech.jellyfin.cgflix.conta.CgflixMinhaContaLayout
+import dev.jdtech.jellyfin.cgflix.conta.CgflixMinhaContaState
+import dev.jdtech.jellyfin.cgflix.conta.CgflixPerfil
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryLayout
 import dev.jdtech.jellyfin.cgflix.home.CgflixCategoryState
 import dev.jdtech.jellyfin.cgflix.home.CgflixHomeLayout
@@ -140,6 +143,21 @@ class CgflixDemoActivity : ComponentActivity() {
                             onRequest = {},
                         )
                     }
+                    // Minha conta: sem foto (aparece a inicial), com o aviso de senha trocada
+                    "conta" ->
+                        CgflixMinhaContaLayout(
+                            state =
+                                CgflixMinhaContaState(
+                                    perfil = CgflixPerfil(nome = "Isis", fotoUrl = null),
+                                    mensagem =
+                                        "Senha trocada. Nos outros aparelhos e no site, entre de " +
+                                            "novo com a senha nova. Aqui você continua conectado.",
+                                ),
+                            navigateBack = {},
+                            onTrocarFoto = {},
+                            onRemoverFoto = {},
+                            onTrocarSenha = { _, _, _ -> },
+                        )
                     "voce" ->
                         CgflixYouLayout(
                             state = CgflixYouState(userName = "Isis", serverName = "CGFLIX"),

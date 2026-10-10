@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +34,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.cgflix.apoio.CGFLIX_APOIO_TITULO
 import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioRosa
 import dev.jdtech.jellyfin.cgflix.apoio.apoioDoSabor
+import dev.jdtech.jellyfin.cgflix.conta.CgflixAvatar
+import dev.jdtech.jellyfin.cgflix.conta.CgflixContaRepository
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.presentation.theme.cgflix
@@ -44,15 +47,25 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-data class CgflixYouState(val userName: String = "", val serverName: String = "")
+data class CgflixYouState(
+    val userName: String = "",
+    val serverName: String = "",
+    /** Foto do Jellyfin (Minha conta); nula sem foto ou sem rede. */
+    val fotoUrl: String? = null,
+)
 
 @HiltViewModel
 class CgflixYouViewModel
 @Inject
-constructor(private val database: ServerDatabaseDao, private val appPreferences: AppPreferences) :
-    ViewModel() {
+constructor(
+    private val database: ServerDatabaseDao,
+    private val appPreferences: AppPreferences,
+    private val conta: CgflixContaRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow(CgflixYouState())
     val state = _state.asStateFlow()
 
@@ -65,6 +78,13 @@ constructor(private val database: ServerDatabaseDao, private val appPreferences:
                     userName = current.user?.name ?: "",
                     serverName = current.server.name,
                 )
+            // a foto vem do servidor; sem rede fica a inicial do nome
+            try {
+                val fotoUrl = conta.perfil().fotoUrl
+                _state.update { it.copy(fotoUrl = fotoUrl) }
+            } catch (e: Exception) {
+                Timber.w(e)
+            }
         }
     }
 }
@@ -72,7 +92,7 @@ constructor(private val database: ServerDatabaseDao, private val appPreferences:
 /**
  * CGFLIX (Etapa 1B): aba "Você", na ordem pedida pelo Caio (10/10): Favoritos, Bibliotecas e Meus
  * pedidos; depois Configurações, Trocar usuário e Sobre; por último, "Apoie o CGFLIX" em destaque.
- * A dedicatória fica só no Sobre.
+ * A dedicatória fica só no Sobre. O topo (foto e nome) abre a Minha conta (foto e senha).
  */
 @Composable
 fun CgflixYouScreen(
@@ -83,6 +103,7 @@ fun CgflixYouScreen(
     onSettings: () -> Unit,
     onAbout: () -> Unit,
     onApoio: () -> Unit,
+    onMinhaConta: () -> Unit = {},
     viewModel: CgflixYouViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -97,6 +118,7 @@ fun CgflixYouScreen(
         onSettings = onSettings,
         onAbout = onAbout,
         onApoio = onApoio,
+        onMinhaConta = onMinhaConta,
     )
 }
 
@@ -111,6 +133,7 @@ fun CgflixYouLayout(
     onSettings: () -> Unit,
     onAbout: () -> Unit,
     onApoio: () -> Unit,
+    onMinhaConta: () -> Unit = {},
 ) {
     val safePadding = rememberSafePadding(handleStartInsets = false)
     val palette = MaterialTheme.cgflix
@@ -124,20 +147,44 @@ fun CgflixYouLayout(
             ),
     ) {
         item {
-            Column(Modifier.padding(horizontal = MaterialTheme.spacings.default)) {
-                Text(
-                    text = state.userName.ifEmpty { "Você" },
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = palette.text,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .clickable(
+                            enabled = !offline,
+                            onClickLabel = "Minha conta",
+                            role = Role.Button,
+                            onClick = onMinhaConta,
+                        )
+                        .padding(horizontal = MaterialTheme.spacings.default)
+                        .padding(bottom = MaterialTheme.spacings.medium),
+            ) {
+                CgflixAvatar(
+                    nome = state.userName,
+                    fotoUrl = state.fotoUrl.takeIf { !offline },
+                    modifier = Modifier.size(56.dp),
                 )
-                if (state.serverName.isNotEmpty()) {
+                Spacer(Modifier.width(MaterialTheme.spacings.medium))
+                Column(Modifier.weight(1f)) {
                     Text(
-                        text = state.serverName,
+                        text = state.userName.ifEmpty { "Você" },
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = palette.text,
+                    )
+                    Text(
+                        text = if (offline) state.serverName else "Minha conta: foto e senha",
                         style = MaterialTheme.typography.bodyMedium,
                         color = palette.textMuted,
                     )
                 }
-                Spacer(Modifier.padding(top = MaterialTheme.spacings.medium))
+                if (!offline) {
+                    Icon(
+                        painterResource(CoreR.drawable.ic_cgflix_chevron_right),
+                        contentDescription = null,
+                        tint = palette.textMuted,
+                    )
+                }
             }
         }
         if (!offline) {
