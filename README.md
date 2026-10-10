@@ -1,79 +1,70 @@
-> **CGFLIX Lite** é um fork do Findroid feito para a família e amigos do CGFLIX (servidor Jellyfin particular).
-> Veja as mudanças em [CGFLIX.md](CGFLIX.md). Todo o crédito do app original é de
-> [Jarne de Meulemeester e colaboradores](https://github.com/jarnedemeulemeester/findroid) (GPL-3.0).
-> O texto abaixo é o README original do Findroid.
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="cgflix-brand/cgflix-marca.svg">
+  <img src="cgflix-brand/heitor/cgflix-marca.svg" alt="CGFLIX" width="320">
+</picture></p>
 
-![Findroid banner](images/findroid-banner.png)
+# CGFLIX Lite
 
-# Findroid
-![GitHub release (with filter)](https://img.shields.io/github/v/release/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub repo stars](https://img.shields.io/github/stars/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/jarnedemeulemeester/findroid?style=for-the-badge)
-![GitHub all releases](https://img.shields.io/github/downloads/jarnedemeulemeester/findroid/total?style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/jarnedemeulemeester/findroid?style=for-the-badge)
+App Android **leve** para assistir ao CGFLIX, o servidor de mídia (Jellyfin) particular de família e amigos.
+Feito para celular simples e internet ruim: abre rápido, gasta pouca memória e toca o vídeo direto, sem conversão no
+servidor. Interface em português do Brasil.
 
-Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
+É um fork do [Findroid](https://github.com/jarnedemeulemeester/findroid) (GPL-3.0). O irmão completo é o
+[`cgflix-app`](https://github.com/CaioGuerras/cgflix-app), um fork do Plezy.
 
-I am developing this application in my spare time.
+| Entrar | Você (tema Isis) | Você (tema Heitor) | Minha conta |
+|---|---|---|---|
+| ![Entrar](cgflix-brand/telas/login.png) | ![Você, tema Isis](cgflix-brand/telas/voce-isis.png) | ![Você, tema Heitor](cgflix-brand/telas/voce-heitor.png) | ![Minha conta](cgflix-brand/telas/minha-conta.png) |
 
-**This project is in its early stages so expect bugs.**
+## O que ele faz
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin)
-[<img src="https://user-images.githubusercontent.com/32322857/219019331-027a6775-7362-44bb-a026-281f71e9b37b.png" alt="Available at Amazon Appstore" height="80">](https://www.amazon.com/gp/product/B0BTWC8DNZ)
-[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/dev.jdtech.jellyfin)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/dev.jdtech.jellyfin)
+- **Início por categoria**: chips Filmes, Séries e Animes, com as linhas Continuar assistindo, Em alta no Brasil
+  (Top 10) e recentes.
+- **Busca única**: primeiro o que já está no servidor, depois o que dá para **pedir** (Seerr), sem sair do app.
+  A tela Meus pedidos mostra a situação de cada pedido.
+- **Página do título**: botão grande Assistir ou Continuar S01E03, selos **Dublado** e **Legendado**, e temporadas em chips.
+- **Player** ExoPlayer ou mpv (legenda ASS de anime com estilo), com áudio e legenda num menu pequeno que não pausa o vídeo.
+- **Dois temas**: **Isis** (escuro, roxo, o padrão) e **Heitor** (claro, verde), além do Automático. O ícone do app
+  muda junto com o tema.
+- **Minha conta**: trocar a foto e a senha pelo próprio app. A senha vale para o app, o site e a TV.
+- **Downloads** para ver sem internet (do Findroid).
+- **Apoie o CGFLIX**: gorjeta opcional, que não desbloqueia nada. No APK é por Pix e na Play é pelo Google Play Billing.
 
-## Screenshots
-| Home                                | Library                             | Movie                           | Season                            | Episode                             |
-|-------------------------------------|-------------------------------------|---------------------------------|-----------------------------------|-------------------------------------|
-| ![Home](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Library](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Movie](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) | ![Season](fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png) | ![Episode](fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.png) |
+Requer Android 9 ou mais novo. O app não traz endereço de servidor embutido: na primeira abertura, informe o endereço
+do seu Jellyfin.
 
-## Features
-- Completely native interface
-- Supported media items: movies, series, seasons, episodes 
-  - Direct play only, (no transcoding)
-- Offline playback / downloads
-- ExoPlayer
-  - Video codecs: H.263, H.264, H.265, VP8, VP9, AV1 
-    - Support depends on Android device
-  - Audio codecs: Vorbis, Opus, FLAC, ALAC, PCM, MP3, AAC, AC-3, E-AC-3, DTS, DTS-HD, TrueHD 
-    - Support provided by ExoPlayer FFmpeg extension
-  - Subtitle codecs: SRT, VTT, SSA/ASS, PGSSUB
-    - SSA/ASS has limited styling support see [this issue](https://github.com/google/ExoPlayer/issues/8435)
-- mpv
-  - Container formats: mkv, mov, mp4, avi
-  - Video codecs: H.264, H.265, H.266, VP8, VP9, AV1
-  - Audio codecs: Opus, FLAC, MP3, AAC, AC-3, E-AC-3, TrueHD, DTS, DTS-HD
-  - Subtitle codecs: SRT, VTT, SSA/ASS, DVDSUB
-  - Optionally force software decoding when hardware decoding has issues.
-- Picture-in-picture mode
-- Media chapters
-  - Timeline markers
-  - Chapter navigation gestures
-- Trickplay (requires Jellyfin 10.9 or higher)
-- Media segments (requires Jellyfin 10.10 or higher)
-  - Skip button
-  - Auto skip
+## Instalar
 
-## Planned features
-- Android TV
-- Websocket connection (Syncplay)
-- Chromecast support
+- **Google Play**: por enquanto só no teste interno. Peça ao dono para colocar seu e-mail na lista de testadores.
+- **APK**: o workflow "CGFLIX Android" gera o APK a cada push no `main` (artifact `cgflix-lite-apk`). Use `arm64-v8a`
+  na maioria dos celulares e `armeabi-v7a` nos antigos e nas TV boxes.
 
-## Translating
-[JDTech Weblate](https://weblate.jdtech.dev) is a self-hosted instance of Weblate where you can translate this project and future projects of mine.
+## Compilar
 
-## Questions?
-We have a [Discord server](https://discord.gg/tg5VvTFwTV) to discuss future development or ask general questions.
+```bash
+./gradlew :app:phone:assembleLibreRelease   # APK (Pix)
+./gradlew :app:phone:bundlePlayRelease      # AAB para a Play (Play Billing)
+```
 
-## License
-This project is licensed under [GPLv3](LICENSE).
+Sem os secrets de assinatura, o release sai com a chave de debug (veja "Assinatura do APK" no [CGFLIX.md](CGFLIX.md)).
 
-The logo is a combination of the Jellyfin logo and the Android robot.
+## Para quem mexe no código
 
-The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.
+- **[CGFLIX.md](CGFLIX.md)**: tudo o que mudou em relação ao Findroid, versão por versão, com os arquivos alterados,
+  além de como sincronizar com o upstream e os próximos passos.
+- O código próprio fica em `app/phone/src/main/java/dev/jdtech/jellyfin/cgflix/`. Nos arquivos do Findroid só entram
+  ganchos curtos marcados com `CGFLIX`, para o merge com o upstream continuar simples.
+- Os workflows "CGFLIX Android" (APK, AAB e testes), "CGFLIX Telas" (capturas no emulador, nos dois temas) e "Format"
+  rodam em todo PR. Os PRs vão sempre para o `main` deste repositório, com descrição em português.
 
-Android is a trademark of Google LLC.
+## Créditos e licença
 
-Google Play and the Google Play logo are trademarks of Google LLC.
+O CGFLIX Lite existe graças ao **Findroid**, de [Jarne de Meulemeester e colaboradores](https://github.com/jarnedemeulemeester/findroid).
+Todo o crédito do app original é deles. Se você usa Jellyfin e não é do CGFLIX, use o Findroid
+([Google Play](https://play.google.com/store/apps/details?id=dev.jdtech.jellyfin),
+[F-Droid](https://f-droid.org/packages/dev.jdtech.jellyfin)).
+
+Licença [GPLv3](LICENSE), a mesma do original. Os ícones são Material Symbols (Apache 2.0, Google). A marca CGFLIX
+fica em `cgflix-brand/`.
+
+Android é marca registrada da Google LLC. Google Play e o logo do Google Play são marcas registradas da Google LLC.
