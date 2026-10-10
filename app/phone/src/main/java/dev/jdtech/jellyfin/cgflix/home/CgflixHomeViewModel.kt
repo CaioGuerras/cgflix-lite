@@ -8,6 +8,7 @@ import dev.jdtech.jellyfin.cgflix.logic.CgflixCategory
 import dev.jdtech.jellyfin.cgflix.logic.CgflixLibraryInfo
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRowSpec
 import dev.jdtech.jellyfin.cgflix.logic.cgflixHomeRows
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneRepository
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
@@ -35,7 +36,12 @@ data class CgflixHomeState(
     val rowStates: Map<String, CgflixRowState> = emptyMap(),
     /** Nada carregou (sem internet, servidor fora): mostra aviso com "Tentar de novo". */
     val failed: Boolean = false,
-)
+) {
+    /** Linhas montadas e nenhuma carregando (ou falha): usado pela cobertura do Modo Maryanne. */
+    val pronta: Boolean
+        get() =
+            failed || (rows.isNotEmpty() && rowStates.values.none { it == CgflixRowState.Loading })
+}
 
 /**
  * CGFLIX (Etapa 1B): Início enxuta. Continuar assistindo → Em alta no Brasil → Filmes, Séries e
@@ -49,11 +55,15 @@ constructor(
     private val cgflix: CgflixRepository,
     private val repository: JellyfinRepository,
     private val appPreferences: AppPreferences,
+    private val maryanne: CgflixMaryanneRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CgflixHomeState())
     val state = _state.asStateFlow()
 
     private var lastLoadedAt = 0L
+
+    /** CGFLIX (Modo Maryanne): a Início carregou (ou falhou); a cobertura da troca pode sair. */
+    fun avisarPronta() = maryanne.homePronta()
 
     fun load(force: Boolean = false) {
         if (

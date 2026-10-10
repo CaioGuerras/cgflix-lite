@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.cgflix.CgflixRepository
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestRejected
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestState
 import dev.jdtech.jellyfin.cgflix.logic.CgflixRequestable
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneRepository
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
@@ -50,8 +51,11 @@ data class CgflixSearchState(
 @HiltViewModel
 class CgflixSearchViewModel
 @Inject
-constructor(private val cgflix: CgflixRepository, private val repository: JellyfinRepository) :
-    ViewModel() {
+constructor(
+    private val cgflix: CgflixRepository,
+    private val repository: JellyfinRepository,
+    private val maryanne: CgflixMaryanneRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow(CgflixSearchState())
     val state = _state.asStateFlow()
 
@@ -80,6 +84,17 @@ constructor(private val cgflix: CgflixRepository, private val repository: Jellyf
                         Timber.w(e, "CGFLIX: busca no servidor falhou")
                         emptyList()
                     }
+                // CGFLIX (Modo Maryanne): criança não pede no Seerr; só o que já temos
+                if (maryanne.isAtivo) {
+                    _state.update {
+                        it.copy(
+                            results = ours,
+                            loading = false,
+                            requests = CgflixRequestsSection.Idle,
+                        )
+                    }
+                    return@launch
+                }
                 _state.update {
                     it.copy(
                         results = ours,

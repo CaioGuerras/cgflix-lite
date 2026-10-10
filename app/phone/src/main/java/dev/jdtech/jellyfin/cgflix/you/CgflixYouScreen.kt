@@ -13,16 +13,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -36,6 +42,8 @@ import dev.jdtech.jellyfin.cgflix.apoio.CgflixApoioRosa
 import dev.jdtech.jellyfin.cgflix.apoio.apoioDoSabor
 import dev.jdtech.jellyfin.cgflix.conta.CgflixAvatar
 import dev.jdtech.jellyfin.cgflix.conta.CgflixContaRepository
+import dev.jdtech.jellyfin.cgflix.maryanne.CgflixMaryanneRepository
+import dev.jdtech.jellyfin.cgflix.maryanne.LocalCgflixMaryanne
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.presentation.theme.cgflix
@@ -56,6 +64,9 @@ data class CgflixYouState(
     val serverName: String = "",
     /** Foto do Jellyfin (Minha conta); nula sem foto ou sem rede. */
     val fotoUrl: String? = null,
+    /** Classificação do Modo Maryanne ("Livre" ou "Até 10 anos"). */
+    val maryanneTeto: String = "",
+    val saindo: Boolean = false,
 )
 
 @HiltViewModel
@@ -65,6 +76,7 @@ constructor(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
     private val conta: CgflixContaRepository,
+    private val maryanne: CgflixMaryanneRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CgflixYouState())
     val state = _state.asStateFlow()
@@ -77,6 +89,7 @@ constructor(
                 CgflixYouState(
                     userName = current.user?.name ?: "",
                     serverName = current.server.name,
+                    maryanneTeto = maryanne.teto.rotulo,
                 )
             // a foto vem do servidor; sem rede fica a inicial do nome
             try {
@@ -85,6 +98,24 @@ constructor(
             } catch (e: Exception) {
                 Timber.w(e)
             }
+        }
+    }
+
+    /** Sai do Modo Maryanne; [onFim] recebe `true` quando voltou para a conta do pai. */
+    fun sairDoMaryanne(onFim: (Boolean) -> Unit) {
+        if (_state.value.saindo) return
+        _state.update { it.copy(saindo = true) }
+        viewModelScope.launch {
+            val voltou =
+                try {
+                    maryanne.sair()
+                } catch (e: Exception) {
+                    Timber.e(e, "CGFLIX: sair do Modo Maryanne falhou")
+                    maryanne.fecharCobertura()
+                    false
+                }
+            _state.update { it.copy(saindo = false) }
+            onFim(voltou)
         }
     }
 }
@@ -104,10 +135,34 @@ fun CgflixYouScreen(
     onAbout: () -> Unit,
     onApoio: () -> Unit,
     onMinhaConta: () -> Unit = {},
+    onMaryanne: () -> Unit = {},
+    onMaryanneSaiu: (voltouParaOPai: Boolean) -> Unit = {},
     viewModel: CgflixYouViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(true) { viewModel.load() }
+    var confirmarSaida by rememberSaveable { mutableStateOf(false) }
+    if (confirmarSaida) {
+        AlertDialog(
+            onDismissRequest = { confirmarSaida = false },
+            title = { Text("Sair do Modo Maryanne?") },
+            text = { Text("O app volta a mostrar todo o CGFLIX, na sua conta.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        confirmarSaida = false
+                        viewModel.sairDoMaryanne(onMaryanneSaiu)
+                    },
+                    modifier = Modifier.testTag("maryanne_sair_confirmar"),
+                ) {
+                    Text("Sair")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmarSaida = false }) { Text("Continuar no modo") }
+            },
+        )
+    }
     CgflixYouLayout(
         state = state,
         offline = LocalOfflineMode.current,
@@ -119,6 +174,9 @@ fun CgflixYouScreen(
         onAbout = onAbout,
         onApoio = onApoio,
         onMinhaConta = onMinhaConta,
+        maryanne = LocalCgflixMaryanne.current,
+        onMaryanne = onMaryanne,
+        onSairMaryanne = { if (!state.saindo) confirmarSaida = true },
     )
 }
 
@@ -134,6 +192,9 @@ fun CgflixYouLayout(
     onAbout: () -> Unit,
     onApoio: () -> Unit,
     onMinhaConta: () -> Unit = {},
+    maryanne: Boolean = false,
+    onMaryanne: () -> Unit = {},
+    onSairMaryanne: () -> Unit = {},
 ) {
     val safePadding = rememberSafePadding(handleStartInsets = false)
     val palette = MaterialTheme.cgflix
@@ -152,7 +213,8 @@ fun CgflixYouLayout(
                 modifier =
                     Modifier.fillMaxWidth()
                         .clickable(
-                            enabled = !offline,
+                            // CGFLIX (Modo Maryanne): sem Minha conta no usuário infantil
+                            enabled = !offline && !maryanne,
                             onClickLabel = "Minha conta",
                             role = Role.Button,
                             onClick = onMinhaConta,
@@ -162,7 +224,7 @@ fun CgflixYouLayout(
             ) {
                 CgflixAvatar(
                     nome = state.userName,
-                    fotoUrl = state.fotoUrl.takeIf { !offline },
+                    fotoUrl = state.fotoUrl.takeIf { !offline && !maryanne },
                     modifier = Modifier.size(56.dp),
                 )
                 Spacer(Modifier.width(MaterialTheme.spacings.medium))
@@ -173,12 +235,17 @@ fun CgflixYouLayout(
                         color = palette.text,
                     )
                     Text(
-                        text = if (offline) state.serverName else "Minha conta: foto e senha",
+                        text =
+                            when {
+                                maryanne -> "Modo Maryanne: ${state.maryanneTeto}"
+                                offline -> state.serverName
+                                else -> "Minha conta: foto e senha"
+                            },
                         style = MaterialTheme.typography.bodyMedium,
                         color = palette.textMuted,
                     )
                 }
-                if (!offline) {
+                if (!offline && !maryanne) {
                     Icon(
                         painterResource(CoreR.drawable.ic_cgflix_chevron_right),
                         contentDescription = null,
@@ -187,10 +254,40 @@ fun CgflixYouLayout(
                 }
             }
         }
+        // CGFLIX (Modo Maryanne): sem pedidos, configurações, troca de usuário e Apoie no modo
+        if (maryanne) {
+            if (!offline) {
+                item { YouItem(CoreR.drawable.ic_cgflix_favorite, "Favoritos", onFavorites) }
+                item { YouItem(CoreR.drawable.ic_cgflix_video_library, "Bibliotecas", onLibraries) }
+                item {
+                    HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small))
+                }
+            }
+            item {
+                YouItem(
+                    CoreR.drawable.ic_cgflix_morango,
+                    "Sair do Modo Maryanne",
+                    onSairMaryanne,
+                    iconTint = Color.Unspecified,
+                    tag = "maryanne_sair",
+                )
+            }
+            item { YouItem(CoreR.drawable.ic_cgflix_info, "Sobre", onAbout) }
+            return@LazyColumn
+        }
         if (!offline) {
             item { YouItem(CoreR.drawable.ic_cgflix_favorite, "Favoritos", onFavorites) }
             item { YouItem(CoreR.drawable.ic_cgflix_video_library, "Bibliotecas", onLibraries) }
             item { YouItem(CoreR.drawable.ic_cgflix_list_alt, "Meus pedidos", onMyRequests) }
+            item {
+                YouItem(
+                    CoreR.drawable.ic_cgflix_morango,
+                    "Modo Maryanne (crianças)",
+                    onMaryanne,
+                    iconTint = Color.Unspecified,
+                    tag = "maryanne_entrar",
+                )
+            }
             item { HorizontalDivider(Modifier.padding(vertical = MaterialTheme.spacings.small)) }
         }
         item { YouItem(CoreR.drawable.ic_cgflix_settings, "Configurações", onSettings) }
@@ -216,6 +313,7 @@ private fun YouItem(
     label: String,
     onClick: () -> Unit,
     iconTint: Color = MaterialTheme.cgflix.lilac,
+    tag: String? = null,
 ) {
     val palette = MaterialTheme.cgflix
     Row(
@@ -224,7 +322,8 @@ private fun YouItem(
             Modifier.fillMaxWidth()
                 .heightIn(min = 56.dp)
                 .clickable(onClickLabel = label, role = Role.Button, onClick = onClick)
-                .padding(horizontal = MaterialTheme.spacings.default),
+                .padding(horizontal = MaterialTheme.spacings.default)
+                .then(if (tag != null) Modifier.testTag(tag) else Modifier),
     ) {
         Icon(painterResource(icon), contentDescription = null, tint = iconTint)
         Spacer(Modifier.width(MaterialTheme.spacings.medium))

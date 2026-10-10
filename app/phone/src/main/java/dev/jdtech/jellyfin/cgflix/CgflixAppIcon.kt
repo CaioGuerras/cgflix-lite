@@ -11,8 +11,8 @@ import timber.log.Timber
 
 /**
  * CGFLIX: o ícone do app acompanha o tema (pedido do Caio, 10/10), como no Telegram: Heitor = ícone
- * verde; Isis e automático = ícone roxo. São dois `activity-alias` no manifesto (`IconeIsis`,
- * ligado por padrão, e `IconeHeitor`); fica ligado só o do tema.
+ * verde; Isis e automático = ícone roxo; no Modo Maryanne, o morango. São três `activity-alias` no
+ * manifesto (`IconeIsis`, ligado por padrão, `IconeHeitor` e `IconeMaryanne`); fica ligado só um.
  *
  * A troca só acontece quando o app sai da tela (nenhuma tela visível): em alguns aparelhos o
  * sistema fecha o app ao trocar o ícone, e o launcher leva alguns segundos para mostrar o novo.
@@ -21,15 +21,27 @@ object CgflixAppIcon {
     private const val ISIS = "dev.jdtech.jellyfin.cgflix.IconeIsis"
     private const val HEITOR = "dev.jdtech.jellyfin.cgflix.IconeHeitor"
 
-    /** Liga o ícone do tema [choice] e desliga o outro (nada a fazer se já estiver certo). */
-    fun sync(context: Context, choice: CgflixThemeChoice) {
-        val heitor = choice == CgflixThemeChoice.HEITOR
+    private const val MARYANNE = "dev.jdtech.jellyfin.cgflix.IconeMaryanne"
+
+    /**
+     * Liga o ícone do tema [choice] (ou o morango, no Modo Maryanne) e desliga os outros (nada a
+     * fazer se já estiver certo).
+     */
+    fun sync(context: Context, choice: CgflixThemeChoice, maryanne: Boolean = false) {
         val pm = context.packageManager
-        val isis = ComponentName(context.packageName, ISIS)
-        val green = ComponentName(context.packageName, HEITOR)
-        val on = if (heitor) green else isis
-        val off = if (heitor) isis else green
-        if (isEnabled(pm, on, default = on == isis) && !isEnabled(pm, off, default = off == isis)) {
+        val target =
+            when {
+                maryanne -> MARYANNE
+                choice == CgflixThemeChoice.HEITOR -> HEITOR
+                else -> ISIS
+            }
+        val pkg = context.packageName
+        val on = ComponentName(pkg, target)
+        val offs = (listOf(ISIS, HEITOR, MARYANNE) - target).map { ComponentName(pkg, it) }
+        if (
+            isEnabled(pm, on, default = target == ISIS) &&
+                offs.none { isEnabled(pm, it, default = it.className == ISIS) }
+        ) {
             return
         }
         try {
@@ -39,11 +51,13 @@ object CgflixAppIcon {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP,
             )
-            pm.setComponentEnabledSetting(
-                off,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP,
-            )
+            offs.forEach {
+                pm.setComponentEnabledSetting(
+                    it,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP,
+                )
+            }
         } catch (e: Exception) {
             Timber.w(e, "CGFLIX: não deu para trocar o ícone do app")
         }
@@ -57,7 +71,11 @@ object CgflixAppIcon {
         }
 
     /** Chama [sync] com o tema atual toda vez que a última tela visível do app sai da tela. */
-    fun syncWhenInBackground(application: Application, currentChoice: () -> CgflixThemeChoice) {
+    fun syncWhenInBackground(
+        application: Application,
+        currentMaryanne: () -> Boolean = { false },
+        currentChoice: () -> CgflixThemeChoice,
+    ) {
         application.registerActivityLifecycleCallbacks(
             object : Application.ActivityLifecycleCallbacks {
                 private var started = 0
@@ -71,7 +89,7 @@ object CgflixAppIcon {
                     // Girar a tela recria a atividade: não é sair do app
                     if (started <= 0 && !activity.isChangingConfigurations) {
                         started = 0
-                        sync(application, currentChoice())
+                        sync(application, currentChoice(), currentMaryanne())
                     }
                 }
 
