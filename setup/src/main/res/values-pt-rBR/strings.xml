@@ -33,7 +33,7 @@
     <string name="servers_btn_add_server">Adicionar servidor</string>
     <string name="welcome">Bem-vindo ao CGFLIX Lite</string>
     <string name="welcome_btn_continue">Continuar</string>
-    <string name="welcome_btn_learn_more">Veja mais sobre o Jellyfin</string>
+    <string name="welcome_btn_learn_more">Como funciona</string>
     <string name="welcome_text">O CGFLIX Lite é um app leve para assistir à biblioteca do CGFLIX. Entre com o usuário e a senha que você recebeu.</string>
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>

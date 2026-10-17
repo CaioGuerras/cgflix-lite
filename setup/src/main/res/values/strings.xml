@@ -23,7 +23,7 @@
    <string name="remove_server_dialog_text">Are you sure you want to remove the server %s?</string>
    <string name="welcome">Welcome to CGFLIX Lite</string>
    <string name="welcome_btn_continue">Continue</string>
-   <string name="welcome_btn_learn_more">Learn more about Jellyfin</string>
+   <string name="welcome_btn_learn_more">How it works</string>
    <string name="welcome_text">CGFLIX Lite is a light app to watch the CGFLIX library. Sign in with the username and password you were given.</string>
    <string name="confirm">Confirm</string>
    <string name="cancel">Cancel</string>

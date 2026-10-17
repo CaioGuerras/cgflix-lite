@@ -39,7 +39,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             when (action) {
                 is WelcomeAction.OnContinueClick -> onContinueClick()
                 is WelcomeAction.OnLearnMoreClick -> {
-                    uriHandler.openUri("https://jellyfin.org/")
+                    uriHandler.openUri("https://netflix.docaio.com.br/cgflix/ajuda.html")
                 }
             }
         }
